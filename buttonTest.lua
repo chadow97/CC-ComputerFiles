@@ -10,7 +10,7 @@ local monitor = peripheral.find("monitor")
 MonUtils.resetMonitor(monitor)
 
 local terminal = term.current()
-logger.init(terminal)
+logger.init(terminal, "buttonTest", true)
 
 
 local isRunning = true

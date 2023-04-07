@@ -113,8 +113,6 @@ function ButtonClass.draw(self, startLimitX, startLimitY, endLimitX, endLimitY)
 end
 
 function ButtonClass.handleTouchEvent(self, eventName, side, xPos, yPos)
-    
-
     if self:isPosInButton(xPos, yPos) then
         self.func(self)
         return true
@@ -124,9 +122,7 @@ end
 
 
 function ButtonClass.handleEvent(self, eventName, ...)
-    if self.text == "U" then
-        logger.log(eventName)
-    end
+
     if eventName == "monitor_touch" then
         return self:handleTouchEvent(eventName, ...)
     end
@@ -155,10 +151,6 @@ function ButtonClass.isPosInButton(self, x, y)
     local startX, startY, endX, endY = self:getArea()
     local xInside = x >= startX and x <= endX
     local yInside = y >= startY and y <= endY
-
-    if self.text == "U" then
-        logger.log(xInside)
-    end
 
     return xInside and yInside
 

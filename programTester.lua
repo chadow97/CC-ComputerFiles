@@ -6,6 +6,7 @@ local logger = require("UTIL.logger")
 
 
 logger.init(term.current())
+logger.deactiveate()
 
 
 local args = {...}

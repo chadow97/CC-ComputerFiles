@@ -60,8 +60,8 @@ function TableClass:createButtonsForTable()
         Up:setMargin(0)
         local Down = ToggleableButtonClass:new(endX, endY, "D")
         Down:setMargin(0)
-        self.scrollButtons[Up] = Up
-        self.scrollButtons[Down]= Down
+        self.scrollButtons.Up = Up
+        self.scrollButtons.Down= Down
         Up:setPage(self)
         Down:setPage(self)
 
@@ -188,12 +188,10 @@ function TableClass:doForEachButton(func, ...)
 
 end
 
--- function should be (button)
+-- function should be (button, isKey, position, ...)
 function TableClass:doForScrollButtons(func, ...)
-    logger.log(self.scrollButtons)
-
     for key, button in pairs(self.scrollButtons) do
-        func(button)
+        func(button, nil, nil, ...)
     end
 
 end
@@ -225,11 +223,46 @@ end
 
 -- Empty implementation of the handleEvent function
 function TableClass:handleEvent(...)
-    local func = function(button, isKey, position, ...)
-        button:handleEvent(...)
+
+    for button in self:allButtons() do
+        if button:handleEvent(...) then
+            return true
+        end
+    end
+end
+
+function TableClass:allButtons()
+    local buttonKeys = {}
+    for key, _ in pairs(self.internalButtonHolder) do
+        table.insert(buttonKeys, key)
     end
 
-    self:doForAllButtonsInPage(func, ...)
+
+
+    local position = 1
+    local isKey = true
+    return function ()
+        local button = nil
+        if (position <= #buttonKeys) then
+            local key = buttonKeys[position]
+            if isKey then
+                button = self.internalButtonHolder[key].keyButton
+                isKey = false
+            else
+                button = self.internalButtonHolder[key].valueButton
+                isKey = true
+                position = position + 1
+            end
+        elseif (position - #buttonKeys) == 1 then
+            position = position + 1
+            button = self.scrollButtons.Up
+        elseif (position - #buttonKeys) == 2 then
+            position = position + 1
+            button = self.scrollButtons.Down
+        end
+
+        return button
+    end
 end
 
 function TableClass:setMonitorForAll()
