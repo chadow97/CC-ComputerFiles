@@ -5,6 +5,7 @@ local PageClass = require("GUI.pageClass")
 local TableClass = require("GUI.tableClass")
 local MonUtils = require("UTIL.monUtils")
 local logger = require("UTIL.logger")
+local PageStackClass = require("GUI.pageStackClass")
 
 local monitor = peripheral.find("monitor")
 MonUtils.resetMonitor(monitor)
@@ -25,13 +26,15 @@ local page = PageClass.new(monitor)
 
 table.insert(buttonList, ButtonClass:new(10, 5, "hey"))
 
+local monX, monY =monitor.getSize()
+
 
 table.insert(buttonList, ButtonClass:new(15, 10, "how"))
 table.insert(buttonList, ButtonClass:new(20, 12, "are"))
 table.insert(buttonList, ButtonClass:new(23, 15, "you?"))
 table.insert(buttonList, ButtonClass:new(30, 30, "Im a weirdo!!!"))
 
-local ExitButton = ButtonClass:new(32, 32, "X")
+local ExitButton = ButtonClass:new(monX - 1, monY -1, "X")
 ExitButton:setFunction(endProgram)
 table.insert(buttonList, ExitButton)
 
@@ -70,23 +73,27 @@ ToggleButton3:setOnManualToggle(
 )
 table.insert(buttonList, ToggleButton3)
 
-local tableToDisplay = {key122="fonally", key2="value2", key3="value3resresresres", "dfdf", "fsdff", "sdffdfsdf", "sdfsdfsddsf"}
-local tableGUI = TableClass:new(10, 10, "testTable")
+local tableToDisplay = {key122="fonally", key2="value2", key3="value3resresresres", func=endProgram ,innerTable={"hi","eee"}, "sdffdfsdf", "sdfsdfsddsf"}
+local tableGUI = TableClass:new(monitor, 10, 10, "rootTable")
 tableGUI:setInternalTable(tableToDisplay)
+local pageStack = PageStackClass:new(monitor)
+pageStack:setSize(40,30)
+pageStack:setPosition(5,5)
+pageStack:pushPage(tableGUI)
 
-table.insert(buttonList, tableGUI)
-
-
-
-
-page:addButtons(buttonList)
-page:draw()
+--table.insert(buttonList, pageStack)
 
 
+
+
+--page:addButtons(buttonList)
+--page:draw()
+
+pageStack:draw()
 
 
 while isRunning do
 ---@diagnostic disable-next-line: undefined-field
-    page:handleEvent(os.pullEvent())
+    pageStack:handleEvent(os.pullEvent())
 end
 

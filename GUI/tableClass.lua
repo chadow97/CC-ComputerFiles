@@ -9,9 +9,9 @@ local TableClass_mt = { __index = TableClass }
 
 local defaultSizeX = 20
 local defaultSizeY = 20
-function TableClass:new( posX, posY, title, sizeX, sizeY)
+function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
     local properties = {
-      monitor = nil,
+      monitor = monitor,
       page = nil,
       internalTable = {},
       title = title,
@@ -32,20 +32,32 @@ function TableClass:new( posX, posY, title, sizeX, sizeY)
       valueTitle = "Values",
       keyRowProportion = 0.3,
       internalButtonHolder = {},
-      scrollButtons = {}
+      scrollButtons = {},
+      scrollAmount = nil,
+      currentScroll = 0,
     }
 
 
     setmetatable(properties, TableClass_mt)
+    -- sets default scroll amount
+    properties:setScrollAmount()
     return properties
   end
+
+function TableClass:setScrollAmount(amount) 
+    if not amount then
+        self.scrollAmount = self:getRowHeight() + self.marginBetweenRows
+    else
+        self.scrollAmount = amount
+    end
+
+end
 
 function TableClass:createButtonsForTable()
     self.internalButtonHolder = {}
     self.scrollButtons = {}
 
     local index = 1
-
 
     for key, value in pairs(self.internalTable) do
         self:createButtonsForRow(key, value, index)
@@ -65,6 +77,17 @@ function TableClass:createButtonsForTable()
         Up:setPage(self)
         Down:setPage(self)
 
+        Up:setOnManualToggle(
+            (function(button) 
+                self:scroll(true)
+            end)
+        )
+        Down:setOnManualToggle(
+            (function(button) 
+                self:scroll(false)
+            end)
+        )
+
 
 
 
@@ -73,6 +96,60 @@ function TableClass:createButtonsForTable()
 
     self:setMonitorForAll()
 
+
+end
+
+function TableClass:scroll(isUp)
+    if not self.isScrollable then
+        return
+    end
+    
+    local movement = self.scrollAmount
+    if not isUp then
+        movement = self.scrollAmount * -1
+    end
+
+    local scrollGoal = self.currentScroll + movement
+    local realScroll = scrollGoal
+
+    if (scrollGoal >= 0) then
+        realScroll = 0
+    end
+
+   
+    local maxScroll = (self:getInternalTableElementCount() - 1) * (self:getRowHeight() + self.marginBetweenRows) * -1
+
+    if (scrollGoal < maxScroll) then
+        realScroll = maxScroll
+    end
+
+    local realMovement = realScroll - self.currentScroll
+
+    self:doForEachButton(
+        function (button)
+            x,y = button:getPos()
+            button:setPos(x,y + realMovement)
+        end
+                        )
+
+    self.currentScroll = self.currentScroll + realMovement
+
+
+end
+
+local function processTableElement(tableClass, tableButton, key, value)
+
+
+    local func = function ()
+        if not tableClass.page.pushPage then
+            return
+        end
+        local InnerTablePage = TableClass:new(tableClass.monitor, nil, nil, key)
+        InnerTablePage:setInternalTable(value)
+        tableClass.page:pushPage(InnerTablePage)
+    end
+
+    tableButton:setOnManualToggle(func)
 
 end
 
@@ -86,7 +163,19 @@ function TableClass:createButtonsForRow(key, value, position)
     keyButton:setPage(self)
     keyButton:setUpperCornerPos(keyX,keyY)
     keyButton:forceWidthSize(self:getKeyRowWidth())
-    local valueButton = ToggleableButtonClass:new(0, 0, value)
+    local typeOfValue = type(value)
+    local displayedText = value
+
+    if (typeOfValue == "function") then
+        displayedText = "function"
+    elseif (typeOfValue == "table")  then
+        displayedText = "{...}"
+    end
+    
+    local valueButton = ToggleableButtonClass:new(0, 0, displayedText)
+    if (typeOfValue == "table")  then    
+        processTableElement(self, valueButton, key, value )
+    end
     valueButton:changeStyle(self.elementBackColor, self.textColor)
     valueButton:setPage(self)
     valueButton:setUpperCornerPos(valueX,valueY)
@@ -94,6 +183,8 @@ function TableClass:createButtonsForRow(key, value, position)
 
     self.internalButtonHolder[key] = {keyButton = keyButton, valueButton = valueButton}
 end
+
+
 
 function TableClass:getElementStart(position, isKey)
 
@@ -157,6 +248,16 @@ function TableClass:getInternalTable()
   return self.internalTable
 end
 
+function TableClass:getInternalTableElementCount()
+    local count = 0
+
+    for key, value in pairs(self.internalTable) do
+        count = count + 1
+    end
+
+    return count
+end
+
 
 function TableClass:getArea()
     local endX = self.posX + self.sizeX - 1
@@ -204,6 +305,9 @@ end
 
 -- Empty implementation of the draw function
 function TableClass:draw()
+    --logger.logToFile("--------------")
+    logger.logToFile("drawing:" .. self.title)
+    --logger.callStackToFile()
     -- 1st step: draw background
     local startX, startY, endX, endY = self:getArea()
     CustomPaintUtils.drawFilledBox(startX, startY, endX, endY,  self.backColor, self.monitor)
@@ -224,11 +328,25 @@ end
 -- Empty implementation of the handleEvent function
 function TableClass:handleEvent(...)
 
+    logger.logToFile("handling event in table:" .. self.title )
+
     for button in self:allButtons() do
         if button:handleEvent(...) then
             return true
         end
     end
+end
+
+function TableClass:setPosition(posX,posY)
+    self.posX = posX
+    self.posY = posY
+    self:createButtonsForTable()
+end
+
+function TableClass:setSize(sizeX,sizeY)
+    self.sizeX = sizeX
+    self.sizeY = sizeY
+    self:createButtonsForTable()
 end
 
 function TableClass:allButtons()

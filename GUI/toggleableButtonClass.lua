@@ -12,7 +12,7 @@ local function DefaultOnButtonPress(toggleButton)
     if toggleButton.canUntoggleManually or not toggleButton.toggled then
         toggleButton:toggle(toggleButton.untoggleTime)
         toggleButton.OnManualToggle(toggleButton)
-        toggleButton:redrawPage()
+        toggleButton:askForRedraw()
     end
 end
 
@@ -83,10 +83,11 @@ function ToggleableButtonClass:updateStyle()
 end
 
 function ToggleableButtonClass:onTimerEnd()
+    logger.logToFile("timer event received!!!!")
     self.toggledTimer = nil
     self:toggle()
     self.OnAutoUntoggle(self)
-    self:redrawPage()
+    self:askForRedraw()
 end
 
 function ToggleableButtonClass:isPressed()

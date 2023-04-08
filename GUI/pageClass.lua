@@ -65,6 +65,15 @@ function PageClass:getSize()
     return sizeX, sizeY
 end
 
+function PageClass:setPosition(posX,posY)
+    self.posX = posX
+    self.posY = posY
+end
+
+function PageClass:setSize(sizeX,sizeY)
+    self.sizeX = sizeX
+    self.sizeY = sizeY
+end
 
 
 -- Define the handleEvent method to handle events on the page

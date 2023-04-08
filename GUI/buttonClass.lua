@@ -20,20 +20,20 @@ local function defaultButtonPressed(button)
     end
     button.pressed = button.pressed + 1
     button:setText(tostring(button.pressed))
-    button:redrawPage()
+    button:askForRedraw()
 end
 
 
 -- Define a constructor for the ButtonClass
 function ButtonClass.new(self, x, y, text)
-  local obj = { x = x,
-                y = y, 
+  local obj = { x = x or 1,
+                y = y or 1, 
                 text = text,
                 margin = 1,
                 backColor = colors.lightGray,
                 textColor = colors.black,
                 func = defaultButtonPressed,
-                monitor = nil,
+                monitor = monitor,
                 page = nil,
                 id = IdGenerator.generateId(),
                 forcedWidthSize = nil
@@ -44,7 +44,8 @@ function ButtonClass.new(self, x, y, text)
 end
 
 
-function ButtonClass.redrawPage(self)
+function ButtonClass.askForRedraw(self)
+    logger.logToFile("button" .. self.text .. "asked for redraw of page" .. self.page.title )
     self.page:draw()
 end
 
@@ -82,15 +83,11 @@ function ButtonClass.draw(self, startLimitX, startLimitY, endLimitX, endLimitY)
   end
 
 
-
-
-
-
-
-
   CustomPaintUtils.drawFilledBox(startXToDraw, startYtoDraw, endXToDraw, endYToDraw,  self.backColor, self.monitor)
   
-  local shouldWrite = true
+  if (self.y < startYtoDraw or self.y > endYToDraw) then
+    return
+  end
 
   
 
@@ -122,7 +119,7 @@ end
 
 
 function ButtonClass.handleEvent(self, eventName, ...)
-
+    logger.logToFile("handling event" .. eventName .." in button" )
     if eventName == "monitor_touch" then
         return self:handleTouchEvent(eventName, ...)
     end

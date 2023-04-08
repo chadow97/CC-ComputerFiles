@@ -69,5 +69,31 @@ function logger.logToFile(text)
 
 end
 
+function logger.callStackToFile()
+
+    if not logger.isActive then
+        return
+    end
+
+    if not logger.fileName then
+        logger.fileName = "logger.log" 
+    end
+
+    local path = getFilePath()
+
+    local file = fs.open(path, "a")
+
+    local level = 2 -- start at level 2 to skip the printCallStack function itself
+    while true do
+        local info = debug.getinfo(level, "nSl")
+        if not info then break end
+        file.writeLine(string.format("%s:%d in function '%s'", info.short_src, info.currentline, info.name or "?"))
+        level = level + 1
+    end
+
+    file.close()
+
+end
+
 
 return logger
