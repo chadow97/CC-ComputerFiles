@@ -45,12 +45,7 @@ end
 
 
 function ButtonClass.askForRedraw(self)
-    if self.page.exitButton then
-        --page is pageStack
-        if  not self.page.pageStack then
-        logger.logToFile("pageStack is nil")
-        end
-    end
+
     self.page:askForRedraw(self) -- passing asker
 end
 
@@ -124,9 +119,7 @@ end
 
 
 function ButtonClass.handleEvent(self, eventName, ...)
-    if self.page.exitButton then
-        logger.logToFile( "pageStack has in button".. #self.page.pageStack)
-    end
+
     if eventName == "monitor_touch" then
         return self:handleTouchEvent(eventName, ...)
     end

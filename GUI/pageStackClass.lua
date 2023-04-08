@@ -73,11 +73,6 @@ function PageStackClass:popPage()
 end
 
 function PageStackClass:getTopPage()
-    if (not self.pageStack) then
-        logger.callStackToFile()
-        logger.logToFile("got here with empty pageStack")
-        logger.logToFile(self)
-    end
     return self.pageStack[#self.pageStack]
 end
 
@@ -130,7 +125,6 @@ end
 -- handle an event
 function PageStackClass:handleEvent(...)
 
-    logger.logToFile( "pageStack has".. #self.pageStack)
     if self.exitButton:handleEvent(...) then
         return true
     end
