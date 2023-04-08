@@ -78,34 +78,21 @@ ToggleButton3:setOnManualToggle(
 table.insert(buttonList, ToggleButton3)
 ]]--
 ----[[
-local tableToDisplay = MeUtils.getItemList()
-local tableGUI = TableClass:new(monitor, 10, 10, "rootTable")
-tableGUI:setTableValueDisplayed(
-    function(value)
-        if value.name then
-            return "{" ..value.name .. "}"
-        else
-            return "{...}"
-        end
+local  displayTableFunction =  (function(value)
+    if value.name then
+        return "{" ..value.name .. "}"
+    else
+        return "{...}"
     end
+end)
+
+local pageStack1, internalTable = TableClass.createTableStack(monitor, 5, 5, 40, 30, MeUtils.getItemList(), "Item List", displayTableFunction)
+internalTable:setTableValueDisplayed(
+
 )
-tableGUI:setInternalTable(tableToDisplay)
+table.insert(buttonList, pageStack1)
 
-local pageStack = PageStackClass:new(monitor)
-pageStack:setSize(40,30)
-pageStack:setPosition(5,5)
-pageStack:pushPage(tableGUI)
-table.insert(buttonList, pageStack)
-
-
-local table2GUI = TableClass:new(monitor, 10,10, "2nd table")
-table2GUI:setInternalTable(MeUtils.getCraftableItemNames())
-
-local pageStack2 = PageStackClass:new(monitor)
-pageStack2:setSize(40,30)
-pageStack2:setPosition( 46,5)
-pageStack2:pushPage(table2GUI)
-
+local pageStack2 = TableClass.createTableStack(monitor, 46, 5 , 40, 30, MeUtils.getCraftableItemNames(), "Craftable Item Names")
 
 table.insert(buttonList, pageStack2)
 

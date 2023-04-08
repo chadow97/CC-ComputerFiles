@@ -51,7 +51,7 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
   end
 
 function TableClass:setTableValueDisplayed(func)
-    self.tableValueDisplayed = func
+    self.tableValueDisplayed = func or DefaultTableValueDisplayed
 end
 
 function TableClass:setScrollAmount(amount) 
@@ -417,6 +417,24 @@ function TableClass:onResumeAfterContextLost()
     end
 
     self:doForAllButtonsInPage(func)
+end
+
+
+-- static function
+
+function TableClass.createTableStack(monitor, posX, posY, sizeX,sizeY, table, tableName, displayTableFunction)
+
+    local newTable = TableClass:new(monitor, 1,1, tableName)
+
+    newTable:setTableValueDisplayed(displayTableFunction)
+    newTable:setInternalTable(table)
+    
+    local tableStack = PageStackClass:new(monitor)
+    tableStack:setSize(sizeX,sizeY)
+    tableStack:setPosition( posX,posY)
+    tableStack:pushPage(newTable)
+
+    return tableStack, newTable
 end
 
 -- Return the TableClass
