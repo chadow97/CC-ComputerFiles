@@ -1,4 +1,5 @@
 local logger = require "UTIL.logger"
+local ToggleableButtonClass = require("GUI.toggleableButtonClass")
 -- define the PageStackClass
 PageStackClass = {}
 
@@ -12,9 +13,21 @@ function PageStackClass:new(monitor)
     sizeX = 10,
     sizeY = 10,
     parentPage = nil,
+    exitButton = nil
   }
   setmetatable(obj, self)
   self.__index = self
+
+  self.exitButton = ToggleableButtonClass:new(self.posX+ self.sizeX - 1,self.posY, "X")
+  self.exitButton:setMargin(0)
+
+  self.exitButton:setOnManualToggle(
+      (function(button) 
+          self:popPage()
+      end)
+  )
+
+
   return obj
 end
 
@@ -46,6 +59,13 @@ end
 
 function PageStackClass:getTopPage()
     return self.pageStack[#self.pageStack]
+end
+
+function PageStackClass:askForRedraw(asker)
+    -- PageStackClass in control of area, if page is shown it is ok to draw
+    if asker == self:getTopPage() then
+        self:draw()
+    end
 end
 
 -- draw the current stack of pages

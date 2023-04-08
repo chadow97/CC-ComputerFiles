@@ -302,6 +302,17 @@ function TableClass:doForAllButtonsInPage(...)
     self:doForScrollButtons(...)
 end
 
+function TableClass:askForRedraw()
+    -- if table has no parent, then we can draw, else we ask its parents to handle drawing.
+    if self.page then
+        self.page:askForRedraw(self) -- passing asker
+    else
+        self:draw()
+    end
+
+
+end
+
 
 -- Empty implementation of the draw function
 function TableClass:draw()

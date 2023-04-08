@@ -46,7 +46,7 @@ end
 
 function ButtonClass.askForRedraw(self)
     logger.logToFile("button" .. self.text .. "asked for redraw of page" .. self.page.title )
-    self.page:draw()
+    self.page:askForRedraw(self) -- passing asker
 end
 
 function ButtonClass.setMonitor(self, monitor)

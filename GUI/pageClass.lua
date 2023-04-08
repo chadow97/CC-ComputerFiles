@@ -53,6 +53,17 @@ function PageClass:draw()
     end
 end
 
+function PageClass:askForRedraw()
+    -- if page has no parent, then we can draw, else we ask its parents to handle drawing.
+    if self.page then
+        self.page:askForRedraw(self) -- passing asker
+    else
+        self:draw()
+    end
+
+
+end
+
 function PageClass:getArea()
    
     local sizeX,sizeY = self:getSize()
