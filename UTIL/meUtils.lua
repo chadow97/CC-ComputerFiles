@@ -1,6 +1,6 @@
 local MeUtils = {}
 
-local perUtils = require("perUtils")
+local perUtils = require("UTIL.perUtils")
 
 local MePeripheral = perUtils.getPerFromName("meBridge")
 

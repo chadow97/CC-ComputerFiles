@@ -4,6 +4,7 @@ local ToggleableButtonClass = require("GUI.toggleableButtonClass")
 local PageClass = require("GUI.pageClass")
 local TableClass = require("GUI.tableClass")
 local MonUtils = require("UTIL.monUtils")
+local MeUtils = require("UTIL.meUtils")
 local logger = require("UTIL.logger")
 local PageStackClass = require("GUI.pageStackClass")
 
@@ -24,19 +25,22 @@ end
 
 local page = PageClass.new(monitor)
 
-table.insert(buttonList, ButtonClass:new(10, 5, "hey"))
+--table.insert(buttonList, ButtonClass:new(10, 5, "hey"))
 
 local monX, monY =monitor.getSize()
 
-
+--[[
 table.insert(buttonList, ButtonClass:new(15, 10, "how"))
 table.insert(buttonList, ButtonClass:new(20, 12, "are"))
 table.insert(buttonList, ButtonClass:new(23, 15, "you?"))
 table.insert(buttonList, ButtonClass:new(30, 30, "Im a weirdo!!!"))
+]]--
 
 local ExitButton = ButtonClass:new(monX - 1, monY -1, "X")
 ExitButton:setFunction(endProgram)
 table.insert(buttonList, ExitButton)
+
+--[[
 
 local ToggleButton = ToggleableButtonClass:new(40, 32, "Toggle me!!!")
 table.insert(buttonList, ToggleButton)
@@ -54,10 +58,10 @@ ToggleButton2:setOnManualToggle(
 
     end))
 table.insert(buttonList, ToggleButton2)
+]]--
 
 
-
-
+--[[
 local ToggleButton3 = ToggleableButtonClass:new(70, 25, "Click me haha!")
 ToggleButton3:setOnManualToggle(
     (function(button) 
@@ -72,16 +76,39 @@ ToggleButton3:setOnManualToggle(
     end)
 )
 table.insert(buttonList, ToggleButton3)
-
-local tableToDisplay = {key122="fonally", key2="value2", key3="value3resresresres", func=endProgram ,innerTable={"hi","eee",{"heeeey","nooooo", {}, {"hii"}}}, "sdffdfsdf", "sdfsdfsddsf"}
+]]--
+----[[
+local tableToDisplay = MeUtils.getItemList()
 local tableGUI = TableClass:new(monitor, 10, 10, "rootTable")
+tableGUI:setTableValueDisplayed(
+    function(value)
+        if value.name then
+            return "{" ..value.name .. "}"
+        else
+            return "{...}"
+        end
+    end
+)
 tableGUI:setInternalTable(tableToDisplay)
+
 local pageStack = PageStackClass:new(monitor)
 pageStack:setSize(40,30)
 pageStack:setPosition(5,5)
 pageStack:pushPage(tableGUI)
-
 table.insert(buttonList, pageStack)
+
+
+local table2GUI = TableClass:new(monitor, 10,10, "2nd table")
+table2GUI:setInternalTable(MeUtils.getCraftableItemNames())
+
+local pageStack2 = PageStackClass:new(monitor)
+pageStack2:setSize(40,30)
+pageStack2:setPosition( 46,5)
+pageStack2:pushPage(table2GUI)
+
+
+table.insert(buttonList, pageStack2)
+
 
 
 

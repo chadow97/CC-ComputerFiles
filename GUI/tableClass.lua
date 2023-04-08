@@ -9,6 +9,11 @@ local TableClass_mt = { __index = TableClass }
 
 local defaultSizeX = 20
 local defaultSizeY = 20
+
+local function DefaultTableValueDisplayed( value)
+    return("{...}")
+end
+
 function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
     local properties = {
       monitor = monitor,
@@ -35,6 +40,7 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
       scrollButtons = {},
       scrollAmount = nil,
       currentScroll = 0,
+      tableValueDisplayed = DefaultTableValueDisplayed
     }
 
 
@@ -43,6 +49,10 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
     properties:setScrollAmount()
     return properties
   end
+
+function TableClass:setTableValueDisplayed(func)
+    self.tableValueDisplayed = func
+end
 
 function TableClass:setScrollAmount(amount) 
     if not amount then
@@ -146,6 +156,7 @@ local function processTableElement(tableClass, tableButton, key, value)
         end
         local InnerTablePage = TableClass:new(tableClass.monitor, nil, nil, key)
         InnerTablePage:setInternalTable(value)
+        InnerTablePage:setTableValueDisplayed(tableClass.tableValueDisplayed)
         tableClass.page:pushPage(InnerTablePage)
     end
 
@@ -169,7 +180,9 @@ function TableClass:createButtonsForRow(key, value, position)
     if (typeOfValue == "function") then
         displayedText = "function"
     elseif (typeOfValue == "table")  then
-        displayedText = "{...}"
+        displayedText = self.tableValueDisplayed(value)
+    elseif (typeOfValue == "boolean" or typeOfValue == "number") then
+        displayedText = tostring(value)
     end
     
     local valueButton = ToggleableButtonClass:new(0, 0, displayedText)

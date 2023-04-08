@@ -5,7 +5,7 @@ PageStackClass = {}
 
 -- constructor
 function PageStackClass:new(monitor)
-  local obj = {
+  local o = {
     pageStack = {},
     monitor = monitor,
     posX = 1,
@@ -15,23 +15,23 @@ function PageStackClass:new(monitor)
     parentPage = nil,
     exitButton = nil
   }
-  setmetatable(obj, self)
+  setmetatable(o, self)
   self.__index = self
 
-  self.exitButton = ToggleableButtonClass:new(1,1, "X")
-  obj:updateButtonPosition()
-  self.exitButton:setMargin(0)
-  self.exitButton:setMonitor(monitor)
-  self.exitButton:setPage(obj)
+  o.exitButton = ToggleableButtonClass:new(1,1, "X")
+  o:updateButtonPosition()
+  o.exitButton:setMargin(0)
+  o.exitButton:setMonitor(monitor)
+  o.exitButton:setPage(o)
 
-  self.exitButton:setOnManualToggle(
+  o.exitButton:setOnManualToggle(
       (function(button) 
-          obj:popPage()
+          o:popPage()
       end)
   )
 
 
-  return obj
+  return o
 end
 
 function PageStackClass:updateButtonPosition()

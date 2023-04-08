@@ -1,5 +1,5 @@
-local customPrintUtils = require("customPrintUtils")
-local functionHelperUtils = require("functionHelperUtils")
+local customPrintUtils = require("UTIL.customPrintUtils")
+local functionHelperUtils = require("UTIL.functionHelperUtils")
 
 
 local args = {...}

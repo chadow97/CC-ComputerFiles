@@ -1,4 +1,4 @@
-local stringToTypeUtils = require("stringToTypeUtils")
+local stringToTypeUtils = require("UTIL.stringToTypeUtils")
 local CustomPrintUtils = {}
 local maxTableRows = nil
 
