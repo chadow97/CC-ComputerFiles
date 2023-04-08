@@ -73,7 +73,7 @@ ToggleButton3:setOnManualToggle(
 )
 table.insert(buttonList, ToggleButton3)
 
-local tableToDisplay = {key122="fonally", key2="value2", key3="value3resresresres", func=endProgram ,innerTable={"hi","eee"}, "sdffdfsdf", "sdfsdfsddsf"}
+local tableToDisplay = {key122="fonally", key2="value2", key3="value3resresresres", func=endProgram ,innerTable={"hi","eee",{"heeeey","nooooo", {}, {"hii"}}}, "sdffdfsdf", "sdfsdfsddsf"}
 local tableGUI = TableClass:new(monitor, 10, 10, "rootTable")
 tableGUI:setInternalTable(tableToDisplay)
 local pageStack = PageStackClass:new(monitor)
@@ -81,19 +81,21 @@ pageStack:setSize(40,30)
 pageStack:setPosition(5,5)
 pageStack:pushPage(tableGUI)
 
---table.insert(buttonList, pageStack)
+table.insert(buttonList, pageStack)
 
 
 
 
---page:addButtons(buttonList)
---page:draw()
+page:addButtons(buttonList)
+page:draw()
 
-pageStack:draw()
+--pageStack:draw()
 
 
 while isRunning do
 ---@diagnostic disable-next-line: undefined-field
-    pageStack:handleEvent(os.pullEvent())
+
+    page:handleEvent(os.pullEvent())
+    
 end
 

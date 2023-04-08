@@ -45,7 +45,12 @@ end
 
 
 function ButtonClass.askForRedraw(self)
-    logger.logToFile("button" .. self.text .. "asked for redraw of page" .. self.page.title )
+    if self.page.exitButton then
+        --page is pageStack
+        if  not self.page.pageStack then
+        logger.logToFile("pageStack is nil")
+        end
+    end
     self.page:askForRedraw(self) -- passing asker
 end
 
@@ -119,7 +124,9 @@ end
 
 
 function ButtonClass.handleEvent(self, eventName, ...)
-    logger.logToFile("handling event" .. eventName .." in button" )
+    if self.page.exitButton then
+        logger.logToFile( "pageStack has in button".. #self.page.pageStack)
+    end
     if eventName == "monitor_touch" then
         return self:handleTouchEvent(eventName, ...)
     end
@@ -210,6 +217,10 @@ function ButtonClass.availableTextSize(self)
         return #self.text
     end
     return self.forcedWidthSize - (self.margin * 2)
+end
+
+function ButtonClass.onResumeAfterContextLost(self)
+    -- nothing to do!
 end
 
 return ButtonClass

@@ -316,9 +316,7 @@ end
 
 -- Empty implementation of the draw function
 function TableClass:draw()
-    --logger.logToFile("--------------")
-    logger.logToFile("drawing:" .. self.title)
-    --logger.callStackToFile()
+
     -- 1st step: draw background
     local startX, startY, endX, endY = self:getArea()
     CustomPaintUtils.drawFilledBox(startX, startY, endX, endY,  self.backColor, self.monitor)
@@ -339,7 +337,6 @@ end
 -- Empty implementation of the handleEvent function
 function TableClass:handleEvent(...)
 
-    logger.logToFile("handling event in table:" .. self.title )
 
     for button in self:allButtons() do
         if button:handleEvent(...) then
@@ -398,6 +395,14 @@ function TableClass:setMonitorForAll()
     local func = function(button) 
         button:setMonitor(self.monitor)
     end
+    self:doForAllButtonsInPage(func)
+end
+
+function TableClass:onResumeAfterContextLost()
+    local func = function(button) 
+        button:onResumeAfterContextLost()
+    end
+
     self:doForAllButtonsInPage(func)
 end
 

@@ -98,6 +98,13 @@ function PageClass:handleEvent(...)
     return false
 end
 
+function PageClass:onResumeAfterContextLost()
+    for _, button in pairs(self.buttons) do
+        button:onResumeAfterContextLost()
+
+    end
+end
+
 function PageClass:disableErase()
     self.eraseOnDraw = false
 end

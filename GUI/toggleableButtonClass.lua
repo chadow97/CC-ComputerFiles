@@ -83,7 +83,7 @@ function ToggleableButtonClass:updateStyle()
 end
 
 function ToggleableButtonClass:onTimerEnd()
-    logger.logToFile("timer event received!!!!")
+
     self.toggledTimer = nil
     self:toggle()
     self.OnAutoUntoggle(self)
@@ -145,6 +145,17 @@ function ToggleableButtonClass:handleTimerEvent(eventName, timerID)
         return true
     end
     return false
+end
+
+function ToggleableButtonClass.onResumeAfterContextLost(self)
+
+    -- force timerEnd as we probably have missed it...
+
+    if (self.toggledTimer) then
+        self:onTimerEnd()
+    end
+    
+    ButtonClass.onResumeAfterContextLost(self)
 end
 
 
