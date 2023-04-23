@@ -2,7 +2,7 @@
 local logger = require("UTIL.logger")
 logger.init(term.current())
 
-local peripheralProxyClass = require("peripheralProxy")
+local peripheralProxyClass = require("UTIL.peripheralProxy")
 local channel = 1
 
 
