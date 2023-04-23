@@ -1,0 +1,7 @@
+local monitor = peripheral.find("monitor")
+
+while true do
+    local event, username, message, uuid, isHidden = os.pullEvent("chat")
+    print("The 'chat' event was fired with the username " .. username .. " and the message " .. message)
+    monitor.write(message)
+end

@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../../../../../../p/saves/New World/computercraft/computer/0"
 		}
 	]
 }
