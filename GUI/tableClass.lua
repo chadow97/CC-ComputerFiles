@@ -40,7 +40,8 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
       scrollButtons = {},
       scrollAmount = nil,
       currentScroll = 0,
-      tableValueDisplayed = DefaultTableValueDisplayed
+      tableValueDisplayed = DefaultTableValueDisplayed,
+      displayKey = true
     }
 
 
@@ -169,11 +170,14 @@ function TableClass:createButtonsForRow(key, value, position)
     local keyX,keyY = self:getElementStart(position, true)
     local valueX, valueY = self:getElementStart(position, false)
 
-    local keyButton = ToggleableButtonClass:new(0, 0, key)
-    keyButton:changeStyle(self.elementBackColor, self.textColor)
-    keyButton:setPage(self)
-    keyButton:setUpperCornerPos(keyX,keyY)
-    keyButton:forceWidthSize(self:getKeyRowWidth())
+    local keyButton
+    if self.displayKey then
+        keyButton = ToggleableButtonClass:new(0, 0, key)
+        keyButton:changeStyle(self.elementBackColor, self.textColor)
+        keyButton:setPage(self)
+        keyButton:setUpperCornerPos(keyX,keyY)
+        keyButton:forceWidthSize(self:getKeyRowWidth())
+    end
     local typeOfValue = type(value)
     local displayedText = value
 
@@ -215,10 +219,16 @@ function TableClass:getRowHeight()
 end
 
 function TableClass:getKeyRowWidth()
+    if (not self.displayKey) then
+        return 0
+    end
     return math.floor((self.sizeX - self.marginBetweenColumns - (self.margin * 2))* self.keyRowProportion)
 end
 
 function TableClass:getValueRowWidth()
+    if (not self.displayKey) then
+        return self.sizeX - (self.margin *2)
+    end
     return self.sizeX - self:getKeyRowWidth() - self.marginBetweenColumns - (self.margin * 2)
 end
 
@@ -255,6 +265,10 @@ end
 function TableClass:setInternalTable(internalTable)
     self.internalTable = internalTable
     self:createButtonsForTable()
+end
+
+function TableClass:setDisplayKey(displayKey)
+    self.displayKey = displayKey
 end
 
 function TableClass:getInternalTable()
@@ -296,7 +310,9 @@ function TableClass:doForEachButton(func, ...)
         local keyButton = elementButtons.keyButton
         local valueButton = elementButtons.valueButton
         -- call on key first
-        func(keyButton, true, position, ...)
+        if self.displayKey then
+            func(keyButton, true, position, ...)
+        end
         func(valueButton, false, position, ...)
     end
 
@@ -379,7 +395,8 @@ function TableClass:allButtons()
 
 
     local position = 1
-    local isKey = true
+    local isKey = self.displayKey
+
     return function ()
         local button = nil
         if (position <= #buttonKeys) then
@@ -389,7 +406,7 @@ function TableClass:allButtons()
                 isKey = false
             else
                 button = self.internalButtonHolder[key].valueButton
-                isKey = true
+                isKey = self.displayKey
                 position = position + 1
             end
         elseif (position - #buttonKeys) == 1 then

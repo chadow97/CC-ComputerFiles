@@ -11,15 +11,27 @@ ColonyIntegratorPerUtils.FailedGetWorkOrder = "first_order_get_fail"
 function ColonyIntegratorPerUtils.getWorkOrders(per)
   -- perform some operations to fetch work orders
   -- flatten table
-  return per.getWorkOrders()[1]
+
+  local workOrders = per.getWorkOrders()
+  if type(workOrders) ~= "table" then
+    -- return error
+    if type(workOrders) == "string" then
+        error(workOrders) 
+    else
+        error("Unhandled error!")
+    end
+  end
+  
+  return workOrders[1]
+
 
 end
 
 function ColonyIntegratorPerUtils.getFirstWorkOrderId(per)
-    local AllWorkOders = per.getWorkOrders()[1]
+    local AllWorkOrders = per.getWorkOrders()[1]
 
     local FirstWorkOrderId = nil
-    for _, workOrder in ipairs(AllWorkOders) do
+    for _, workOrder in ipairs(AllWorkOrders) do
         if workOrder.type == "WorkOrderBuilding" then
             FirstWorkOrderId = workOrder.id
         end
