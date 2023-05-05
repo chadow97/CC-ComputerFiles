@@ -1,4 +1,5 @@
 local logger = require("UTIL.logger")
+local s2t = require("UTIL.stringToTypeUtils")
 
 
 local terminal = term.current()
@@ -8,6 +9,7 @@ if monitor then
 end
 
 logger.init(terminal)
+logger.terminal.clear() 
 
 -- Open the rednet modem
 rednet.open("back")
@@ -34,7 +36,14 @@ local function handleCallMethod(peripheralName, methodName, senderID, args)
         message = {error = "unknown_method"}
     
     else 
-        local success, result = pcall(peripheralObj[methodName], unpack(args))
+        -- first, unserialize args
+        local serializedArgs = {}
+        for _,arg in ipairs(args) do
+            table.insert(serializedArgs, s2t.string_to_type(arg))
+        end
+
+        -- call method
+        local success, result = pcall(peripheralObj[methodName], unpack(serializedArgs))
         if success then
             message = {result}
         else 
