@@ -56,15 +56,20 @@ local function handleCallMethod(peripheralName, methodName, senderID, args)
     rednet.send(senderID, message)
 end
 
+local messageCount = 0
+
 -- Event loop for handling requests from a PeripheralProxy object
 while true do
+    logger.log("waiting for message " .. messageCount)
     local senderID, message, protocol = rednet.receive()
-    logger.log("received message ... processing!")
+    messageCount = messageCount + 1
+    logger.log("received message ".. messageCount.."... processing!")
+    logger.log(message)
     if message and message.peripheralName and message.method then
         local peripheralName = message.peripheralName
         local methodName = message.method
         local args = message.args
-        logger.log(message)
+        
 
         if methodName == "getMethods" then
             handleGetMethods(peripheralName,senderID)
