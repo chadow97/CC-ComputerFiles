@@ -61,13 +61,14 @@ if not status then
     return
 end
 
-local tableToShow = {"123", "456"}
+local tableToShow = {}
 for _, value in pairs(workOrders) do
-    --table.insert(tableToShow, "Pending work order " .. value.id .. ". \n Building " .. value.buildingName .."\n a \n b \n c")
+    table.insert(tableToShow, "Pending work order " .. value.id .. ". \nBuilding " .. value.buildingName)
 end
 local pageStack1, internalTable = TableClass.createTableStack(monitor, 5, 5, 40, 30, tableToShow, "Item List", displayTableFunction)
---internalTable:setDisplayKey(false)
+internalTable:setDisplayKey(false)
 internalTable.title = nil
+internalTable:setRowHeight(5)
 table.insert(buttonList, pageStack1)
 
 page:addButtons(buttonList)
@@ -79,6 +80,5 @@ page:draw()
 while isRunning do
 ---@diagnostic disable-next-line: undefined-field
     page:handleEvent(os.pullEvent())
-    
 end
 

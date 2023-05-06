@@ -78,6 +78,7 @@ function ButtonClass.draw(self, startLimitX, startLimitY, endLimitX, endLimitY)
     endXToDraw = math.min(endXToDraw, endLimitX)
   end
   if endLimitY then
+
     endYToDraw = math.min(endYToDraw, endLimitY)
   end
 
@@ -91,10 +92,6 @@ function ButtonClass.draw(self, startLimitX, startLimitY, endLimitX, endLimitY)
   if (self.y < startYtoDraw or self.y > endYToDraw) then
     return
   end
-
-  
-
-
 
   self.monitor.setTextColor(self.textColor)
 
@@ -120,7 +117,6 @@ function ButtonClass.draw(self, startLimitX, startLimitY, endLimitX, endLimitY)
     self.monitor.write(textToWrite)
     currentLine = currentLine + 1
   end
-
 
 end
 
@@ -260,7 +256,6 @@ function ButtonClass.forceWidthSize(self, forcedSize )
 end
 
 function ButtonClass.forceHeightSize(self, forcedSize)
-    logger.log(forcedSize)
     self.forcedHeightSize = forcedSize
 end
 

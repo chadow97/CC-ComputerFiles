@@ -43,7 +43,7 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
       tableValueDisplayed = DefaultTableValueDisplayed,
       displayKey = true,
       areButtonsDirty = true,
-      rowHeight = 10
+      rowHeight = 3
     }
 
 
@@ -64,6 +64,11 @@ function TableClass:setScrollAmount(amount)
         self.scrollAmount = amount
     end
 
+end
+
+function TableClass:setRowHeight(rowHeight)
+   self.rowHeight = rowHeight 
+   self.areButtonsDirty = true
 end
 
 function TableClass:createButtonsForTable()
@@ -180,7 +185,7 @@ function TableClass:createButtonsForRow(key, value, position)
         keyButton:setPage(self)
         keyButton:setUpperCornerPos(keyX,keyY)
         keyButton:forceWidthSize(self:getKeyRowWidth())
-        keyButton:forceHeightSize(10)
+        keyButton:forceHeightSize(5)
     end
     local typeOfValue = type(value)
     local displayedText = value
@@ -201,7 +206,7 @@ function TableClass:createButtonsForRow(key, value, position)
     valueButton:setPage(self)
     valueButton:setUpperCornerPos(valueX,valueY)
     valueButton:forceWidthSize(self:getValueRowWidth())
-    valueButton:forceHeightSize(self:getRowHeight())
+    valueButton:forceHeightSize(5)
 
     self.internalButtonHolder[key] = {keyButton = keyButton, valueButton = valueButton}
 end
@@ -307,7 +312,7 @@ end
 -- Area where you can draw buttons
 function TableClass:getDrawableArea()
     local startX, startY, endX, endY, sizeX, sizeY = self:getArea()
-    local titleOffset = -20
+    local titleOffset = 0
     if self.title then
         titleOffset = 1
     end
@@ -371,7 +376,7 @@ end
 -- Empty implementation of the draw function
 function TableClass:draw()
 
-
+    logger.log(self.rowHeight)
     -- CreateButtons if needed
 
     if self.areButtonsDirty then
