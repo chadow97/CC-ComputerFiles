@@ -29,6 +29,8 @@ local programArgs = args
 local monitor = peripheral.find("monitor")
 local keepTesting = true
 local keepHolding = true
+local shouldSleep = true
+local sleepTime = 9
 
 table.remove(programArgs, 1)
 
@@ -38,13 +40,19 @@ monitorX, monitorY = monitor.getSize()
 
 
 local buttonList = {}
-local StopButton = ButtonClass:new( monitorX - 15, monitorY - 1, "Stop")
+local StopButton = ButtonClass:new( monitorX - 14, monitorY - 1, "Stop")
 StopButton:changeStyle(colors.black, colors.red)
 table.insert(buttonList, StopButton)
 
-local RestartButton = ButtonClass:new(monitorX - 8, monitorY - 1, "Restart")
+local RestartButton = ButtonClass:new(monitorX - 7, monitorY - 1, "Restart")
 RestartButton:changeStyle(colors.black, colors.green)
 table.insert(buttonList, RestartButton)
+
+local CountdownButton = ButtonClass:new(monitorX - 14, monitorY - 5, "Countdown")
+CountdownButton:changeStyle(colors.black, colors.white)
+CountdownButton:forceWidthSize(16)
+table.insert(buttonList, CountdownButton)
+
 
 
 local OnStop =
@@ -72,12 +80,36 @@ while keepTesting do
     logger.terminal.clear() 
     shell.run(programName,table.unpack(programArgs))
     -- program ended for some reason ... see if you want to restart it
+    CountdownButton.text = ""
+    CountdownButton.backColor = colors.black
     page:draw()
     keepHolding = true
     while keepHolding do
         ---@diagnostic disable-next-line: undefined-field
         page:handleEvent(os.pullEvent())
     end
+    if keepTesting and shouldSleep then
+        local percent = 0
+        CountdownButton.backColor = colors.white
+        for i = 1, sleepTime, 0.1 do
+            percent = math.floor((i-1)/(sleepTime - 1) * 100)
+            local count = math.floor(percent / 10)
+            local squareString = string.rep('O', count)
+            local emptyString = string.rep(".", 10- count)
+
+            if percent < 10 then
+                percent = '0' .. percent
+            else
+                percent = tostring(percent)
+            end
+            CountdownButton.text = "" .. percent .. "%:" .. squareString ..emptyString
+            page:draw()
+            sleep(0.1)
+            
+        end
+        
+    end
+    
 end
 
 

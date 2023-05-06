@@ -13,9 +13,8 @@ function PeripheralProxy:new(channel, peripheralName)
     instance.channel = channel
     instance.peripheralName = peripheralName
 
-    if not rednet.isOpen() then
-        rednet.open("back")
-    end
+
+    rednet.open("back")
 
     return instance
 end
@@ -46,7 +45,7 @@ function PeripheralProxy:callMethodInternal(methodName, info, ...)
     if not methodName then
         return "Missing method name!"
     end
-
+    logger.log("heey!!!")
     rednet.send(self.channel, {peripheralName = self.peripheralName, method = methodName, args = {...}})
     local _, response = rednet.receive(nil, 5)
     -- check for errors
