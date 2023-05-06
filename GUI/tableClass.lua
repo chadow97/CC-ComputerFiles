@@ -43,7 +43,8 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
       tableValueDisplayed = DefaultTableValueDisplayed,
       displayKey = true,
       areButtonsDirty = true,
-      rowHeight = 3
+      rowHeight = 3,
+      onPressFunc = nil
     }
 
 
@@ -64,6 +65,11 @@ function TableClass:setScrollAmount(amount)
         self.scrollAmount = amount
     end
 
+end
+
+function TableClass:setOnPressFunc(func)
+    self.onPressFunc = func
+    self.areButtonsDirty = true
 end
 
 function TableClass:setRowHeight(rowHeight)
@@ -158,7 +164,10 @@ end
 
 local function processTableElement(tableClass, tableButton, key, value)
 
-
+    if tableClass.onPressFunc then
+        tableButton:setOnManualToggle(tableClass.onPressFunc)
+        return
+    end
     local func = function ()
         if not tableClass.page.pushPage then
             return
@@ -168,6 +177,7 @@ local function processTableElement(tableClass, tableButton, key, value)
         InnerTablePage:setTableValueDisplayed(tableClass.tableValueDisplayed)
         tableClass.page:pushPage(InnerTablePage)
     end
+
 
     tableButton:setOnManualToggle(func)
 
@@ -186,6 +196,9 @@ function TableClass:createButtonsForRow(key, value, position)
         keyButton:setUpperCornerPos(keyX,keyY)
         keyButton:forceWidthSize(self:getKeyRowWidth())
         keyButton:forceHeightSize(5)
+        if self.onPressFunc then
+            keyButton:setOnManualToggle(self.onPressFunc)
+        end
     end
     local typeOfValue = type(value)
     local displayedText = value
@@ -207,6 +220,9 @@ function TableClass:createButtonsForRow(key, value, position)
     valueButton:setUpperCornerPos(valueX,valueY)
     valueButton:forceWidthSize(self:getValueRowWidth())
     valueButton:forceHeightSize(5)
+    if self.onPressFunc then
+        valueButton:setOnManualToggle(self.onPressFunc)
+    end
 
     self.internalButtonHolder[key] = {keyButton = keyButton, valueButton = valueButton}
 end
@@ -376,7 +392,6 @@ end
 -- Empty implementation of the draw function
 function TableClass:draw()
 
-    logger.log(self.rowHeight)
     -- CreateButtons if needed
 
     if self.areButtonsDirty then

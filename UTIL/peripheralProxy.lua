@@ -45,7 +45,6 @@ function PeripheralProxy:callMethodInternal(methodName, info, ...)
     if not methodName then
         return "Missing method name!"
     end
-    logger.log("heey!!!")
     rednet.send(self.channel, {peripheralName = self.peripheralName, method = methodName, args = {...}})
     local _, response = rednet.receive(nil, 5)
     -- check for errors

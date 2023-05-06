@@ -36,20 +36,6 @@ local ExitButton = ButtonClass:new(monX - 1, monY -1, "X")
 ExitButton:setFunction(endProgram)
 table.insert(buttonList, ExitButton)
 
-local  displayTableFunction =  (function(value)
-    if value.name then
-        return "{" ..value.name .. "}"
-    elseif value.id then
-        return "Work Order ID :" .. value.id
-    else
-        return "{...}"
-    end
-end)
-
-
-
-
-
 local channel = 1
 
 local colIntPer = peripheralProxyClass:new(channel, "colonyIntegrator" )
@@ -65,10 +51,17 @@ local tableToShow = {}
 for _, value in pairs(workOrders) do
     table.insert(tableToShow, "Pending work order " .. value.id .. ". \nBuilding " .. value.buildingName)
 end
-local pageStack1, internalTable = TableClass.createTableStack(monitor, 5, 5, 40, 30, tableToShow, "Item List", displayTableFunction)
+local pageStack1, internalTable = TableClass.createTableStack(monitor, 5, 5, 40, 30, tableToShow, "Item List")
 internalTable:setDisplayKey(false)
 internalTable.title = nil
 internalTable:setRowHeight(5)
+
+local onPressFunc = 
+    function ()
+        logger.log("pressed!")
+    end
+
+internalTable:setOnPressFunc(onPressFunc)
 table.insert(buttonList, pageStack1)
 
 page:addButtons(buttonList)
