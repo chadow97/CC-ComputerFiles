@@ -11,7 +11,7 @@ local colIntUtil = require("UTIL.colonyIntegratorPerUtils")
 local peripheralProxyClass = require("UTIL.peripheralProxy")
 
 local monitor = peripheral.find("monitor")
-MonUtils.resetMonitor(monitor)
+MonUtils.resetMonitor(monitor, colors.purple)
 
 local terminal = term.current()
 logger.init(terminal, "buttonTest", true)

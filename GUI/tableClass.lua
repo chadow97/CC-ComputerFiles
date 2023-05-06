@@ -100,8 +100,13 @@ function TableClass:createButtonsForTable()
 
         local Up = ToggleableButtonClass:new(endX,endY-1, "U")
         Up:setMargin(0)
+
         local Down = ToggleableButtonClass:new(endX, endY, "D")
         Down:setMargin(0)
+
+        Up:changeStyle(nil, self.backColor)
+        Down:changeStyle(nil, self.backColor)
+
         self.scrollButtons.Up = Up
         self.scrollButtons.Down= Down
         Up:setPage(self)
