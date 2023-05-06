@@ -39,7 +39,8 @@ function ButtonClass.new(self, x, y, text)
                 id = IdGenerator.generateId(),
                 forcedWidthSize = nil,
                 forcedHeightSize = nil,
-                shouldSplitText = true
+                shouldSplitText = true,
+                onDraw = nil
 
                }
 
@@ -47,6 +48,9 @@ function ButtonClass.new(self, x, y, text)
   return obj
 end
 
+function ButtonClass.setOnDraw(self, func)
+    self.onDraw = func
+end
 
 function ButtonClass.askForRedraw(self)
 
@@ -62,6 +66,9 @@ end
 
 -- Define a draw method for the ButtonClass
 function ButtonClass.draw(self, startLimitX, startLimitY, endLimitX, endLimitY)
+  if self.onDraw then
+    self.onDraw()
+  end
   local startX, startY, endX, endY = self:getArea()
   local startXToDraw = startX
   local startYtoDraw = startY

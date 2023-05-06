@@ -48,17 +48,70 @@ if not status then
 end
 
 local tableToShow = {}
+local workOrderByValueToShow = {}
 for _, value in pairs(workOrders) do
-    table.insert(tableToShow, "Pending work order " .. value.id .. ". \nBuilding " .. value.buildingName)
+    local valueToShow = "Pending work order " .. value.id .. ". \nBuilding " .. value.buildingName
+    table.insert(tableToShow, valueToShow)
+    workOrderByValueToShow[valueToShow] = value
 end
 local pageStack1, internalTable = TableClass.createTableStack(monitor, 5, 5, 40, 30, tableToShow, "Item List")
 internalTable:setDisplayKey(false)
 internalTable.title = nil
-internalTable:setRowHeight(5)
+internalTable:setRowHeight(4)
+
+
+
+
 
 local onPressFunc = 
-    function ()
-        logger.log("pressed!")
+    function (position, isKey, data)
+        if isKey then
+            return
+        end
+        -- get workorder data represented by pressed button
+        local workOrder = workOrderByValueToShow[data]
+        local ressources = colIntPer:getWorkOrderResources(workOrder.id)[1]
+
+        local ressourceTableToShow = {}
+        local ressourceByValueToShow = {}
+
+        for _, ressource in pairs(ressources) do
+            local valueToShow = ressource.item .. "\nMissing:" .. ressource.needed - ressource.available - ressource.delivering
+            table.insert(ressourceTableToShow, valueToShow)
+            ressourceByValueToShow[valueToShow] = ressource
+
+        end
+
+        local ressourceTable = TableClass:new(monitor, 5, 5, "ressources")
+        ressourceTable:setDisplayKey(false)
+        ressourceTable:setInternalTable(ressourceTableToShow)
+        ressourceTable:setRowHeight(4)
+
+
+        local onDrawFunc =
+            function (position, isKey, data, button)
+                if isKey then
+                    return
+                end
+                local ressource = ressourceByValueToShow[data]
+                local missing = ressource.needed - ressource.available - ressource.delivering
+                local color =colors.green
+                if missing > 0 then
+                    color = colors.red
+                end
+
+                button:setTextColor(color)
+            end
+
+
+
+        ressourceTable:setOnDrawButton(onDrawFunc)
+        pageStack1:pushPage(ressourceTable)
+
+
+        
+
+
     end
 
 internalTable:setOnPressFunc(onPressFunc)

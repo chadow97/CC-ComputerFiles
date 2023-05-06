@@ -29,9 +29,9 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
       buttonMargin = 1,
       marginBetweenColumns = 1,
       marginBetweenRows = 1,
-      backColor = colors.lightGray,
-      elementBackColor = colors.gray,
-      textColor = colors.black,
+      backColor = colors.pink,
+      elementBackColor = colors.purple,
+      textColor = colors.yellow,
       shouldShowColumnTitles = true,
       keyTitle = "Keys",
       valueTitle = "Values",
@@ -44,7 +44,8 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
       displayKey = true,
       areButtonsDirty = true,
       rowHeight = 3,
-      onPressFunc = nil
+      onPressFunc = nil,
+      onDrawButton = nil
     }
 
 
@@ -60,7 +61,7 @@ end
 
 function TableClass:setScrollAmount(amount) 
     if not amount then
-        self.scrollAmount = self:getRowHeight() + self.marginBetweenRows
+        self.scrollAmount = self:getRowHeight()* 10 + self.marginBetweenRows
     else
         self.scrollAmount = amount
     end
@@ -69,6 +70,11 @@ end
 
 function TableClass:setOnPressFunc(func)
     self.onPressFunc = func
+    self.areButtonsDirty = true
+end
+
+function TableClass:setOnDrawButton(func)
+    self.onDrawButton = func
     self.areButtonsDirty = true
 end
 
@@ -162,10 +168,35 @@ function TableClass:scroll(isUp)
 
 end
 
-local function processTableElement(tableClass, tableButton, key, value)
+local function setupOnManualToggle(table, button, isKey, position, data)
 
-    if tableClass.onPressFunc then
-        tableButton:setOnManualToggle(tableClass.onPressFunc)
+    local  wrapper =
+        function()
+            table.onPressFunc(position, isKey, data)
+        end 
+
+    if table.onPressFunc then
+        button:setOnManualToggle(wrapper)
+        return true
+    end
+    return false
+end
+
+local function setupOnDrawButton(table, button, isKey, position, data)
+    local wrapper = 
+        function()
+            table.onDrawButton(position, isKey, data, button)
+        end
+    if table.onDrawButton then
+        button:setOnDraw(wrapper)
+        return true
+    end
+    return false
+end
+
+local function processTableElement(tableClass, tableButton, key, value, position)
+
+    if setupOnManualToggle(tableClass, tableButton, false, position, value ) then
         return
     end
     local func = function ()
@@ -195,10 +226,9 @@ function TableClass:createButtonsForRow(key, value, position)
         keyButton:setPage(self)
         keyButton:setUpperCornerPos(keyX,keyY)
         keyButton:forceWidthSize(self:getKeyRowWidth())
-        keyButton:forceHeightSize(5)
-        if self.onPressFunc then
-            keyButton:setOnManualToggle(self.onPressFunc)
-        end
+        keyButton:forceHeightSize(self:getRowHeight())
+        setupOnManualToggle( self, keyButton, true, position, key)
+        setupOnDrawButton(self, keyButton, true, position, key)
     end
     local typeOfValue = type(value)
     local displayedText = value
@@ -213,16 +243,15 @@ function TableClass:createButtonsForRow(key, value, position)
     
     local valueButton = ToggleableButtonClass:new(0, 0, displayedText)
     if (typeOfValue == "table")  then    
-        processTableElement(self, valueButton, key, value )
+        processTableElement(self, valueButton, key, value , position)
     end
     valueButton:changeStyle(self.elementBackColor, self.textColor)
     valueButton:setPage(self)
     valueButton:setUpperCornerPos(valueX,valueY)
     valueButton:forceWidthSize(self:getValueRowWidth())
-    valueButton:forceHeightSize(5)
-    if self.onPressFunc then
-        valueButton:setOnManualToggle(self.onPressFunc)
-    end
+    valueButton:forceHeightSize(self:getRowHeight())
+    setupOnManualToggle( self, valueButton, false, position, value)
+    setupOnDrawButton(self, valueButton, false, position, value)
 
     self.internalButtonHolder[key] = {keyButton = keyButton, valueButton = valueButton}
 end
