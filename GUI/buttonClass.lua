@@ -1,6 +1,7 @@
 local logger = require("UTIL.logger")
 local CustomPaintUtils = require("UTIL.customPaintUtils")
 local IdGenerator = require("UTIL.IdGenerator")
+local stringUtils = require('UTIL.stringUtils')
 -- Define the ButtonClass table
 local ButtonClass = {}
 
@@ -36,7 +37,10 @@ function ButtonClass.new(self, x, y, text)
                 monitor = monitor,
                 page = nil,
                 id = IdGenerator.generateId(),
-                forcedWidthSize = nil
+                forcedWidthSize = nil,
+                forcedHeightSize = nil,
+                shouldSplitText = true
+
                }
 
   setmetatable(obj, ButtonClass_mt)
@@ -82,7 +86,6 @@ function ButtonClass.draw(self, startLimitX, startLimitY, endLimitX, endLimitY)
         return
   end
 
-
   CustomPaintUtils.drawFilledBox(startXToDraw, startYtoDraw, endXToDraw, endYToDraw,  self.backColor, self.monitor)
   
   if (self.y < startYtoDraw or self.y > endYToDraw) then
@@ -92,21 +95,33 @@ function ButtonClass.draw(self, startLimitX, startLimitY, endLimitX, endLimitY)
   
 
 
-  self.monitor.setCursorPos(self.x, self.y)
+
   self.monitor.setTextColor(self.textColor)
 
-  local textToWrite = self.text
 
-  local firstLetter = math.max(1, startXToDraw - self.x + 1)
-  local lastLetter = math.min(self:availableTextSize(), endXToDraw - self.x + 1)
 
-  if (lastLetter - firstLetter < 0) then
+  local indexToStart = math.max(1, startXToDraw - self.x + 1)
+  local indexToEnd = math.min(self:availableTextSize(), endXToDraw - self.x + 1)
+
+  if (indexToEnd - indexToStart < 0) then
     return
   end
 
-  textToWrite = string.sub(textToWrite, firstLetter, lastLetter) 
+  local endYToWrite = endYToDraw - self.margin
 
-  self.monitor.write(textToWrite)
+  local currentLine = self.y
+
+  for _, line in ipairs(self:getTextLines()) do
+    if currentLine > endYToWrite then
+        break
+    end
+    self.monitor.setCursorPos(self.x, currentLine)
+    local textToWrite = string.sub(line, indexToStart, indexToEnd) 
+    self.monitor.write(textToWrite)
+    currentLine = currentLine + 1
+  end
+
+
 end
 
 function ButtonClass.handleTouchEvent(self, eventName, side, xPos, yPos)
@@ -129,17 +144,55 @@ end
 
 -- Define a getArea method for the ButtonClass
 function ButtonClass.getArea(self)
-    local startX = self.x - self.margin
-    local startY = self.y - self.margin
+    local startTextX, startTextY, sizeTextX, sizeTextY, endTextX, endTextY = self:getTextArea()
+    local startX = startTextX - self.margin
+    local startY = startTextY - self.margin
 
-    local sizeX  = self.forcedWidthSize or #self.text + (self.margin*2)
-    local sizeY  = 1 + (self.margin*2)
+    local sizeX  = sizeTextX + (self.margin*2)
+    
+    local sizeY  = sizeTextY + (self.margin*2)
 
 
     local endX = startX + sizeX - 1
     local endY = startY + sizeY - 1
 
     return startX, startY, endX, endY, sizeX, sizeY
+
+end
+
+function ButtonClass.getTextArea(self)
+
+    local startTextX = self.x
+    local startTextY = self.y
+    local sizeTextX
+    if self.forcedWidthSize then
+        sizeTextX = self.forcedWidthSize - (self.margin * 2)
+    else
+        sizeTextX = #self.text
+    end
+    
+    local sizeTextY
+    if self.forcedHeightSize then
+        sizeTextY = self.forcedHeightSize - (self.margin * 2)
+    else
+        sizeTextY = self:getTextHeight()
+    end
+
+    local endTextX = startTextX + sizeTextX - 1
+    local endTextY = startTextY + sizeTextY - 1
+    return startTextX, startTextY, sizeTextX, sizeTextY, endTextX, endTextY
+end
+
+function ButtonClass.getTextHeight(self)
+    return #self:getTextLines()
+end
+
+function ButtonClass.getTextLines(self)
+    if self.shouldSplitText then
+        return stringUtils.splitLines(self.text)
+    else
+        return {self.text}
+    end
 
 end
 
@@ -202,7 +255,13 @@ function ButtonClass.setPage(self, page)
 end
 
 function ButtonClass.forceWidthSize(self, forcedSize )
+    
     self.forcedWidthSize = forcedSize
+end
+
+function ButtonClass.forceHeightSize(self, forcedSize)
+    logger.log(forcedSize)
+    self.forcedHeightSize = forcedSize
 end
 
 function ButtonClass.availableTextSize(self)
