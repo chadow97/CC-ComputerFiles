@@ -46,10 +46,12 @@ table.insert(buttonList, StopButton)
 
 local RestartButton = ButtonClass:new(monitorX - 7, monitorY - 1, "Restart")
 RestartButton:changeStyle(colors.black, colors.green)
+
 table.insert(buttonList, RestartButton)
 
 local CountdownButton = ButtonClass:new(monitorX - 14, monitorY - 5, "Countdown")
-CountdownButton:changeStyle(colors.black, colors.white)
+CountdownButton:changeStyle(colors.black, colors.orange)
+CountdownButton:forceHeightSize(3)
 CountdownButton:forceWidthSize(16)
 table.insert(buttonList, CountdownButton)
 
@@ -81,7 +83,6 @@ while keepTesting do
     shell.run(programName,table.unpack(programArgs))
     -- program ended for some reason ... see if you want to restart it
     CountdownButton.text = ""
-    CountdownButton.backColor = colors.black
     page:draw()
     keepHolding = true
     while keepHolding do
@@ -90,7 +91,6 @@ while keepTesting do
     end
     if keepTesting and shouldSleep then
         local percent = 0
-        CountdownButton.backColor = colors.white
         for i = 1, sleepTime, 0.1 do
             percent = math.floor((i-1)/(sleepTime - 1) * 100)
             local count = math.floor(percent / 10)

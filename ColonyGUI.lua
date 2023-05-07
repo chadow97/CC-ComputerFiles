@@ -9,12 +9,19 @@ local logger = require("UTIL.logger")
 local PageStackClass = require("GUI.pageStackClass")
 local colIntUtil = require("UTIL.colonyIntegratorPerUtils")
 local peripheralProxyClass = require("UTIL.peripheralProxy")
+local MeUtils = require("UTIL.meUtils")
 
 local monitor = peripheral.find("monitor")
-MonUtils.resetMonitor(monitor, colors.purple)
 
 local terminal = term.current()
 logger.init(terminal, "buttonTest", true)
+
+
+-- define colors
+local backgroundColor = colors.yellow
+local elementBackColor = colors.red
+local innerElementBackColor = colors.yellow
+local textColor = colors.lime
 
 
 local isRunning = true
@@ -26,6 +33,7 @@ local function endProgram()
 end
 
 local page = PageClass.new(monitor)
+page:setBackColor(backgroundColor)
 
 
 
@@ -34,6 +42,7 @@ local monX, monY =monitor.getSize()
 
 local ExitButton = ButtonClass:new(monX - 1, monY -1, "X")
 ExitButton:setFunction(endProgram)
+ExitButton:changeStyle(nil, elementBackColor)
 table.insert(buttonList, ExitButton)
 
 local channel = 1
@@ -58,10 +67,21 @@ local pageStack1, internalTable = TableClass.createTableStack(monitor, 5, 5, 40,
 internalTable:setDisplayKey(false)
 internalTable.title = nil
 internalTable:setRowHeight(4)
+internalTable:changeStyle(elementBackColor, innerElementBackColor, textColor)
+pageStack1:changeStyle(nil, elementBackColor)
 
+local itemsMap = {}
 
+local CraftableItems = MeUtils.getCraftableItems()
+for _, value in pairs(CraftableItems) do
+    itemsMap[value.name] = value
+end
+local CurrentMeItems = MeUtils.getItemList()
+for _, value in pairs(CurrentMeItems) do
+    itemsMap[value.name] = value
+end
 
-
+logger.log(itemsMap)
 
 local onPressFunc = 
     function (position, isKey, data)
@@ -76,7 +96,20 @@ local onPressFunc =
         local ressourceByValueToShow = {}
 
         for _, ressource in pairs(ressources) do
-            local valueToShow = ressource.item .. "\nMissing:" .. ressource.needed - ressource.available - ressource.delivering
+            local missing = ressource.needed - ressource.available - ressource.delivering
+            local valueToShow = ressource.item .. "\nMissing:" .. missing .. "\n"
+            local itemMeData = itemsMap[ressource.item]
+            if missing > 0 and itemMeData then
+                if itemMeData.amount >= missing then
+                    valueToShow = valueToShow .. "Me system has:" .. itemMeData.amount .. "\n(Press to send to colony)"
+                elseif itemMeData.isCraftable then
+                    valueToShow = valueToShow .. "Me system has:" .. itemMeData.amount .. ",need " .. missing - itemMeData.amount .. " more.\n(Press to craft and send!)"
+                else
+                    valueToShow = valueToShow .. "Me system has:" .. itemMeData.amount .. ",need " .. missing - itemMeData.amount .. " more.\n(Not craftable!!!)"
+                end
+            else    
+                valueToShow = valueToShow .. "Me system has: 0, need " .. missing .." more.\n(Not craftable!!!)"
+            end
             table.insert(ressourceTableToShow, valueToShow)
             ressourceByValueToShow[valueToShow] = ressource
 
@@ -85,7 +118,8 @@ local onPressFunc =
         local ressourceTable = TableClass:new(monitor, 5, 5, "ressources")
         ressourceTable:setDisplayKey(false)
         ressourceTable:setInternalTable(ressourceTableToShow)
-        ressourceTable:setRowHeight(4)
+        ressourceTable:setRowHeight(6)
+        ressourceTable:changeStyle(elementBackColor, innerElementBackColor, textColor)
 
 
         local onDrawFunc =
@@ -97,7 +131,20 @@ local onPressFunc =
                 local missing = ressource.needed - ressource.available - ressource.delivering
                 local color =colors.green
                 if missing > 0 then
-                    color = colors.red
+                    -- missing some item, look in me system!
+                    local itemMeData = itemsMap[ressource.item]
+                    if  itemMeData then
+                        if itemMeData.amount >= missing then
+                            color = colors.yellow
+                        elseif itemMeData.isCraftable then
+                            color = colors.orange
+                        else
+                            color = colors.red
+                        end
+                    else
+                        -- items     
+                        color = colors.red
+                    end
                 end
 
                 button:setTextColor(color)
@@ -118,9 +165,9 @@ internalTable:setOnPressFunc(onPressFunc)
 table.insert(buttonList, pageStack1)
 
 page:addButtons(buttonList)
+
 page:draw()
 
---pageStack:draw()
 
 
 while isRunning do

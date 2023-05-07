@@ -245,8 +245,8 @@ function ButtonClass.setTextColor(self, textColor)
 end
 
 function ButtonClass.changeStyle(self, textColor, backColor)
-    self:setTextColor(textColor)
-    self:setBackColor(backColor)
+    self:setTextColor(textColor or self.textColor)
+    self:setBackColor(backColor or self.backColor)
 end
 
 function ButtonClass.setFunction(self, func)

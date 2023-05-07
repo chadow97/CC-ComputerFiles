@@ -16,6 +16,7 @@ function PageClass.new(monitor)
     self.startY = 1
     self.endX, self.endY = self.monitor.getSize()
     self.eraseOnDraw = true
+    self.backColor = colors.black
     return self
 end
 
@@ -24,6 +25,10 @@ function PageClass:add(button)
     button:setMonitor(self.monitor)
     button:setPage(self)
     table.insert(self.buttons, button)
+end
+
+function PageClass:setBackColor(color)
+    self.backColor = color or self.backColor
 end
 
 function PageClass:addButtons(buttonList)
@@ -46,7 +51,7 @@ end
 -- Define the draw method to draw the page
 function PageClass:draw()
     if self.eraseOnDraw then
-        monUtils.resetMonitor(self.monitor)
+        monUtils.resetMonitor(self.monitor, self.backColor)
     end
     for _, button in ipairs(self.buttons) do
         button:draw()

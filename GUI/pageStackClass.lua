@@ -38,6 +38,10 @@ function PageStackClass:updateButtonPosition()
     self.exitButton:setPos(self.posX+ self.sizeX - 1,self.posY)
 end
 
+function PageStackClass:changeStyle(...)
+  self.exitButton:changeStyle(...)
+end
+
 -- setter and getter for monitor
 function PageStackClass:setMonitor(monitor)
   self.monitor = monitor

@@ -29,9 +29,9 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
       buttonMargin = 1,
       marginBetweenColumns = 1,
       marginBetweenRows = 1,
-      backColor = colors.pink,
-      elementBackColor = colors.purple,
-      textColor = colors.yellow,
+      backColor = colors.lightGray,
+      elementBackColor = colors.gray,
+      textColor = colors.black,
       shouldShowColumnTitles = true,
       keyTitle = "Keys",
       valueTitle = "Values",
@@ -54,6 +54,14 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
     properties:setScrollAmount()
     return properties
   end
+
+function TableClass:changeStyle(backColor, elementBackColor, textColor)
+    self.backColor = backColor or self.backColor
+    self.elementBackColor = elementBackColor or self.elementBackColor
+    self.textColor = textColor or self.textColor
+    self.areButtonsDirty = true
+
+end
 
 function TableClass:setTableValueDisplayed(func)
     self.tableValueDisplayed = func or DefaultTableValueDisplayed
