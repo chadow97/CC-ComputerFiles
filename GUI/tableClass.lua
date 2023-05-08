@@ -45,7 +45,8 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
       areButtonsDirty = true,
       rowHeight = 3,
       onPressFunc = nil,
-      onDrawButton = nil
+      onDrawButton = nil,
+      onAskForNewData = nil
     }
 
 
@@ -181,11 +182,11 @@ function TableClass:scroll(isUp)
 
 end
 
-local function setupOnManualToggle(table, button, isKey, position, data)
+local function setupOnManualToggle(table, button, key, isKey, position, data)
 
     local  wrapper =
         function()
-            table.onPressFunc(position, isKey, data)
+            table.onPressFunc(position, isKey,key, data)
         end 
 
     if table.onPressFunc then
@@ -195,10 +196,10 @@ local function setupOnManualToggle(table, button, isKey, position, data)
     return false
 end
 
-local function setupOnDrawButton(table, button, isKey, position, data)
+local function setupOnDrawButton(table, button, key, isKey, position, data)
     local wrapper = 
         function()
-            table.onDrawButton(position, isKey, data, button)
+            table.onDrawButton(position, isKey, key, data, button)
         end
     if table.onDrawButton then
         button:setOnDraw(wrapper)
@@ -209,7 +210,7 @@ end
 
 local function processTableElement(tableClass, tableButton, key, value, position)
 
-    if setupOnManualToggle(tableClass, tableButton, false, position, value ) then
+    if setupOnManualToggle(tableClass, tableButton,key, false, position, value ) then
         return
     end
     local func = function ()
@@ -240,8 +241,8 @@ function TableClass:createButtonsForRow(key, value, position)
         keyButton:setUpperCornerPos(keyX,keyY)
         keyButton:forceWidthSize(self:getKeyRowWidth())
         keyButton:forceHeightSize(self:getRowHeight())
-        setupOnManualToggle( self, keyButton, true, position, key)
-        setupOnDrawButton(self, keyButton, true, position, key)
+        setupOnManualToggle( self, keyButton, key, true, position, key)
+        setupOnDrawButton(self, keyButton, key, true, position, key)
     end
     local typeOfValue = type(value)
     local displayedText = value
@@ -263,8 +264,8 @@ function TableClass:createButtonsForRow(key, value, position)
     valueButton:setUpperCornerPos(valueX,valueY)
     valueButton:forceWidthSize(self:getValueRowWidth())
     valueButton:forceHeightSize(self:getRowHeight())
-    setupOnManualToggle( self, valueButton, false, position, value)
-    setupOnDrawButton(self, valueButton, false, position, value)
+    setupOnManualToggle( self, valueButton, key, false, position, value)
+    setupOnDrawButton(self, valueButton,key, false, position, value)
 
     self.internalButtonHolder[key] = {keyButton = keyButton, valueButton = valueButton}
 end
@@ -430,8 +431,29 @@ function TableClass:askForRedraw()
 
 end
 
+function TableClass:setOnAskForNewData(func)
+    self.onAskForNewData = func
+end
 
--- Empty implementation of the draw function
+function TableClass:handleRefreshDataEvent()
+    -- ask data handler for new data
+
+    -- refresh is not setup
+    if not self.onAskForNewData then
+        return true 
+    end 
+    local NewInternalTable = self.onAskForNewData()
+
+    -- nothing to do if table didn't change
+    if (not NewInternalTable or NewInternalTable == self.internalTable) then
+        return
+    end
+
+    self:setInternalTable(NewInternalTable)
+    self:askForRedraw()
+
+end
+
 function TableClass:draw()
 
     -- CreateButtons if needed
@@ -468,12 +490,13 @@ function TableClass:draw()
     self:doForScrollButtons(drawScrollButtons)
 end
 
--- Empty implementation of the handleEvent function
-function TableClass:handleEvent(...)
-
+function TableClass:handleEvent(eventName, ...)
+    if eventName == "refresh_data" then 
+        return self:handleRefreshDataEvent()
+    end
 
     for button in self:allButtons() do
-        if button:handleEvent(...) then
+        if button:handleEvent(eventName, ...) then
             return true
         end
     end

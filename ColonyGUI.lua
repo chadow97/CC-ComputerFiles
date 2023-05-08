@@ -10,13 +10,15 @@ local PageStackClass = require("GUI.pageStackClass")
 local colIntUtil = require("UTIL.colonyIntegratorPerUtils")
 local peripheralProxyClass = require("UTIL.peripheralProxy")
 local MeUtils = require("UTIL.meUtils")
+local PerTypes = require("UTIL.perTypes")
+local PerWrapper = require("UTIL.peripheralWrapper")
 
 local monitor = peripheral.find("monitor")
 
 local terminal = term.current()
 logger.init(terminal, "buttonTest", true)
 
-
+local refreshDelay = 5
 -- define colors
 local backgroundColor = colors.yellow
 local elementBackColor = colors.red
@@ -57,11 +59,11 @@ if not status then
 end
 
 local tableToShow = {}
-local workOrderByValueToShow = {}
-for _, value in pairs(workOrders) do
+
+for workOrderKey, value in pairs(workOrders) do
     local valueToShow = "Pending work order " .. value.id .. ". \nBuilding " .. value.buildingName
-    table.insert(tableToShow, valueToShow)
-    workOrderByValueToShow[valueToShow] = value
+    tableToShow[workOrderKey] = valueToShow
+
 end
 local pageStack1, internalTable = TableClass.createTableStack(monitor, 5, 5, 40, 30, tableToShow, "Item List")
 internalTable:setDisplayKey(false)
@@ -70,64 +72,103 @@ internalTable:setRowHeight(4)
 internalTable:changeStyle(elementBackColor, innerElementBackColor, textColor)
 pageStack1:changeStyle(nil, elementBackColor)
 
-local itemsMap = {}
+local getMeItems = function ()
+    local items = {}
 
-local CraftableItems = MeUtils.getCraftableItems()
-for _, value in pairs(CraftableItems) do
-    itemsMap[value.name] = value
-end
-local CurrentMeItems = MeUtils.getItemList()
-for _, value in pairs(CurrentMeItems) do
-    itemsMap[value.name] = value
+    local CraftableItems = MeUtils.getCraftableItems()
+    for _, value in pairs(CraftableItems) do
+        items[value.name] = value
+    end
+    local CurrentMeItems = MeUtils.getItemList()
+    for _, value in pairs(CurrentMeItems) do
+        items[value.name] = value
+    end
+
+    return items
 end
 
-logger.log(itemsMap)
+
+
+
+
+local currentRessources = nil
+local itemsMap = nil
+
+local getRessourcesAndRessourcesToShow = function (workOrderKey, workOrders)
+    local workOrder = workOrders[workOrderKey]
+    local ressources = colIntPer:getWorkOrderResources(workOrder.id)[1]
+    itemsMap = getMeItems()
+
+    local ressourceTableToShow = {}
+
+    for ressourceKey, ressource in pairs(ressources) do
+        local missing = ressource.needed - ressource.available - ressource.delivering
+        local valueToShow = ressource.item .. "\nMissing:" .. missing .. "\n"
+        local itemMeData = itemsMap[ressource.item]
+        if missing > 0 and itemMeData then
+            if itemMeData.amount >= missing then
+                valueToShow = valueToShow .. "Me system has:" .. itemMeData.amount .. "\n(Press to send to colony)"
+            elseif itemMeData.isCraftable then
+                valueToShow = valueToShow .. "Me system has:" .. itemMeData.amount .. ",need " .. missing - itemMeData.amount .. " more.\n(Press to craft and send!)"
+            else
+                valueToShow = valueToShow .. "Me system has:" .. itemMeData.amount .. ",need " .. missing - itemMeData.amount .. " more.\n(Not craftable!!!)"
+            end
+        else    
+            valueToShow = valueToShow .. "Me system has: 0, need " .. missing .." more.\n(Not craftable!!!)"
+        end
+        ressourceTableToShow[ressourceKey] = valueToShow
+
+    end
+
+    return ressources, ressourceTableToShow
+end
 
 local onPressFunc = 
-    function (position, isKey, data)
-        if isKey then
+    function (_, isWorkOrderKey, workOrderKey, _)
+        if isWorkOrderKey then
             return
         end
         -- get workorder data represented by pressed button
-        local workOrder = workOrderByValueToShow[data]
-        local ressources = colIntPer:getWorkOrderResources(workOrder.id)[1]
+        local ressourceTableToShow
+        currentRessources, ressourceTableToShow = getRessourcesAndRessourcesToShow(workOrderKey, workOrders)
 
-        local ressourceTableToShow = {}
-        local ressourceByValueToShow = {}
-
-        for _, ressource in pairs(ressources) do
-            local missing = ressource.needed - ressource.available - ressource.delivering
-            local valueToShow = ressource.item .. "\nMissing:" .. missing .. "\n"
-            local itemMeData = itemsMap[ressource.item]
-            if missing > 0 and itemMeData then
-                if itemMeData.amount >= missing then
-                    valueToShow = valueToShow .. "Me system has:" .. itemMeData.amount .. "\n(Press to send to colony)"
-                elseif itemMeData.isCraftable then
-                    valueToShow = valueToShow .. "Me system has:" .. itemMeData.amount .. ",need " .. missing - itemMeData.amount .. " more.\n(Press to craft and send!)"
-                else
-                    valueToShow = valueToShow .. "Me system has:" .. itemMeData.amount .. ",need " .. missing - itemMeData.amount .. " more.\n(Not craftable!!!)"
+        local onPressRessourceFunc = 
+            function (_, isKey, key, _)
+                if isKey then
+                    return
                 end
-            else    
-                valueToShow = valueToShow .. "Me system has: 0, need " .. missing .." more.\n(Not craftable!!!)"
-            end
-            table.insert(ressourceTableToShow, valueToShow)
-            ressourceByValueToShow[valueToShow] = ressource
+                -- get ressource data.
+                local ressource = currentRessources[key]
+                local itemMeData = itemsMap[ressource.item]
+                local missing = ressource.needed - ressource.available - ressource.delivering
+                if missing < 0 or not itemMeData then
+                    return
+                end
+                if itemMeData.amount >= missing then
+                    MeUtils.exportItem(ressource.item, missing)
+                    return
+                end
+                if itemMeData.isCraftable then
+                    MeUtils.craftItem(ressource.item,  missing - itemMeData.amount)
+                end
 
-        end
+
+            end
 
         local ressourceTable = TableClass:new(monitor, 5, 5, "ressources")
         ressourceTable:setDisplayKey(false)
         ressourceTable:setInternalTable(ressourceTableToShow)
         ressourceTable:setRowHeight(6)
         ressourceTable:changeStyle(elementBackColor, innerElementBackColor, textColor)
+        ressourceTable:setOnPressFunc(onPressRessourceFunc)
 
 
         local onDrawFunc =
-            function (position, isKey, data, button)
+            function (_, isKey, key, _, button)
                 if isKey then
                     return
                 end
-                local ressource = ressourceByValueToShow[data]
+                local ressource = currentRessources[key]
                 local missing = ressource.needed - ressource.available - ressource.delivering
                 local color =colors.green
                 if missing > 0 then
@@ -150,9 +191,17 @@ local onPressFunc =
                 button:setTextColor(color)
             end
 
+        local onAskForNewData =
+            function ()
+                local newTableToShow
+                currentRessources, newTableToShow = getRessourcesAndRessourcesToShow(workOrderKey, workOrders)
+                return newTableToShow
+            end
+
 
 
         ressourceTable:setOnDrawButton(onDrawFunc)
+        ressourceTable:setOnAskForNewData(onAskForNewData)
         pageStack1:pushPage(ressourceTable)
 
 
@@ -169,9 +218,20 @@ page:addButtons(buttonList)
 page:draw()
 
 
-
+local refreshTimerID = nil
 while isRunning do
----@diagnostic disable-next-line: undefined-field
-    page:handleEvent(os.pullEvent())
+    if not refreshTimerID then
+        ---@diagnostic disable-next-line: undefined-field
+        refreshTimerID = os.startTimer(refreshDelay)
+    end
+    ---@diagnostic disable-next-line: undefined-field
+    local eventData = {os.pullEvent()}
+    local eventName = eventData[1]
+    if eventName == "timer" and eventData[2] == refreshTimerID then
+        logger.log("asking to refresh data!")
+        eventData = {"refresh_data"}
+       refreshTimerID = nil
+    end
+    page:handleEvent(unpack(eventData))
 end
 

@@ -12,4 +12,3 @@ logger.log(peripheral.getNames())
 
 logger.log(peripheral.getType(chest))
 logger.log(peripheral.getMethods(chestName))
-logger.log(peripheral.)

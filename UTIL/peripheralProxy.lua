@@ -20,7 +20,7 @@ function PeripheralProxy:new(channel, peripheralName)
 end
 
 -- Method for retrieving the names of all available methods on the peripheral
-function PeripheralProxy:getRemoteMethods()
+function PeripheralProxy:getMethods()
     rednet.send(self.channel, {peripheralName = self.peripheralName, method = "getMethods"})
     local _, response = rednet.receive(nil, 5)
     if response then
