@@ -158,6 +158,10 @@ function ToggleableButtonClass.onResumeAfterContextLost(self)
     ButtonClass.onResumeAfterContextLost(self)
 end
 
+function ToggleableButtonClass:executeMainAction()
+    self.OnManualToggle(self)
+end
+
 
 
 

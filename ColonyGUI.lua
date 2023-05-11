@@ -12,18 +12,24 @@ local peripheralProxyClass = require("UTIL.peripheralProxy")
 local MeUtils = require("UTIL.meUtils")
 local PerTypes = require("UTIL.perTypes")
 local PerWrapper = require("UTIL.peripheralWrapper")
+local ChestWrapper = require("UTIL.chestWrapper")
+local GuiHandlerClass = require("GUI.guiHandlerClass")
+
 
 local monitor = peripheral.find("monitor")
 
 local terminal = term.current()
 logger.init(terminal, "buttonTest", true)
 
-local refreshDelay = 5
+MonUtils.resetMonitor(monitor)
+
+local refreshDelay = 1
 -- define colors
 local backgroundColor = colors.yellow
 local elementBackColor = colors.red
 local innerElementBackColor = colors.yellow
 local textColor = colors.lime
+
 
 
 local isRunning = true
@@ -51,6 +57,8 @@ local channel = 1
 
 local colIntPer = peripheralProxyClass:new(channel, "colonyIntegrator" )
 
+local chest = ChestWrapper:new()
+
 local status, workOrders = pcall(colIntUtil.getWorkOrders,colIntPer)
 if not status then
     logger.log(workOrders)
@@ -65,7 +73,8 @@ for workOrderKey, value in pairs(workOrders) do
     tableToShow[workOrderKey] = valueToShow
 
 end
-local pageStack1, internalTable = TableClass.createTableStack(monitor, 5, 5, 40, 30, tableToShow, "Item List")
+local pageStack1, internalTable = TableClass.createTableStack(monitor, 2, 2, 40, 50, tableToShow, "Item List")
+--redu
 internalTable:setDisplayKey(false)
 internalTable.title = nil
 internalTable:setRowHeight(4)
@@ -86,36 +95,84 @@ local getMeItems = function ()
 
     return items
 end
+local ressourceStatuses = {
+                            all_in_external_inv = {action ="Nothing to do.", color=colors.green, id =1},
+                            all_in_me_or_ex = {action = "Press to send to external inv.", color= colors.yellow, id = 2},
+                            no_missing = {action = "Nothing to do.", color = colors.green, id = 3},
+                            missing_not_craftable = {action = "Cannot be crafted!", color = colors.red, id = 4},
+                            craftable = {action = "Press to craft!", color=colors.orange, id = 5}
 
 
+
+
+                          }
+local getRessourceStatus =
+    function(colRessource, itemMeDataIn, externalInvAmountIn)
+
+        local itemMeData = itemMeDataIn
+        if not itemMeData then
+            itemMeData = {amount = 0, isCraftable = false}
+        end
+        local externalInvData = externalInvAmountIn
+        if not externalInvData then
+            externalInvData = 0
+        end
+        local missing = colRessource.needed - colRessource.available - colRessource.delivering
+        local missingWithExternalInv = missing - externalInvData
+        local missingWithExternalInvAndMe = missingWithExternalInv - itemMeData.amount
+
+        local stats = {missing = missing, me = itemMeData.amount, extInv = externalInvData , missingWithExternalInv = missingWithExternalInv, missingWithExternalInvAndMe = missingWithExternalInv}
+
+        if missing <= 0 then
+            return ressourceStatuses.no_missing, stats
+        end
+        
+        if missingWithExternalInv <= 0 then
+            return ressourceStatuses.all_in_external_inv, stats
+        end
+        
+        if missingWithExternalInvAndMe <= 0 then
+            return ressourceStatuses.all_in_me_or_ex, stats
+        end
+        if itemMeData.isCraftable then
+            return ressourceStatuses.craftable, stats
+        end
+        return ressourceStatuses.missing_not_craftable, stats
+
+    end
 
 
 
 local currentRessources = nil
 local itemsMap = nil
+local extChestItemMap = nil
 
 local getRessourcesAndRessourcesToShow = function (workOrderKey, workOrders)
     local workOrder = workOrders[workOrderKey]
     local ressources = colIntPer:getWorkOrderResources(workOrder.id)[1]
     itemsMap = getMeItems()
+    if not chest then
+        extChestItemMap = {}
+    else
+        extChestItemMap = chest:getAllItems()
+    end
 
     local ressourceTableToShow = {}
 
     for ressourceKey, ressource in pairs(ressources) do
-        local missing = ressource.needed - ressource.available - ressource.delivering
-        local valueToShow = ressource.item .. "\nMissing:" .. missing .. "\n"
         local itemMeData = itemsMap[ressource.item]
-        if missing > 0 and itemMeData then
-            if itemMeData.amount >= missing then
-                valueToShow = valueToShow .. "Me system has:" .. itemMeData.amount .. "\n(Press to send to colony)"
-            elseif itemMeData.isCraftable then
-                valueToShow = valueToShow .. "Me system has:" .. itemMeData.amount .. ",need " .. missing - itemMeData.amount .. " more.\n(Press to craft and send!)"
-            else
-                valueToShow = valueToShow .. "Me system has:" .. itemMeData.amount .. ",need " .. missing - itemMeData.amount .. " more.\n(Not craftable!!!)"
-            end
-        else    
-            valueToShow = valueToShow .. "Me system has: 0, need " .. missing .." more.\n(Not craftable!!!)"
-        end
+        local extItemData = extChestItemMap[ressource.item]
+        local ressourceStatus, stats = getRessourceStatus(ressource, itemMeData, extItemData)
+        -- stat is (missing, me, extInv)
+
+
+        local valueToShow = ressource.item .. "\nNeeded for colony: " .. stats.missing .. "\n"
+
+        valueToShow  = valueToShow .. "Amount in me system: " .. stats.me .. "\n"
+        valueToShow  = valueToShow .. "Amount in external storage: " .. stats.extInv .. "\n"
+        valueToShow  = valueToShow .. "Amount missing in colony/ext: " .. stats.missingWithExternalInvAndMe .. "\n"
+        valueToShow  = valueToShow .. ressourceStatus.action
+
         ressourceTableToShow[ressourceKey] = valueToShow
 
     end
@@ -140,25 +197,26 @@ local onPressFunc =
                 -- get ressource data.
                 local ressource = currentRessources[key]
                 local itemMeData = itemsMap[ressource.item]
-                local missing = ressource.needed - ressource.available - ressource.delivering
-                if missing < 0 or not itemMeData then
-                    return
+                local extItemData = extChestItemMap[ressource.item]
+                local ressourceStatus, stats = getRessourceStatus(ressource, itemMeData, extItemData)
+                if ressourceStatus.id == ressourceStatuses.all_in_me_or_ex.id then
+                    MeUtils.exportItem(ressource.item, stats.missingWithExternalInv)
                 end
-                if itemMeData.amount >= missing then
-                    MeUtils.exportItem(ressource.item, missing)
-                    return
-                end
-                if itemMeData.isCraftable then
-                    MeUtils.craftItem(ressource.item,  missing - itemMeData.amount)
+                if ressourceStatus.id == ressourceStatuses.craftable.id then
+                    MeUtils.craftItem(ressource.item, stats.missingWithExternalInvAndMe)
                 end
 
 
             end
 
         local ressourceTable = TableClass:new(monitor, 5, 5, "ressources")
+        local ressourcePage = PageClass.new(monitor)
+
+
+
         ressourceTable:setDisplayKey(false)
         ressourceTable:setInternalTable(ressourceTableToShow)
-        ressourceTable:setRowHeight(6)
+        ressourceTable:setRowHeight(8)
         ressourceTable:changeStyle(elementBackColor, innerElementBackColor, textColor)
         ressourceTable:setOnPressFunc(onPressRessourceFunc)
 
@@ -169,24 +227,10 @@ local onPressFunc =
                     return
                 end
                 local ressource = currentRessources[key]
-                local missing = ressource.needed - ressource.available - ressource.delivering
-                local color =colors.green
-                if missing > 0 then
-                    -- missing some item, look in me system!
-                    local itemMeData = itemsMap[ressource.item]
-                    if  itemMeData then
-                        if itemMeData.amount >= missing then
-                            color = colors.yellow
-                        elseif itemMeData.isCraftable then
-                            color = colors.orange
-                        else
-                            color = colors.red
-                        end
-                    else
-                        -- items     
-                        color = colors.red
-                    end
-                end
+                local itemMeData = itemsMap[ressource.item]
+                local extItemData = extChestItemMap[ressource.item]
+                local ressourceStatus = getRessourceStatus(ressource, itemMeData, extItemData)
+                local color = ressourceStatus.color
 
                 button:setTextColor(color)
             end
@@ -202,7 +246,34 @@ local onPressFunc =
 
         ressourceTable:setOnDrawButton(onDrawFunc)
         ressourceTable:setOnAskForNewData(onAskForNewData)
-        pageStack1:pushPage(ressourceTable)
+        local pageSizeX, pageSizeY = pageStack1:getSize()
+        local pageX, pageY = pageStack1:getPosition()
+        ressourceTable:setSize(pageSizeX, pageSizeY - 4)
+        
+        logger.log(pageX .. "," .. pageY)
+        ressourceTable:setPosition(pageX,pageY)
+
+        ressourcePage:add(ressourceTable)
+        ressourcePage:setBackColor(elementBackColor)
+        pageStack1:pushPage(ressourcePage)
+        local _,_,_, endY = ressourceTable:getArea()
+        local SendAllButton = ToggleableButtonClass:new(pageX, pageY, "Send/Craft ALL!")
+        SendAllButton:forceWidthSize(pageSizeX - 2)
+        SendAllButton:setUpperCornerPos(pageX + 1, endY + 1)
+        SendAllButton:changeStyle(nil, textColor)
+
+
+        local OnSendAll = 
+            function ()
+                ressourceTable:pressAllButtons()
+            end
+
+
+
+        SendAllButton:setOnManualToggle(OnSendAll)
+        ressourcePage:add(SendAllButton)
+        
+        page:draw()
 
 
         
@@ -217,21 +288,14 @@ page:addButtons(buttonList)
 
 page:draw()
 
+local shouldStopGuiLoop =
+    function()
+        return not isRunning
+    end
 
-local refreshTimerID = nil
-while isRunning do
-    if not refreshTimerID then
-        ---@diagnostic disable-next-line: undefined-field
-        refreshTimerID = os.startTimer(refreshDelay)
-    end
-    ---@diagnostic disable-next-line: undefined-field
-    local eventData = {os.pullEvent()}
-    local eventName = eventData[1]
-    if eventName == "timer" and eventData[2] == refreshTimerID then
-        logger.log("asking to refresh data!")
-        eventData = {"refresh_data"}
-       refreshTimerID = nil
-    end
-    page:handleEvent(unpack(eventData))
-end
+local guiHandler = GuiHandlerClass:new(refreshDelay,page, shouldStopGuiLoop)
+
+
+guiHandler:loop()
+
 

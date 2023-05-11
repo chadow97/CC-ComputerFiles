@@ -60,7 +60,7 @@ function PageStackClass:pushPage(page)
   page:setPage(self)
   page:setSize(self:getSize())
   page:setPosition(self.posX, self.posY)
-  self:draw()
+  self:askForRedraw(self)
 end
 
 -- pop the top page from the stack
@@ -73,7 +73,7 @@ function PageStackClass:popPage()
   self:getTopPage():onResumeAfterContextLost()
 
 
-  self:draw()
+  self:askForRedraw(self)
 end
 
 function PageStackClass:getTopPage()
@@ -88,7 +88,11 @@ function PageStackClass:askForRedraw(asker)
     end
 
     if asker == self:getTopPage() then
+      if self.page then
+        self.page:askForRedraw()
+      else
         self:draw()
+      end
     end
 end
 
@@ -114,6 +118,10 @@ function PageStackClass:setPosition(posX,posY)
     self.posX = posX
     self.posY = posY
     self:updateButtonPosition()
+end
+
+function PageStackClass:getPosition()
+    return self.posX, self.posY
 end
 
 function PageStackClass:setSize(sizeX,sizeY)

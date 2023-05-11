@@ -277,6 +277,10 @@ function ButtonClass.onResumeAfterContextLost(self)
     -- nothing to do!
 end
 
+function ButtonClass.executeMainAction(self)
+    self.func(self)
+end
+
 return ButtonClass
 
 

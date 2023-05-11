@@ -1,5 +1,5 @@
-local monUtils = require("UTIL.monUtils")
 local logger = require("UTIL.logger")
+local CustomPaintUtils = require("UTIL.customPaintUtils")
 
 
 -- Define the PageClass constructor function
@@ -14,7 +14,7 @@ function PageClass.new(monitor)
     -- By default, area is entire monitor
     self.startX = 1
     self.startY = 1
-    self.endX, self.endY = self.monitor.getSize()
+    self.sizeX, self.sizeY = self.monitor.getSize()
     self.eraseOnDraw = true
     self.backColor = colors.black
     return self
@@ -25,6 +25,10 @@ function PageClass:add(button)
     button:setMonitor(self.monitor)
     button:setPage(self)
     table.insert(self.buttons, button)
+end
+
+function PageClass:setPage(page)
+    self.page = page
 end
 
 function PageClass:setBackColor(color)
@@ -50,8 +54,11 @@ end
 
 -- Define the draw method to draw the page
 function PageClass:draw()
+
     if self.eraseOnDraw then
-        monUtils.resetMonitor(self.monitor, self.backColor)
+        local startX, startY, endX, endY =self:getArea()
+
+        CustomPaintUtils.drawFilledBox(startX, startY, endX, endY,  self.backColor, self.monitor)
     end
     for _, button in ipairs(self.buttons) do
         button:draw()
@@ -70,20 +77,17 @@ function PageClass:askForRedraw()
 end
 
 function PageClass:getArea()
-   
-    local sizeX,sizeY = self:getSize()
-    return self.startX, self.startY, self.endX, self.endY, sizeX, sizeY
+    return self.startX, self.startY, self.startX + self.sizeX - 1, self.startY + self.sizeY - 1, self.sizeX, self.sizeY
 end
 
 function PageClass:getSize()
-    local sizeX  = self.endX - self.startX
-    local sizeY  = self.endY - self.startY
-    return sizeX, sizeY
+
+    return self.sizeX, self.sizeY
 end
 
 function PageClass:setPosition(posX,posY)
-    self.posX = posX
-    self.posY = posY
+    self.startX = posX
+    self.startY = posY
 end
 
 function PageClass:setSize(sizeX,sizeY)
@@ -112,6 +116,17 @@ end
 
 function PageClass:disableErase()
     self.eraseOnDraw = false
+end
+
+function PageClass:setMonitor(monitor)
+    self.monitor = monitor
+    if not (self.buttonList) then
+        return
+    end
+    for _, element in ipairs(self.buttonList) do
+        element:setMonitor(monitor)
+    end
+
 end
 
 return PageClass

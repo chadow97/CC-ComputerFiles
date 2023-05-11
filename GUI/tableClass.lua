@@ -70,7 +70,7 @@ end
 
 function TableClass:setScrollAmount(amount) 
     if not amount then
-        self.scrollAmount = self:getRowHeight()* 10 + self.marginBetweenRows
+        self.scrollAmount = self:getRowHeight() + self.marginBetweenRows
     else
         self.scrollAmount = amount
     end
@@ -90,6 +90,21 @@ end
 function TableClass:setRowHeight(rowHeight)
    self.rowHeight = rowHeight 
    self.areButtonsDirty = true
+end
+
+local function updateButtonsForScroll(table)
+    if not table.isScrollable then
+        return
+    end
+
+    table:doForEachButton(
+        function (button, isKey, position)
+            local x,y = table:getElementStart(position, isKey)
+            button:setUpperCornerPos(x,y + table.currentScroll)
+        end
+        )
+
+
 end
 
 function TableClass:createButtonsForTable()
@@ -132,8 +147,7 @@ function TableClass:createButtonsForTable()
             end)
         )
 
-
-
+        updateButtonsForScroll(self)
 
     end
     
@@ -143,6 +157,7 @@ function TableClass:createButtonsForTable()
 
 
 end
+
 
 function TableClass:scroll(isUp)
     if not self.isScrollable then
@@ -169,18 +184,12 @@ function TableClass:scroll(isUp)
     end
 
     local realMovement = realScroll - self.currentScroll
-
-    self:doForEachButton(
-        function (button)
-            x,y = button:getPos()
-            button:setPos(x,y + realMovement)
-        end
-                        )
-
     self.currentScroll = self.currentScroll + realMovement
 
-
+    updateButtonsForScroll(self)
 end
+
+
 
 local function setupOnManualToggle(table, button, key, isKey, position, data)
 
@@ -393,7 +402,7 @@ end
 -- function should be (button, isKey, position, ... (func arguments))
 function TableClass:doForEachButton(func, ...)
        
-    local position = 1    
+    local position = 1   
 
     for key, elementButtons in pairs(self.internalButtonHolder) do
         local keyButton = elementButtons.keyButton
@@ -403,6 +412,8 @@ function TableClass:doForEachButton(func, ...)
             func(keyButton, true, position, ...)
         end
         func(valueButton, false, position, ...)
+
+        position = position + 1
     end
 
 end
@@ -562,6 +573,14 @@ function TableClass:onResumeAfterContextLost()
     end
 
     self:doForAllButtonsInPage(func)
+end
+
+function TableClass:pressAllButtons()
+    local toDoForAllButtons = 
+        function(button)
+            button:executeMainAction()
+        end
+    self:doForEachButton(toDoForAllButtons)
 end
 
 
