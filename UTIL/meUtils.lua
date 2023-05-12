@@ -63,14 +63,28 @@ function MeUtils.exportItem(itemName, count, containerName)
     return MePeripheral.exportItemToPeripheral(exportTable, containerNameToUse)
 end
 
+function MeUtils.getFreeCpu()
+    if not MePeripheral then
+        return 
+    end
 
-function MeUtils.craftItem(itemName, count)
+    local cpus = MePeripheral.getCraftingCPUs()
+    for key, cpu in pairs(cpus) do
+       if not cpu.isBusy then
+            cpu.name = key
+            return cpu
+       end
+    end
+end
+
+
+function MeUtils.craftItem(itemName, count , cpu)
     if not MePeripheral then
         return
     end
     local countToUse = count or 1
     local itemTable = {name = itemName, count = countToUse}
-    return MePeripheral.craftItem(itemTable)
+    return MePeripheral.craftItem(itemTable, cpu)
 end
 
 
