@@ -46,7 +46,8 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
       rowHeight = 3,
       onPressFunc = nil,
       onDrawButton = nil,
-      onAskForNewData = nil
+      onAskForNewData = nil,
+      columnCount = 1
     }
 
 
@@ -63,6 +64,16 @@ function TableClass:changeStyle(backColor, elementBackColor, textColor)
     self.areButtonsDirty = true
 
 end
+
+function TableClass:getColumnCount()
+    return self.columnCount
+end
+
+function TableClass:setColumnCount(columnCount)
+    self.columnCount = columnCount or 1
+    self.areButtonsDirty = true;
+end
+
 
 function TableClass:setTableValueDisplayed(func)
     self.tableValueDisplayed = func or DefaultTableValueDisplayed
@@ -282,15 +293,24 @@ end
 
 
 function TableClass:getElementStart(position, isKey)
+
+    -- get column and row for element
+    local row = math.floor((position - 1) / self:getColumnCount()) + 1
+    local column = (position - 1) % self:getColumnCount() + 1
+
+    -- get position of key column
     local firstElementX, firstElementY = self:getDrawableArea()
-    local elementX = firstElementX
+    local elementY = firstElementY + ((row - 1) * (self:getRowHeight() +self.marginBetweenRows))
+    local elementX = firstElementX + ((column - 1) * (self:getKeyColomnWidth() + self.marginBetweenColumns))
+
+    -- offset if not key!
     if not isKey then
         elementX = elementX + self:getKeyRowWidth()
         if self.displayKey then
-            elementX = elementX + self.marginBetweenColumns 
+            elementX = elementX + self.marginBetweenColumns
         end
     end
-    local elementY = firstElementY + ((position - 1)* (self:getRowHeight() +self.marginBetweenRows))
+
 
     return elementX,elementY
 end
@@ -299,18 +319,29 @@ function TableClass:getRowHeight()
     return self.rowHeight
 end
 
+function TableClass:getKeyColomnWidth()
+    local marginBetweenKeyColumns = self.marginBetweenColumns * (self:getColumnCount() - 1)
+    local outsideMargins = self.margin * 2
+    local totalWidth = self.sizeX - outsideMargins
+    if self.displayKey then
+        totalWidth = totalWidth - marginBetweenKeyColumns
+    end
+
+    return math.floor(totalWidth/self:getColumnCount())
+end
+
 function TableClass:getKeyRowWidth()
     if (not self.displayKey) then
         return 0
     end
-    return math.floor((self.sizeX - self.marginBetweenColumns - (self.margin * 2))* self.keyRowProportion)
+    return math.floor((self:getKeyColomnWidth() - self.marginBetweenColumns)* self.keyRowProportion)
 end
 
 function TableClass:getValueRowWidth()
     if (not self.displayKey) then
-        return self.sizeX - (self.margin *2)
+        return self:getKeyColomnWidth()
     end
-    return self.sizeX - self:getKeyRowWidth() - self.marginBetweenColumns - (self.margin * 2)
+    return self:getKeyColomnWidth() - self.marginBetweenColumns - self:getKeyRowWidth()
 end
 
 -- Getter/setter for the monitor

@@ -73,7 +73,9 @@ for workOrderKey, value in pairs(workOrders) do
     tableToShow[workOrderKey] = valueToShow
 
 end
-local pageStack1, internalTable = TableClass.createTableStack(monitor, 2, 2, 40, 50, tableToShow, "Item List")
+
+local monitorX, monitorY = monitor.getSize()
+local pageStack1, internalTable = TableClass.createTableStack(monitor, 2, 2, monitorX - 2, monitorY - 2, tableToShow, "Item List")
 --redu
 internalTable:setDisplayKey(false)
 internalTable.title = nil
@@ -245,6 +247,7 @@ local onPressFunc =
 
 
         ressourceTable:setOnDrawButton(onDrawFunc)
+        ressourceTable:setColumnCount(3)
         ressourceTable:setOnAskForNewData(onAskForNewData)
         local pageSizeX, pageSizeY = pageStack1:getSize()
         local pageX, pageY = pageStack1:getPosition()
