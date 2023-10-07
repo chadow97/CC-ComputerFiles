@@ -20,11 +20,11 @@ local logClass        = require("GUI.logClass")
 local monitor = peripheral.find("monitor")
 
 local terminal = term.current()
-logger.init(terminal, "buttonTest", true)
+logger.init(terminal, "ColonyGUI", true)
 
 MonUtils.resetMonitor(monitor)
 
-local refreshDelay = 1
+local refreshDelay = 100
 -- define colors
 local backgroundColor = colors.yellow
 local elementBackColor = colors.red
@@ -49,9 +49,10 @@ page:setBackColor(backgroundColor)
 local monX, monY =monitor.getSize()
 
 
-local ExitButton = ButtonClass:new(monX - 1, monY -1, "X")
+local ExitButton = ButtonClass:new(monX, monY, "X")
 ExitButton:setFunction(endProgram)
 ExitButton:changeStyle(nil, elementBackColor)
+ExitButton:setMargin(0)
 table.insert(buttonList, ExitButton)
 
 local channel = 1
@@ -104,10 +105,6 @@ local ressourceStatuses = {
                             no_missing = {action = "Nothing to do.", color = colors.green, id = 3},
                             missing_not_craftable = {action = "Cannot be crafted!", color = colors.red, id = 4},
                             craftable = {action = "Press to craft!", color=colors.orange, id = 5}
-
-
-
-
                           }
 local getRessourceStatus =
     function(colRessource, itemMeDataIn, externalInvAmountIn)
@@ -296,6 +293,7 @@ local onPressFunc =
         ressourceTable:setOnDrawButton(onDrawFunc)
         ressourceTable:setColumnCount(3)
         ressourceTable:setOnAskForNewData(onAskForNewData)
+        ressourceTable:setHasManualRefresh(true)
         local pageSizeX, pageSizeY = pageStack1:getSize()
         local pageX, pageY = pageStack1:getPosition()
         ressourceTable:setSize(pageSizeX, pageSizeY - 4 - logHeight)

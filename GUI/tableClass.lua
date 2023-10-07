@@ -38,6 +38,7 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
       keyRowProportion = 0.3,
       internalButtonHolder = {},
       scrollButtons = {},
+      refreshButton = nil,
       scrollAmount = nil,
       currentScroll = 0,
       tableValueDisplayed = DefaultTableValueDisplayed,
@@ -47,7 +48,8 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
       onPressFunc = nil,
       onDrawButton = nil,
       onAskForNewData = nil,
-      columnCount = 1
+      columnCount = 1,
+      hasManualRefresh = false
     }
 
 
@@ -107,8 +109,7 @@ local function updateButtonsForScroll(table)
     if not table.isScrollable then
         return
     end
-
-    table:doForEachButton(
+    table:doForEachTableElement(
         function (button, isKey, position)
             local x,y = table:getElementStart(position, isKey)
             button:setUpperCornerPos(x,y + table.currentScroll)
@@ -129,9 +130,8 @@ function TableClass:createButtonsForTable()
         index = index + 1
     end
 
+    local startX, startY, endX, endY = self:getArea()
     if (self.isScrollable) then
-        local startX, startY, endX, endY = self:getArea()
-
 
         local Up = ToggleableButtonClass:new(endX,endY-1, "U")
         Up:setMargin(0)
@@ -161,7 +161,18 @@ function TableClass:createButtonsForTable()
         updateButtonsForScroll(self)
 
     end
-    
+    if (self.hasManualRefresh) then
+        local RefreshButton = ToggleableButtonClass:new(startX,startY, "R")
+        RefreshButton:setMargin(0)
+        RefreshButton:changeStyle(nil, self.backColor)
+        RefreshButton:setPage(self)
+        RefreshButton:setOnManualToggle(            
+            (function(button) 
+            self:RefreshData()
+            end)
+        )
+        self.refreshButton = RefreshButton
+    end
 
     self:setMonitorForAll()
     self.areButtonsDirty = false;
@@ -376,6 +387,11 @@ function TableClass:setIsScrollable(value)
     self.areButtonsDirty = true;
 end
 
+function TableClass:setHasManualRefresh(value)
+    self.hasManualRefresh = value
+    self.areButtonsDirty = true;
+end
+
 -- Getter/setter for the internal table
 function TableClass:setInternalTable(internalTable)
     self.internalTable = internalTable
@@ -431,7 +447,7 @@ function TableClass:getTitleArea()
 end
 
 -- function should be (button, isKey, position, ... (func arguments))
-function TableClass:doForEachButton(func, ...)
+function TableClass:doForEachTableElement(func, ...)
        
     local position = 1   
 
@@ -457,9 +473,18 @@ function TableClass:doForScrollButtons(func, ...)
 
 end
 
+-- function should be (button, isKey, position, ...)
+function TableClass:doForExtraButtons(func, ...)
+    if self.refreshButton then
+        func(self.refreshButton, nil, nil, ...)
+    end
+
+end
+
 function TableClass:doForAllButtonsInPage(...)
-    self:doForEachButton(...)
+    self:doForEachTableElement(...)
     self:doForScrollButtons(...)
+    self:doForExtraButtons(...)
 end
 
 function TableClass:askForRedraw()
@@ -478,6 +503,11 @@ function TableClass:setOnAskForNewData(func)
 end
 
 function TableClass:handleRefreshDataEvent()
+    self:RefreshData()
+
+end
+
+function TableClass:RefreshData()
     -- ask data handler for new data
 
     -- refresh is not setup
@@ -493,7 +523,6 @@ function TableClass:handleRefreshDataEvent()
 
     self:setInternalTable(NewInternalTable)
     self:askForRedraw()
-
 end
 
 function TableClass:draw()
@@ -521,15 +550,16 @@ function TableClass:draw()
     local drawElement = function(button) 
         button:draw(self:getDrawableArea())
     end
-    self:doForEachButton(drawElement)
+    self:doForEachTableElement(drawElement)
 
     --4th step: draw srollbuttons
 
-    local drawScrollButtons = function(button)
+    local drawButtonFunction = function(button)
         button:draw()
     end
 
-    self:doForScrollButtons(drawScrollButtons)
+    self:doForScrollButtons(drawButtonFunction)
+    self:doForExtraButtons(drawButtonFunction)
 end
 
 function TableClass:handleEvent(eventName, ...)
@@ -562,6 +592,14 @@ function TableClass:allButtons()
         table.insert(buttonKeys, key)
     end
 
+    local nonElementButtons = {}
+    if self.isScrollable then
+        table.insert(nonElementButtons, self.scrollButtons.Up)
+        table.insert(nonElementButtons, self.scrollButtons.Down)
+    end
+    if self.hasManualRefresh then
+        table.insert(nonElementButtons, self.refreshButton)
+    end
 
 
     local position = 1
@@ -579,12 +617,10 @@ function TableClass:allButtons()
                 isKey = self.displayKey
                 position = position + 1
             end
-        elseif (position - #buttonKeys) == 1 then
+        else
+            local nonElementPosition = position - #buttonKeys
+            button = nonElementButtons[nonElementPosition]
             position = position + 1
-            button = self.scrollButtons.Up
-        elseif (position - #buttonKeys) == 2 then
-            position = position + 1
-            button = self.scrollButtons.Down
         end
 
         return button
@@ -611,7 +647,7 @@ function TableClass:pressAllButtons()
         function(button)
             button:executeMainAction()
         end
-    self:doForEachButton(toDoForAllButtons)
+    self:doForEachTableElement(toDoForAllButtons)
 end
 
 
