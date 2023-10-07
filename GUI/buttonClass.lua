@@ -53,8 +53,9 @@ function ButtonClass.setOnDraw(self, func)
 end
 
 function ButtonClass.askForRedraw(self)
-
-    self.page:askForRedraw(self) -- passing asker
+    if self.page then
+        self.page:askForRedraw(self) -- passing asker
+    end
 end
 
 function ButtonClass.setMonitor(self, monitor)

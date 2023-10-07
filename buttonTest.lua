@@ -7,6 +7,7 @@ local MonUtils = require("UTIL.monUtils")
 local MeUtils = require("UTIL.meUtils")
 local logger = require("UTIL.logger")
 local PageStackClass = require("GUI.pageStackClass")
+local LogClass = require("GUI.logClass")
 
 local monitor = peripheral.find("monitor")
 MonUtils.resetMonitor(monitor)
@@ -51,12 +52,21 @@ local pageStack2 = TableClass.createTableStack(monitor, 46, 5 , 40, 30, MeUtils.
 
 table.insert(buttonList, pageStack2)
 
+local log = LogClass:new(10,10)
+log:setUpperCornerPos(19,40)
+log:forceWidthSize(20)
+log:forceHeightSize(5)
 
-
-
+table.insert(buttonList, log)
 
 page:addButtons(buttonList)
 page:draw()
+
+for i = 1, 10 do
+    log:addLine("nooooo" .. i)
+    page:draw()
+    sleep(1)
+end
 
 --pageStack:draw()
 

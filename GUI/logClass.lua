@@ -26,33 +26,39 @@ function LogClass.new(self, x, y, text)
   instance.func = DefaultOnButtonPress
 
  
-
+  instance.completeLogContent = {}
+  if text then
+    table.insert(instance.completeLogContent, text)
+  end
 
 
   return instance
 end
 
 function LogClass:addLine(lineToAdd)
-    local lines = self:getTextLines()
-    local _,_,_,numberOfWritableLines = self:getTextArea()
+    -- Insert the new line to the complete log content
+    table.insert(self.completeLogContent, lineToAdd)
 
+    -- Get the number of writable lines from the text area
+    local _, _, _, numberOfWritableLines = self:getTextArea()
 
-    local numberOfEmptyLines = math.max(numberOfWritableLines - #lines, 0)
-    local numberOfLinesWithText = math.min(#lines, numberOfWritableLines)
-    local textToDisplay = string.rep("\n", numberOfEmptyLines)
-    local index = 1
-    for _, line in pairs(lines) do
-        if index > numberOfLinesWithText then
-            break
-        end
-        textToDisplay = textToDisplay .. line .. "\n"
-        index = index + 1
+    -- Calculate necessary values for text display
+    local totalLines = #self.completeLogContent
+    local numberOfEmptyLines = math.max(0, numberOfWritableLines - totalLines)
+    local numberOfLinesWithText = math.min(totalLines, numberOfWritableLines)
+    local numberOfLogLinesToSkip = math.max(0, totalLines - numberOfWritableLines)
+
+    -- Create a table to hold the lines of text to be displayed
+    local linesToDisplay = {}
+
+    -- Append log lines to linesToDisplay table
+    for i = 1, numberOfLinesWithText do
+        table.insert(linesToDisplay, self.completeLogContent[numberOfLogLinesToSkip + i])
     end
 
-    self:setText(textToDisplay)
+    -- Set the text and request a redraw, merging concatenation and empty line appending in one step
+    self:setText(table.concat(linesToDisplay, "\n") .. string.rep("\n", numberOfEmptyLines))
     self:askForRedraw(self)
-
-
 end
 
 return LogClass
