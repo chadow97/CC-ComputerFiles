@@ -14,6 +14,7 @@ local PerTypes = require("UTIL.perTypes")
 local PerWrapper = require("UTIL.peripheralWrapper")
 local ChestWrapper = require("UTIL.chestWrapper")
 local GuiHandlerClass = require("GUI.guiHandlerClass")
+local logClass        = require("GUI.logClass")
 
 
 local monitor = peripheral.find("monitor")
@@ -182,6 +183,52 @@ local getRessourcesAndRessourcesToShow = function (workOrderKey, workOrders)
     return ressources, ressourceTableToShow
 end
 
+
+local ProcessAll = 
+    function (ressourcesToProcess, meItemsMapToProcess, extChestItemMapToProcess)
+        -- 1. handle ressourceToSend and collect ressourcesToCraft!
+        local mapToCraft = {}
+        local mapToSendToExtFromMe = {}
+
+        
+
+        for key, ressource in pairs(ressourcesToProcess) do
+            
+            local itemMeData = meItemsMapToProcess[ressource.item]
+            local extItemData = extChestItemMapToProcess[ressource.item]
+
+            local ressourceStatus, stats = getRessourceStatus(ressource, itemMeData, extItemData)
+            if ressourceStatus.id == ressourceStatuses.all_in_me_or_ex.id then
+                MeUtils.exportItem(ressource.item, stats.missingWithExternalInv)
+            end
+            if ressourceStatus.id == ressourceStatuses.craftable.id then
+                table.insert(mapToCraft, key)
+            end           
+        end
+
+        
+        while #mapToCraft > 0 do
+            -- find crafting cpu
+            local cpu = MeUtils.getFreeCpu()
+            if not cpu then
+                break
+            end
+           local keyOfItemToCraft = table.remove(mapToCraft)
+           local ressource = currentRessources[keyOfItemToCraft]
+           local itemMeData = itemsMap[ressource.item]
+           local extItemData = extChestItemMap[ressource.item]
+           local _, stats = getRessourceStatus(ressource, itemMeData, extItemData)
+           logger.log(MeUtils.craftItem(ressource.item, stats.missingWithExternalInvAndMe, cpu))
+        end
+
+        -- 2 .repeat as long as there is free crafting unit and things to craft
+        -- 2.1. find a crafting unit
+        -- 2.2. try to craft ressource, if fail, add to blacklisted ressources
+
+
+
+    end
+
 local onPressFunc = 
     function (_, isWorkOrderKey, workOrderKey, _)
         if isWorkOrderKey then
@@ -245,40 +292,55 @@ local onPressFunc =
             end
 
 
-
+        local logHeight = 10
         ressourceTable:setOnDrawButton(onDrawFunc)
         ressourceTable:setColumnCount(3)
         ressourceTable:setOnAskForNewData(onAskForNewData)
         local pageSizeX, pageSizeY = pageStack1:getSize()
         local pageX, pageY = pageStack1:getPosition()
-        ressourceTable:setSize(pageSizeX, pageSizeY - 4)
-        
-        logger.log(pageX .. "," .. pageY)
+        ressourceTable:setSize(pageSizeX, pageSizeY - 4 - logHeight)
         ressourceTable:setPosition(pageX,pageY)
-
         ressourcePage:add(ressourceTable)
         ressourcePage:setBackColor(elementBackColor)
         pageStack1:pushPage(ressourcePage)
         local _,_,_, endY = ressourceTable:getArea()
+
+        local log = logClass:new(1,1,"")
+        log:setUpperCornerPos(pageX + 1, endY + 1)
+        log:forceWidthSize(pageSizeX - 2)
+        log:forceHeightSize(logHeight)
+        log:changeStyle(nil, textColor)
+
+        ressourcePage:add(log)
+      
         local SendAllButton = ToggleableButtonClass:new(pageX, pageY, "Send/Craft ALL!")
         SendAllButton:forceWidthSize(pageSizeX - 2)
-        SendAllButton:setUpperCornerPos(pageX + 1, endY + 1)
+        SendAllButton:setUpperCornerPos(pageX + 1, endY + 1 + logHeight)
         SendAllButton:changeStyle(nil, textColor)
+        local IsSendingAll = false
 
 
         local OnSendAll = 
             function ()
-                ressourceTable:pressAllButtons()
+                IsSendingAll = not IsSendingAll
+                log:addLine("Pressed!")
+                
             end
 
+        local OnRefresh = function ()
+            if IsSendingAll then
+                ProcessAll(currentRessources, itemsMap, extChestItemMap)
+            end
+        end
 
+        
 
         SendAllButton:setOnManualToggle(OnSendAll)
         ressourcePage:add(SendAllButton)
         
         page:draw()
 
-
+        
         
 
 

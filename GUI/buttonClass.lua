@@ -281,6 +281,28 @@ function ButtonClass.executeMainAction(self)
     self.func(self)
 end
 
+function ButtonClass:setOnAskForNewData(func)
+    self.onAskForNewData = func
+end
+
+function ButtonClass:handleRefreshDataEvent()
+    -- ask data handler for new data
+
+    -- refresh is not setup
+    if not self.onAskForNewData then
+        return
+    end 
+    local Data = self.onAskForNewData(self)
+
+    if self:getText() == Data then
+        return
+    end
+
+    self:setText(Data)
+    self:askForRedraw()
+
+end
+
 return ButtonClass
 
 

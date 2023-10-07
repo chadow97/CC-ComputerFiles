@@ -482,7 +482,7 @@ function TableClass:handleRefreshDataEvent()
 
     -- refresh is not setup
     if not self.onAskForNewData then
-        return true 
+        return
     end 
     local NewInternalTable = self.onAskForNewData()
 
