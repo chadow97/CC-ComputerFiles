@@ -8,6 +8,7 @@ function GuiHandlerClass:new(refreshDelay, mainPage, shouldStopFunc)
       refreshDelay = refreshDelay or 1,
       mainPage = mainPage,
       shouldStopFunc = shouldStopFunc or function() return false end,
+      onRefreshCallbacks = {}
     }
     setmetatable(o, self)
     self.__index = self
@@ -25,6 +26,16 @@ end
 
 function GuiHandlerClass:setShouldStopFunc(func)
   self.shouldStopFunc = func
+end
+
+function GuiHandlerClass:addOnRefreshCallback(func)
+  table.insert(self.onRefreshCallbacks, func)
+end
+
+function GuiHandlerClass:handleRefresh()
+  for _, func in self.onRefreshCallbacks do
+    func()
+  end
 end
 
 function GuiHandlerClass:loop()
@@ -56,6 +67,7 @@ function GuiHandlerClass:loop()
     if eventName == "timer" and eventData[2] == refreshTimerID then
       eventData = {"refresh_data"}
       refreshTimerID = nil
+      self:handleRefresh()
     end
     
     self.mainPage:handleEvent(unpack(eventData))

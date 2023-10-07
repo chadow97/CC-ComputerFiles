@@ -1,6 +1,7 @@
 local ToggleableButtonClass = require("GUI.toggleableButtonClass")
 local CustomPaintUtils = require("UTIL.customPaintUtils")
 local logger = require("UTIL.logger")
+local PageStackClass = require("GUI.pageStackClass")
 
 
 -- Define the TableClass
