@@ -16,6 +16,7 @@ local logClass = require("GUI.logClass")
 local workOrderFetcherClass = require("MODEL.workOrderFetcherClass")
 local ressourceFetcherClass = require("MODEL.ressourceFetcherClass")
 local RessourceClass = require("MODEL.ressourceClass")
+local RessourcePageClass = require("COLONYGUI.ressourcePageClass")
 
 -- Define constants
 local BACKGROUND_COLOR = colors.yellow
@@ -103,44 +104,7 @@ local function OnWorkOrderPressed(positionInTable, isKey, workOrder)
     if (isKey) then
         return
     end
-    local ressourceFetcher = ressourceFetcherClass:new(colonyPeripheral, workOrder.id, externalChest)
-
-    local ressourceTable = ObTableClass:new(monitor, 1,1, "ressource")
-    ressourceTable:setBlockDraw(true)
-    ressourceTable:setDataFetcher(ressourceFetcher)
-    ressourceTable:setDisplayKey(false)
-    ressourceTable:setRowHeight(8)
-    ressourceTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
-    ressourceTable:setColumnCount(3)
-    ressourceTable:setHasManualRefresh(true)
-    ressourceTable:setSize(mainStackPageSizeX, mainStackPageSizeY - 4 - LOG_HEIGHT)
-    ressourceTable:setPosition(mainStackPageX,mainStackPageY)
-    ressourceTable:setOnPressFunc(OnRessourcePressed)
-    local _,_,_, ressourceTableEndY = ressourceTable:getArea()
-    
-    local logElement = logClass:new(1,1,"")
-    logElement:setUpperCornerPos(mainStackPageY + 1, ressourceTableEndY + 1)
-    logElement:forceWidthSize(mainStackPageSizeX - 2)
-    logElement:forceHeightSize(LOG_HEIGHT)
-    logElement:changeStyle(nil, INNER_ELEMENT_BACK_COLOR)
-    
-    local SendAllButton = ToggleableButtonClass:new(1, 1, "Send/Craft ALL!")
-    SendAllButton:forceWidthSize(mainStackPageSizeX - 2)
-    SendAllButton:setUpperCornerPos(mainStackPageX + 1, ressourceTableEndY + 1 + LOG_HEIGHT)
-    SendAllButton:changeStyle(nil, INNER_ELEMENT_BACK_COLOR)
-    SendAllButton:setOnManualToggle(OnSendAllPressed)
-
-
-    local ressourcePage = PageClass.new(monitor)
-    ressourcePage:setBlockDraw(true)
-    ressourcePage:setBackColor(ELEMENT_BACK_COLOR)
-
-    ressourcePage:add(ressourceTable)
-    ressourcePage:add(SendAllButton)
-    ressourcePage:add(logElement)
-    ressourcePage:setBlockDraw(false)
-    ressourceTable:setBlockDraw(false)
-    
+    local ressourcePage = RessourcePageClass:new(monitor, mainStackPage, colonyPeripheral, workOrder.id, externalChest)
     mainStackPage:pushPage(ressourcePage)
 
 end

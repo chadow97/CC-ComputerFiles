@@ -3,7 +3,6 @@ local ObClass = require("MODEL.obClass")  -- Adjust the path if necessary
 
 
 local WorkOrderClass = {}
-
 WorkOrderClass.__index = WorkOrderClass
 setmetatable(WorkOrderClass, { __index = ObClass })
 
