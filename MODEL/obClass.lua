@@ -9,14 +9,22 @@ function ObClass:new(uniqueKey)
     return self
 end
 
--- Method GetDisplayString with no implementation
+
 function ObClass:GetDisplayString()
     -- No implementation
 end
 
--- Method GetKeyDisplayString with no implementation
+
 function ObClass:GetKeyDisplayString()
     -- No implementation
+end
+
+
+
+function ObClass:getObStyle()
+    -- return elementBackColor, elementTextColor
+    -- by default, nothing is overriden.
+    return nil, nil
 end
 
 return ObClass

@@ -77,6 +77,24 @@ function RessourceClass:GetDisplayString()
                          self.itemId, self.missingInColony, self.amountInMeSystem, self.amountInExternalInventory, self.missingWithExternalInventoryAndMe, actionToDisplay)
 end
 
+function RessourceClass:getObStyle()
+    -- return elementBackColor, elementTextColor
+    local elementBackColor = nil
+
+    local elementTextColor = colors.white
+    if self.status == RESSOURCE_STATUS_LIST.no_missing or self.status == RESSOURCE_STATUS_LIST.all_in_external_inv then
+        elementTextColor = colors.green
+    elseif self.status == RESSOURCE_STATUS_LIST.all_in_me_or_ex then
+        elementTextColor = colors.yellow
+    elseif self.status == RESSOURCE_STATUS_LIST.missing_not_craftable then
+        elementTextColor = colors.red
+    elseif self.status == RESSOURCE_STATUS_LIST.craftable then
+        elementTextColor = colors.orange
+    end
+
+    return elementBackColor, elementTextColor
+end
+
 -- Static method to create a WorkOrder from a WorkOrderDataTable
 function RessourceClass.CreateRessource(ressourceRequirement, meDataForRessource, amountInExternalInventory)
     return RessourceClass:new(ressourceRequirement, meDataForRessource, amountInExternalInventory )

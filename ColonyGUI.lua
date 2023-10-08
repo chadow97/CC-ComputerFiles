@@ -19,8 +19,8 @@ local ressourceFetcherClass = require("MODEL.ressourceFetcherClass")
 -- Define constants
 local BACKGROUND_COLOR = colors.yellow
 local ELEMENT_BACK_COLOR = colors.red
-local INNER_ELEMENT_BACK_COLOR = colors.yellow
-local TEXT_COLOR = colors.lime
+local INNER_ELEMENT_BACK_COLOR = colors.lime
+local TEXT_COLOR = colors.yellow
 
 local REFRESH_DELAY = 100
 local CHANNEL = 1
@@ -274,16 +274,16 @@ local function OnWorkOrderPressed(positionInTable, isKey, workOrder)
     ressourceTable:setPosition(mainStackPageX,mainStackPageY)
     local _,_,_, ressourceTableEndY = ressourceTable:getArea()
     
-    local log = logClass:new(1,1,"")
-    log:setUpperCornerPos(mainStackPageY + 1, ressourceTableEndY + 1)
-    log:forceWidthSize(mainStackPageSizeX - 2)
-    log:forceHeightSize(LOG_HEIGHT)
-    log:changeStyle(nil, TEXT_COLOR)
+    local logElement = logClass:new(1,1,"")
+    logElement:setUpperCornerPos(mainStackPageY + 1, ressourceTableEndY + 1)
+    logElement:forceWidthSize(mainStackPageSizeX - 2)
+    logElement:forceHeightSize(LOG_HEIGHT)
+    logElement:changeStyle(nil, INNER_ELEMENT_BACK_COLOR)
     
     local SendAllButton = ToggleableButtonClass:new(1, 1, "Send/Craft ALL!")
     SendAllButton:forceWidthSize(mainStackPageSizeX - 2)
     SendAllButton:setUpperCornerPos(mainStackPageX + 1, ressourceTableEndY + 1 + LOG_HEIGHT)
-    SendAllButton:changeStyle(nil, TEXT_COLOR)
+    SendAllButton:changeStyle(nil, INNER_ELEMENT_BACK_COLOR)
 
 
     local ressourcePage = PageClass.new(monitor)
@@ -292,7 +292,7 @@ local function OnWorkOrderPressed(positionInTable, isKey, workOrder)
 
     ressourcePage:add(ressourceTable)
     ressourcePage:add(SendAllButton)
-    ressourcePage:add(log)
+    ressourcePage:add(logElement)
     ressourcePage:setBlockDraw(false)
     ressourceTable:setBlockDraw(false)
     
@@ -300,48 +300,6 @@ local function OnWorkOrderPressed(positionInTable, isKey, workOrder)
 
 end
 --[[
-local onPressFunc = 
-    function (_, isWorkOrderKey, workOrderKey, _)
-        if isWorkOrderKey then
-            return
-        end
-        -- get workorder data represented by pressed button
-        local ressourceTableToShow
-        currentRessources, ressourceTableToShow = getRessourcesAndRessourcesToShow(workOrderKey, workOrders)
-
-        local onPressRessourceFunc = 
-            function (_, isKey, key, _)
-                if isKey then
-                    return
-                end
-                -- get ressource data.
-                local ressource = currentRessources[key]
-                local itemMeData = itemsMap[ressource.item]
-                local extItemData = extChestItemMap[ressource.item]
-                local ressourceStatus, stats = getDataForRessource(ressource, itemMeData, extItemData)
-                if ressourceStatus.id == RESSOURCE_STATUS_LIST.all_in_me_or_ex.id then
-                    MeUtils.exportItem(ressource.item, stats.missingWithExternalInv)
-                end
-                if ressourceStatus.id == RESSOURCE_STATUS_LIST.craftable.id then
-                    MeUtils.craftItem(ressource.item, stats.missingWithExternalInvAndMe)
-                end
-
-
-            end
-
-        local ressourceTable = TableClass:new(monitor, 5, 5, "ressources")
-        local ressourcePage = PageClass.new(monitor)
-
-
-
-        ressourceTable:setDisplayKey(false)
-        ressourceTable:setInternalTable(ressourceTableToShow)
-        ressourceTable:setRowHeight(8)
-        ressourceTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
-        ressourceTable:setOnPressFunc(onPressRessourceFunc)
-
-
-
         local onDrawFunc =
             function (_, isKey, key, _, button)
                 if isKey then
@@ -355,42 +313,6 @@ local onPressFunc =
 
                 button:setTextColor(color)
             end
-
-        local onAskForNewData =
-            function ()
-                local newTableToShow
-                currentRessources, newTableToShow = getRessourcesAndRessourcesToShow(workOrderKey, workOrders)
-                return newTableToShow
-            end
-
-
-        local logHeight = 10
-        ressourceTable:setOnDrawButton(onDrawFunc)
-        ressourceTable:setColumnCount(3)
-        ressourceTable:setOnAskForNewData(onAskForNewData)
-        ressourceTable:setHasManualRefresh(true)
-        local pageSizeX, pageSizeY = mainStackPage:getSize()
-        local pageX, pageY = mainStackPage:getPosition()
-        ressourceTable:setSize(pageSizeX, pageSizeY - 4 - logHeight)
-        ressourceTable:setPosition(pageX,pageY)
-        ressourcePage:add(ressourceTable)
-        ressourcePage:setBackColor(ELEMENT_BACK_COLOR)
-        mainStackPage:pushPage(ressourcePage)
-        local _,_,_, endY = ressourceTable:getArea()
-
-        local log = logClass:new(1,1,"")
-        log:setUpperCornerPos(pageX + 1, endY + 1)
-        log:forceWidthSize(pageSizeX - 2)
-        log:forceHeightSize(logHeight)
-        log:changeStyle(nil, TEXT_COLOR)
-
-        ressourcePage:add(log)
-      
-        local SendAllButton = ToggleableButtonClass:new(pageX, pageY, "Send/Craft ALL!")
-        SendAllButton:forceWidthSize(pageSizeX - 2)
-        SendAllButton:setUpperCornerPos(pageX + 1, endY + 1 + logHeight)
-        SendAllButton:changeStyle(nil, TEXT_COLOR)
-        local IsSendingAll = false
 
 
         local OnSendAll = 

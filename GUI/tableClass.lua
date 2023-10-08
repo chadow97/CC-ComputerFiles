@@ -289,6 +289,26 @@ function TableClass:getStringToDisplay(data, isKey, position)
     end
 end
 
+function TableClass:getButtonStyle(isKey, position)
+    -- return elementBackColor, elementTextColor
+    return nil
+end
+
+function TableClass:modifyButtonStyle(button, isKey, position)
+    -- check if style was overriden
+    local elementBackColor, elementTextColor = self:getButtonStyle(isKey, position)
+    if not elementBackColor then
+        elementBackColor = self.elementBackColor
+    end
+
+    if not elementTextColor then
+        elementTextColor = self.textColor
+    end
+
+    button:changeStyle(elementTextColor, elementBackColor)
+
+end
+
 function TableClass:createButtonsForRow(key, value, position)
 
     local keyX,keyY = self:getElementStart(position, true)
@@ -298,7 +318,7 @@ function TableClass:createButtonsForRow(key, value, position)
     if self.displayKey then
         local keyStringToDisplay = self:getStringToDisplay(key, true, position)
         keyButton = ToggleableButtonClass:new(0, 0, keyStringToDisplay)
-        keyButton:changeStyle(self.elementBackColor, self.textColor)
+        self:modifyButtonStyle(keyButton,true, position)
         keyButton:setPage(self)
         keyButton:setUpperCornerPos(keyX,keyY)
         keyButton:forceWidthSize(self:getKeyRowWidth())
@@ -314,7 +334,7 @@ function TableClass:createButtonsForRow(key, value, position)
     if (typeOfValue == "table")  then    
         self:processTableElement(valueButton, key, value , position)
     end
-    valueButton:changeStyle(self.elementBackColor, self.textColor)
+    self:modifyButtonStyle(valueButton, false, position)
     valueButton:setPage(self)
     valueButton:setUpperCornerPos(valueX,valueY)
     valueButton:forceWidthSize(self:getValueRowWidth())
@@ -334,7 +354,7 @@ function TableClass:getElementStart(position, isKey)
     local column = (position - 1) % self:getColumnCount() + 1
 
     -- get position of key column
-    local firstElementX, firstElementY = self:getDrawableArea()
+    local firstElementX, firstElementY = self:getAreaForElements()
     local elementY = firstElementY + ((row - 1) * (self:getRowHeight() +self.marginBetweenRows))
     local elementX = firstElementX + ((column - 1) * (self:getKeyColomnWidth() + self.marginBetweenColumns))
 
@@ -443,7 +463,7 @@ function TableClass:getArea()
 end
 
 -- Area where you can draw buttons
-function TableClass:getDrawableArea()
+function TableClass:getAreaForElements()
     local startX, startY, endX, endY, sizeX, sizeY = self:getArea()
     local titleOffset = 0
     if self.title then
@@ -459,7 +479,7 @@ end
 function TableClass:getTitleArea()
     -- get drawableArea 
 
-    local startX, startY, endX, endY, sizeX,sizeY = self:getDrawableArea()
+    local startX, startY, endX, endY, sizeX,sizeY = self:getAreaForElements()
     --title is always over drawableArea and 1 high
     return startX, startY - 1, endX, startY-1, sizeX, 1
 end
@@ -569,7 +589,7 @@ function TableClass:draw()
     -- 3rd step: draw table buttons
 
     local drawElement = function(button) 
-        button:draw(self:getDrawableArea())
+        button:draw(self:getAreaForElements())
     end
     self:doForEachTableElement(drawElement)
 
@@ -583,9 +603,34 @@ function TableClass:draw()
     self:doForExtraButtons(drawButtonFunction)
 end
 
+function TableClass:handleTouchEvent(eventName, side, xPos, yPos)
+    -- only question element if event is in area
+    local buttonIterator = nil
+
+    local startX, startY, endX, endY, sizeX,sizeY = self:getAreaForElements()
+    local xInside = xPos >= startX and xPos <= endX
+    local yInside = yPos >= startY and yPos <= endY
+    if xInside and yInside then
+        buttonIterator = self.allButtons
+    else
+        buttonIterator = self.extraButtons
+    end
+
+    for button in buttonIterator(self) do
+        if button:handleEvent(eventName, side, xPos, yPos) then
+            return true
+        end
+    end
+
+end
+
 function TableClass:handleEvent(eventName, ...)
     if eventName == "refresh_data" then 
         return self:handleRefreshDataEvent()
+    end
+
+    if eventName == "monitor_touch" then
+        return self:handleTouchEvent(eventName, ...)
     end
 
     for button in self:allButtons() do
@@ -643,6 +688,28 @@ function TableClass:allButtons()
             button = nonElementButtons[nonElementPosition]
             position = position + 1
         end
+
+        return button
+    end
+end
+
+function TableClass:extraButtons()
+
+    local nonElementButtons = {}
+    if self.isScrollable then
+        table.insert(nonElementButtons, self.scrollButtons.Up)
+        table.insert(nonElementButtons, self.scrollButtons.Down)
+    end
+    if self.hasManualRefresh then
+        table.insert(nonElementButtons, self.refreshButton)
+    end
+
+    local position = 1
+
+    return function ()
+        local button = nil
+        button = nonElementButtons[position]
+        position = position + 1
 
         return button
     end

@@ -40,6 +40,11 @@ function ObTableClass:getStringToDisplay(data, isKey, position)
     end
 end
 
+function ObTableClass:getButtonStyle(isKey, position)
+    -- return elementBackColor, elementTextColor
+    return self.obList[position]:getObStyle()
+end
+
 -- Getter/setter for the internal table
 function ObTableClass:setInternalTable(internalTable)
     self.internalTable = nil
@@ -73,6 +78,7 @@ function ObTableClass:RefreshData()
     end
 
     self.obList = NewObList
+    self.areButtonsDirty = true
     self:askForRedraw()
 end
 

@@ -129,6 +129,7 @@ function ButtonClass.draw(self, startLimitX, startLimitY, endLimitX, endLimitY)
 end
 
 function ButtonClass.handleTouchEvent(self, eventName, side, xPos, yPos)
+    
     if self:isPosInButton(xPos, yPos) then
         self.func(self)
         return true
