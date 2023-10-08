@@ -33,7 +33,7 @@ function GuiHandlerClass:addOnRefreshCallback(func)
 end
 
 function GuiHandlerClass:handleRefresh()
-  for _, func in self.onRefreshCallbacks do
+  for _, func in ipairs(self.onRefreshCallbacks) do
     func()
   end
 end
@@ -41,6 +41,8 @@ end
 function GuiHandlerClass:loop()
   local refreshTimerID = nil
   local timerStartTime = nil
+
+  self.mainPage:draw()
   
   while not self.shouldStopFunc() do
     local timeSinceLastUpdate = 0

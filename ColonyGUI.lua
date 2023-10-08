@@ -4,6 +4,7 @@ local ButtonClass = require("GUI.buttonClass")
 local ToggleableButtonClass = require("GUI.toggleableButtonClass")
 local PageClass = require("GUI.pageClass")
 local TableClass = require("GUI.tableClass")
+local ObTableClass = require("GUI.obTableClass")
 local MonUtils = require("UTIL.monUtils")
 local MeUtils = require("UTIL.meUtils")
 local logger = require("UTIL.logger")
@@ -12,6 +13,8 @@ local peripheralProxyClass = require("UTIL.peripheralProxy")
 local ChestWrapper = require("UTIL.chestWrapper")
 local GuiHandlerClass = require("GUI.guiHandlerClass")
 local logClass = require("GUI.logClass")
+local workOrderFetcherClass = require("MODEL.workOrderFetcherClass")
+local ressourceFetcherClass = require("MODEL.ressourceFetcherClass")
 
 -- Define constants
 local BACKGROUND_COLOR = colors.yellow
@@ -21,6 +24,7 @@ local TEXT_COLOR = colors.lime
 
 local REFRESH_DELAY = 100
 local CHANNEL = 1
+local LOG_HEIGHT = 10
 
 local RESSOURCE_STATUS_LIST = {
     all_in_external_inv = {action ="Nothing to do.", color=colors.green, id =1},
@@ -122,6 +126,8 @@ table.insert(RootPageButtonList, ExitButton)
 -- Setup proxy to mineColonies
 local colonyPeripheral = peripheralProxyClass:new(CHANNEL, "colonyIntegrator" )
 
+local externalChest = ChestWrapper:new()
+
 -- Get CurrentWorkOrders
 local workOrders = getWorkOrders(colonyPeripheral)
 
@@ -133,8 +139,8 @@ for workOrderKey, value in pairs(workOrders) do
     workOrderTableToShow[workOrderKey] = valueToShow
 end
 
-
-local mainStackPage, mainStackTable = TableClass.createTableStack(monitor, 2, 2, monitorX - 2, monitorY - 2, workOrderTableToShow, "Item List")
+local workOrderFetcher = workOrderFetcherClass:new(colonyPeripheral)
+local mainStackPage, mainStackTable = ObTableClass.createTableStack(monitor, 2, 2, monitorX - 2, monitorY - 2, "Item List", workOrderFetcher)
 
 
 mainStackTable:setDisplayKey(false)
@@ -143,10 +149,13 @@ mainStackTable:setRowHeight(4)
 mainStackTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
 mainStackPage:changeStyle(nil, ELEMENT_BACK_COLOR)
 
+local mainStackPageSizeX, mainStackPageSizeY = mainStackPage:getSize()
+local mainStackPageX, mainStackPageY = mainStackPage:getPosition()
 
 
 
 
+--[[
 local currentRessources = nil
 local itemsMap = nil
 local extChestItemMap = nil
@@ -236,7 +245,7 @@ local ProcessAll =
 
 
     end
-
+--]]
 local rootPage = PageClass.new(monitor)
 rootPage:setBackColor(BACKGROUND_COLOR)
 
@@ -246,6 +255,51 @@ local shouldStopGuiLoop =
     end
 local guiHandler = GuiHandlerClass:new(REFRESH_DELAY, rootPage, shouldStopGuiLoop)
 
+local function OnWorkOrderPressed(positionInTable, isKey, workOrder)
+    -- do nothing if key, it shouldnt be displayed
+    if (isKey) then
+        return
+    end
+    local ressourceFetcher = ressourceFetcherClass:new(colonyPeripheral, workOrder.id, externalChest)
+
+    local ressourceTable = ObTableClass:new(monitor, 1,1, "ressource")
+    ressourceTable:setBlockDraw(true)
+    ressourceTable:setDataFetcher(ressourceFetcher)
+    ressourceTable:setDisplayKey(false)
+    ressourceTable:setRowHeight(8)
+    ressourceTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
+    ressourceTable:setColumnCount(3)
+    ressourceTable:setHasManualRefresh(true)
+    ressourceTable:setSize(mainStackPageSizeX, mainStackPageSizeY - 4 - LOG_HEIGHT)
+    ressourceTable:setPosition(mainStackPageX,mainStackPageY)
+    local _,_,_, ressourceTableEndY = ressourceTable:getArea()
+    
+    local log = logClass:new(1,1,"")
+    log:setUpperCornerPos(mainStackPageY + 1, ressourceTableEndY + 1)
+    log:forceWidthSize(mainStackPageSizeX - 2)
+    log:forceHeightSize(LOG_HEIGHT)
+    log:changeStyle(nil, TEXT_COLOR)
+    
+    local SendAllButton = ToggleableButtonClass:new(1, 1, "Send/Craft ALL!")
+    SendAllButton:forceWidthSize(mainStackPageSizeX - 2)
+    SendAllButton:setUpperCornerPos(mainStackPageX + 1, ressourceTableEndY + 1 + LOG_HEIGHT)
+    SendAllButton:changeStyle(nil, TEXT_COLOR)
+
+
+    local ressourcePage = PageClass.new(monitor)
+    ressourcePage:setBlockDraw(true)
+    ressourcePage:setBackColor(ELEMENT_BACK_COLOR)
+
+    ressourcePage:add(ressourceTable)
+    ressourcePage:add(SendAllButton)
+    ressourcePage:add(log)
+    ressourcePage:setBlockDraw(false)
+    ressourceTable:setBlockDraw(false)
+    
+    mainStackPage:pushPage(ressourcePage)
+
+end
+--[[
 local onPressFunc = 
     function (_, isWorkOrderKey, workOrderKey, _)
         if isWorkOrderKey then
@@ -364,13 +418,14 @@ local onPressFunc =
 
 
     end
+    --]]
 
-mainStackTable:setOnPressFunc(onPressFunc)
+mainStackTable:setOnPressFunc(OnWorkOrderPressed)
+    
+
 table.insert(RootPageButtonList, mainStackPage)
 
 rootPage:addButtons(RootPageButtonList)
-
-rootPage:draw()
 
 
 guiHandler:loop()

@@ -50,7 +50,8 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
       onDrawButton = nil,
       onAskForNewData = nil,
       columnCount = 1,
-      hasManualRefresh = false
+      hasManualRefresh = false,
+      blockDraw = false
     }
 
 
@@ -66,6 +67,10 @@ function TableClass:changeStyle(backColor, elementBackColor, textColor)
     self.textColor = textColor or self.textColor
     self.areButtonsDirty = true
 
+end
+
+function TableClass:setBlockDraw( shouldBlockDraw )
+    self.blockDraw = shouldBlockDraw
 end
 
 function TableClass:getColumnCount()
@@ -92,8 +97,10 @@ function TableClass:setScrollAmount(amount)
 end
 
 function TableClass:setOnPressFunc(func)
+    
     self.onPressFunc = func
     self.areButtonsDirty = true
+    logger.log(self.onPressFunc)
 end
 
 function TableClass:setOnDrawButton(func)
@@ -120,16 +127,20 @@ local function updateButtonsForScroll(table)
 
 end
 
-function TableClass:createButtonsForTable()
-    self.internalButtonHolder = {}
-    self.scrollButtons = {}
-
+function TableClass:createElementButtons()
     local index = 1
-
     for key, value in pairs(self.internalTable) do
         self:createButtonsForRow(key, value, index)
         index = index + 1
     end
+end
+
+function TableClass:createButtonsForTable()
+    self.internalButtonHolder = {}
+    self.scrollButtons = {}
+
+
+    self:createElementButtons()
 
     local startX, startY, endX, endY = self:getArea()
     if (self.isScrollable) then
@@ -200,7 +211,7 @@ function TableClass:scroll(isUp)
     end
 
    
-    local maxScroll = (self:getInternalTableElementCount() - 1) * (self:getRowHeight() + self.marginBetweenRows) * -1
+    local maxScroll = (self:getElementCount() - 1) * (self:getRowHeight() + self.marginBetweenRows) * -1
 
     if (scrollGoal < maxScroll) then
         realScroll = maxScroll
@@ -214,50 +225,68 @@ end
 
 
 
-local function setupOnManualToggle(table, button, key, isKey, position, data)
-
+function TableClass:setupOnManualToggle(button, key, isKey, position, data)
+    logger.log(self.onPressFunc)
     local  wrapper =
         function()
-            table.onPressFunc(position, isKey,key, data)
+            self.onPressFunc(position, isKey,key, data)
         end 
 
-    if table.onPressFunc then
+    if self.onPressFunc then
         button:setOnManualToggle(wrapper)
         return true
     end
     return false
 end
 
-local function setupOnDrawButton(table, button, key, isKey, position, data)
+function TableClass:setupOnDrawButton(button, key, isKey, position, data)
     local wrapper = 
         function()
-            table.onDrawButton(position, isKey, key, data, button)
+            self.onDrawButton(position, isKey, key, data, button)
         end
-    if table.onDrawButton then
+    if self.onDrawButton then
         button:setOnDraw(wrapper)
         return true
     end
     return false
 end
 
-local function processTableElement(tableClass, tableButton, key, value, position)
+function TableClass:processTableElement(elementButton, key, value, position)
 
-    if setupOnManualToggle(tableClass, tableButton,key, false, position, value ) then
+    if self:setupOnManualToggle(elementButton,key, false, position, value ) then
         return
     end
-    local func = function ()
-        if not tableClass.page.pushPage then
+    local onTableElementPressed = function ()
+        if not self.page.pushPage then
             return
         end
-        local InnerTablePage = TableClass:new(tableClass.monitor, nil, nil, key)
+        local InnerTablePage = TableClass:new(self.monitor, nil, nil, key)
         InnerTablePage:setInternalTable(value)
-        InnerTablePage:setTableValueDisplayed(tableClass.tableValueDisplayed)
-        tableClass.page:pushPage(InnerTablePage)
+        InnerTablePage:setTableValueDisplayed(self.tableValueDisplayed)
+        self.page:pushPage(InnerTablePage)
     end
 
 
-    tableButton:setOnManualToggle(func)
+    elementButton:setOnManualToggle(onTableElementPressed)
+end
 
+function TableClass:getStringToDisplay(data, isKey, position)
+
+    if isKey then
+        -- nothing special to do for key
+        return data
+    else
+        local typeOfData = type(data)
+        local stringToDisplay = data
+        if (typeOfData == "function") then
+            stringToDisplay = "function"
+        elseif (typeOfData == "table")  then
+            stringToDisplay = self.tableValueDisplayed(data)
+        elseif (typeOfData == "boolean" or typeOfData == "number") then
+            stringToDisplay = tostring(data)
+        end
+        return stringToDisplay
+    end
 end
 
 function TableClass:createButtonsForRow(key, value, position)
@@ -267,37 +296,31 @@ function TableClass:createButtonsForRow(key, value, position)
 
     local keyButton
     if self.displayKey then
-        keyButton = ToggleableButtonClass:new(0, 0, key)
+        local keyStringToDisplay = self:getStringToDisplay(key, true, position)
+        keyButton = ToggleableButtonClass:new(0, 0, keyStringToDisplay)
         keyButton:changeStyle(self.elementBackColor, self.textColor)
         keyButton:setPage(self)
         keyButton:setUpperCornerPos(keyX,keyY)
         keyButton:forceWidthSize(self:getKeyRowWidth())
         keyButton:forceHeightSize(self:getRowHeight())
-        setupOnManualToggle( self, keyButton, key, true, position, key)
-        setupOnDrawButton(self, keyButton, key, true, position, key)
+        self:setupOnManualToggle(keyButton, key, true, position, key)
+        self:setupOnDrawButton(keyButton, key, true, position, key)
     end
     local typeOfValue = type(value)
-    local displayedText = value
-
-    if (typeOfValue == "function") then
-        displayedText = "function"
-    elseif (typeOfValue == "table")  then
-        displayedText = self.tableValueDisplayed(value)
-    elseif (typeOfValue == "boolean" or typeOfValue == "number") then
-        displayedText = tostring(value)
-    end
+    local displayedText = self:getStringToDisplay(value, false, position)
+    
     
     local valueButton = ToggleableButtonClass:new(0, 0, displayedText)
     if (typeOfValue == "table")  then    
-        processTableElement(self, valueButton, key, value , position)
+        self:processTableElement(valueButton, key, value , position)
     end
     valueButton:changeStyle(self.elementBackColor, self.textColor)
     valueButton:setPage(self)
     valueButton:setUpperCornerPos(valueX,valueY)
     valueButton:forceWidthSize(self:getValueRowWidth())
     valueButton:forceHeightSize(self:getRowHeight())
-    setupOnManualToggle( self, valueButton, key, false, position, value)
-    setupOnDrawButton(self, valueButton,key, false, position, value)
+    self:setupOnManualToggle( valueButton, key, false, position, value)
+    self:setupOnDrawButton(valueButton,key, false, position, value)
 
     self.internalButtonHolder[key] = {keyButton = keyButton, valueButton = valueButton}
 end
@@ -408,14 +431,8 @@ function TableClass:getInternalTable()
   return self.internalTable
 end
 
-function TableClass:getInternalTableElementCount()
-    local count = 0
-
-    for key, value in pairs(self.internalTable) do
-        count = count + 1
-    end
-
-    return count
+function TableClass:getElementCount()
+    return #self.internalTable
 end
 
 
@@ -529,6 +546,9 @@ end
 function TableClass:draw()
 
     -- CreateButtons if needed
+    if self.blockDraw then
+        return
+    end
 
     if self.areButtonsDirty then
         self:createButtonsForTable()

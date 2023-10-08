@@ -60,6 +60,7 @@ function PageStackClass:pushPage(page)
   page:setPage(self)
   page:setSize(self:getSize())
   page:setPosition(self.posX, self.posY)
+  logger.log("asking for redraw after pushing page")
   self:askForRedraw(self)
 end
 
@@ -87,7 +88,7 @@ function PageStackClass:askForRedraw(asker)
         self:draw()
     end
 
-    if asker == self:getTopPage() then
+    if asker == self:getTopPage() or asker == self then
       if self.page then
         self.page:askForRedraw()
       else

@@ -17,6 +17,7 @@ function PageClass.new(monitor)
     self.sizeX, self.sizeY = self.monitor.getSize()
     self.eraseOnDraw = true
     self.backColor = colors.black
+    self.blockDraw = false
     return self
 end
 
@@ -33,6 +34,10 @@ end
 
 function PageClass:setBackColor(color)
     self.backColor = color or self.backColor
+end
+
+function PageClass:setBlockDraw( shouldBlockDraw )
+    self.blockDraw = shouldBlockDraw
 end
 
 function PageClass:addButtons(buttonList)
@@ -54,7 +59,9 @@ end
 
 -- Define the draw method to draw the page
 function PageClass:draw()
-
+    if self.blockDraw then
+        return
+    end
     if self.eraseOnDraw then
         local startX, startY, endX, endY =self:getArea()
 
