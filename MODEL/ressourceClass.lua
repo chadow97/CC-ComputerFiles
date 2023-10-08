@@ -13,6 +13,12 @@ local RessourceClass = {}
 RessourceClass.__index = RessourceClass
 setmetatable(RessourceClass, { __index = ObClass })
 
+RessourceClass.ACTIONS = {
+    CRAFT = 1,
+    SENDTOEXTERNAL = 2,
+    NOTHING = 3
+}
+
 -- Constructor for WorkOrderClass
 function RessourceClass:new(ressourceRequirement, meDataForRessource, amountInExternalInventory)
     local itemID = ressourceRequirement.item
@@ -93,6 +99,17 @@ function RessourceClass:getObStyle()
     end
 
     return elementBackColor, elementTextColor
+end
+
+function RessourceClass:getActionToDo()
+    if self.status == RESSOURCE_STATUS_LIST.craftable then
+        return RessourceClass.ACTIONS.CRAFT
+    elseif self.status == RESSOURCE_STATUS_LIST.all_in_me_or_ex then
+        return RessourceClass.ACTIONS.SENDTOEXTERNAL
+    else
+        return RessourceClass.ACTIONS.NOTHING
+    end
+
 end
 
 -- Static method to create a WorkOrder from a WorkOrderDataTable

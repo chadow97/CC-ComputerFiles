@@ -80,6 +80,7 @@ end
 
 function MeUtils.craftItem(itemName, count , cpu)
     if not MePeripheral then
+        logger.log("Missing Me Peripheral")
         return
     end
     local countToUse = count or 1

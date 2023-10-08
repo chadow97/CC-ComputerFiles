@@ -51,7 +51,8 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
       onAskForNewData = nil,
       columnCount = 1,
       hasManualRefresh = false,
-      blockDraw = false
+      blockDraw = false,
+      onPostRefreshDataCallback = nil
     }
 
 
@@ -542,7 +543,18 @@ end
 
 function TableClass:handleRefreshDataEvent()
     self:RefreshData()
+    self:onPostRefreshData()
 
+end
+
+function TableClass:onPostRefreshData()
+    if self.onPostRefreshDataCallback then
+        self.onPostRefreshDataCallback(self)
+    end
+end
+
+function TableClass:SetOnPostRefreshDataCallback( callback )
+    self.onPostRefreshDataCallback = callback
 end
 
 function TableClass:RefreshData()
