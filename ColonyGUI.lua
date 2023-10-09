@@ -62,9 +62,10 @@ local mainStackPage, mainStackTable = ObTableClass.createTableStack(monitor, 2, 
 
 mainStackTable:setDisplayKey(false)
 mainStackTable.title = nil
-mainStackTable:setRowHeight(4)
+mainStackTable:setRowHeight(5)
 mainStackTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
 mainStackPage:changeStyle(nil, ELEMENT_BACK_COLOR)
+mainStackTable:setHasManualRefresh(true)
 
 local function OnWorkOrderPressed(positionInTable, isKey, workOrder)
     -- do nothing if key, it shouldnt be displayed

@@ -59,8 +59,6 @@ function ColonyIntegratorPerUtils.getFirstWorkOrderResources(per)
   end
 
 function ColonyIntegratorPerUtils.getMissingRessourcesFromWorkOrder(per, workOrderId)
-    logger.log(workOrderId)
-
     local WorkOrderRessources = per:getWorkOrderResources(workOrderId)
     if not WorkOrderRessources then
         return ColonyIntegratorPerUtils.FailedGetWorkOrder
@@ -74,6 +72,61 @@ function ColonyIntegratorPerUtils.getMissingRessourcesFromWorkOrder(per, workOrd
     end
     return missingRessources
 
+end
+
+function ColonyIntegratorPerUtils.getBuildings(per)
+    return per.getBuildings()[1]
+end
+
+function ColonyIntegratorPerUtils.getWorkOrderById(per, workOrderId)
+    local workOrders = ColonyIntegratorPerUtils.getWorkOrders(per)
+    local requestedWorkOrder = nil
+    for _, workOrder in ipairs(workOrders) do
+        if workOrder.id == workOrderId then
+            requestedWorkOrder = workOrder
+        end
+    end
+    if not requestedWorkOrder then
+        logger.log("Couldn't find WorkOrder by ID!")
+    end
+    return requestedWorkOrder
+end
+
+function ColonyIntegratorPerUtils.getBuilderHutInfoFromWorkOrderId(per, workOrderId)
+    local workOrder = ColonyIntegratorPerUtils.getWorkOrderById(per, workOrderId)
+    return ColonyIntegratorPerUtils.getBuilderHutInfoFromWorkOrder(per, workOrder)
+end
+
+function ColonyIntegratorPerUtils.getBuildingByPosition(per, position)
+    local buildingRequested = nil
+    local buildingList = ColonyIntegratorPerUtils.getBuildings(per)
+    for _, building in pairs(buildingList) do
+        local buildingLocation = building.location
+        if (buildingLocation.x == position.x and
+            buildingLocation.y == position.y and
+            buildingLocation.z == position.z) then
+                buildingRequested = building
+                break
+            end
+        
+    end
+    return buildingRequested
+end
+
+function ColonyIntegratorPerUtils.getBuilderHutInfoFromWorkOrder(per, workOrder)
+    local builderHutPosition = workOrder.builder
+    local builderHutInfo = nil
+    if not builderHutPosition then
+        logger.log("no builder associated with workOrder")
+        return builderHutInfo
+    end
+
+
+    builderHutInfo = ColonyIntegratorPerUtils.getBuildingByPosition(per, builderHutPosition)
+    if not builderHutInfo then
+        logger.log("No builder hut found!")
+    end
+    return builderHutInfo
 end
 
 

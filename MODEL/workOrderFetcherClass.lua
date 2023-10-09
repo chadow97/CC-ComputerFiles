@@ -19,12 +19,13 @@ function WorkOrderFetcherClass:new(colonyPeripheral)
 end
 
 function WorkOrderFetcherClass:getData()
-    local WorkOrderObList = {}
-    for _, WorkOrderData in ipairs(self:getWorkOrders()) do
-        table.insert(WorkOrderObList,WorkOrderClass.CreateWorkOrder(WorkOrderData))
+    local workOrderObList = {}
+    for _, workOrderData in ipairs(self:getWorkOrders()) do
+        local builderHutData = colIntUtil.getBuilderHutInfoFromWorkOrder(self.colonyPeripheral, workOrderData)
+        table.insert(workOrderObList,WorkOrderClass.CreateWorkOrder(workOrderData, builderHutData))
     end
 
-    return WorkOrderObList
+    return workOrderObList
 end
 
 function WorkOrderFetcherClass:getWorkOrders()
