@@ -157,6 +157,3 @@ function RessourcePageClass.onRessourcePressed(positionInTable, isKey, ressource
 end
 
 return RessourcePageClass
-
-
--- STATIC FUNCTIONS

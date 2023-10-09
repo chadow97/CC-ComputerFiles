@@ -52,6 +52,11 @@ function PageStackClass:getMonitor()
   return self.monitor
 end
 
+-- adding a page in a pageStackClass puts it on top of the stack
+function PageStackClass:add(page)
+  self:pushPage(page)
+end
+
 -- push a page onto the stack
 function PageStackClass:pushPage(page)
   table.insert(self.pageStack, page)

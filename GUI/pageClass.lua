@@ -22,10 +22,10 @@ function PageClass.new(monitor)
 end
 
 -- Define the add() method to add button objects to the page
-function PageClass:add(button)
-    button:setMonitor(self.monitor)
-    button:setPage(self)
-    table.insert(self.buttons, button)
+function PageClass:add(pageElement)
+    pageElement:setMonitor(self.monitor)
+    pageElement:setPage(self)
+    table.insert(self.buttons, pageElement)
 end
 
 function PageClass:setPage(page)
