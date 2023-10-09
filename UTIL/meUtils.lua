@@ -58,8 +58,6 @@ function MeUtils.exportItem(itemName, count, containerName)
         countToUse = 1
     end
     local exportTable = {name = itemName, count = countToUse}
-    logger.log(exportTable)
-    logger.log(containerNameToUse)
     return MePeripheral.exportItemToPeripheral(exportTable, containerNameToUse)
 end
 
@@ -108,7 +106,6 @@ function MeUtils.craftItem(itemName, count)
         logger.log("Missing Me Peripheral")
         return
     end
-    logger.log("noooo")
     local countToUse = count or 1
     local itemTable = {name = itemName, count = countToUse}
     return MePeripheral.craftItem(itemTable)

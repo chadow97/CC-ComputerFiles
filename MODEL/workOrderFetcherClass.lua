@@ -31,8 +31,6 @@ end
 function WorkOrderFetcherClass:getWorkOrders()
     local status, workOrders = pcall(colIntUtil.getWorkOrders, self.colonyPeripheral)
     if not status then
-        logger.log(workOrders)
-        logger.log(debug.traceback())
         workOrders = {}
     end
     return workOrders

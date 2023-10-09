@@ -9,15 +9,6 @@ local ChestWrapper = require("UTIL.chestWrapper")
 local terminal = term.current()
 logger.init(terminal, "buttonTest", true)
 
---logger.log(peripheral.getNames())
-
---logger.log(peripheral.getType(chest))
---logger.log(peripheral.getMethods(chestName))
---logger.log(chest.list())
-
-
-
-
 -- Create a new ChestWrapper instance for a chest named "minecraft:chest_1"
 local chestPer = ChestWrapper:new()
 logger.log(chestPer)

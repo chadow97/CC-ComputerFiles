@@ -117,10 +117,8 @@ function ColonyIntegratorPerUtils.getBuilderHutInfoFromWorkOrder(per, workOrder)
     local builderHutPosition = workOrder.builder
     local builderHutInfo = nil
     if not builderHutPosition then
-        logger.log("no builder associated with workOrder")
         return builderHutInfo
     end
-
 
     builderHutInfo = ColonyIntegratorPerUtils.getBuildingByPosition(per, builderHutPosition)
     if not builderHutInfo then

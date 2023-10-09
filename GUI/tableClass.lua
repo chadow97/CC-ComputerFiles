@@ -100,7 +100,6 @@ function TableClass:setOnPressFunc(func)
     
     self.onPressFunc = func
     self.areButtonsDirty = true
-    logger.log(self.onPressFunc)
 end
 
 function TableClass:setOnDrawButton(func)

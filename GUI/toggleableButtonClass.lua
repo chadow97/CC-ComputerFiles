@@ -37,7 +37,7 @@ function ToggleableButtonClass.new(self, x, y, text)
 
   -- Shouldnt override this unless you want to change toggle behavior
   -- to disable automatic untoggle, use disableAutomaticUntoggle
-  instance.func = DefaultOnButtonPress
+  instance.onButtonPressedCallback = DefaultOnButtonPress
 
   instance.OnManualToggle = DefaultOnManualToggle
   instance.OnAutoUntoggle = DefaultOnAutomaticUntoggle

@@ -3,49 +3,40 @@ local CustomPaintUtils = require("UTIL.customPaintUtils")
 local IdGenerator = require("UTIL.IdGenerator")
 local stringUtils = require('UTIL.stringUtils')
 -- Define the ButtonClass table
+
 local ButtonClass = {}
-
-local defaultOldTextColor = colors.red
-
+ButtonClass.__index = ButtonClass
 
 
--- Define the metatable for the ButtonClass
-local ButtonClass_mt = { __index = ButtonClass }
 
 
+local DEFAULT_BACK_COLOR = colors.lightGray
+local DEFAULT_TEXT_COLOR = colors.black
 
 local function defaultButtonPressed(button)
-    -- save number of time button was pressed
-    if button.pressed == nil then
-        button.pressed = 0
-    end
-    button.pressed = button.pressed + 1
-    button:setText(tostring(button.pressed))
-    button:askForRedraw()
+
 end
 
 
 -- Define a constructor for the ButtonClass
-function ButtonClass.new(self, x, y, text)
-  local obj = { x = x or 1,
-                y = y or 1, 
-                text = text,
-                margin = 1,
-                backColor = colors.lightGray,
-                textColor = colors.black,
-                func = defaultButtonPressed,
-                monitor = monitor,
-                page = nil,
-                id = IdGenerator.generateId(),
-                forcedWidthSize = nil,
-                forcedHeightSize = nil,
-                shouldSplitText = true,
-                onDraw = nil
+function ButtonClass:new(xPos, yPos, text)
+  self = setmetatable({}, ButtonClass)
+  self.x = xPos or 1
+  self.y = yPos or 1
+  self.text = text
+  self.margin = 1
+  self.backColor = DEFAULT_BACK_COLOR
+  self.textColor = DEFAULT_TEXT_COLOR
+  self.onButtonPressedCallback = defaultButtonPressed
+  self.monitor = nil
+  self.page = nil
+  self.id = IdGenerator.generateId()
+  self.forceWidthSize = nil
+  self.forceHeightSize = nil
+  self.shouldSplitText = true
+  self.onDraw = nil
 
-               }
-
-  setmetatable(obj, ButtonClass_mt)
-  return obj
+  return self
 end
 
 function ButtonClass.setOnDraw(self, func)
@@ -131,7 +122,7 @@ end
 function ButtonClass.handleTouchEvent(self, eventName, side, xPos, yPos)
 
     if self:isPosInButton(xPos, yPos) then
-        self.func(self)
+        self.onButtonPressedCallback(self)
         return true
     end
     return false
@@ -252,7 +243,7 @@ function ButtonClass.changeStyle(self, textColor, backColor)
 end
 
 function ButtonClass.setFunction(self, func)
-    self.func = func
+    self.onButtonPressedCallback = func
 end
 
 function ButtonClass.setPage(self, page)
@@ -280,7 +271,7 @@ function ButtonClass.onResumeAfterContextLost(self)
 end
 
 function ButtonClass.executeMainAction(self)
-    self.func(self)
+    self.onButtonPressedCallback(self)
 end
 
 function ButtonClass:setOnAskForNewData(func)

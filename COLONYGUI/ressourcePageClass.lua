@@ -103,9 +103,7 @@ function RessourcePageClass:getOnSendAllPressedCallback()
 end
 
 function RessourcePageClass:getOnPostTableRefreshCallback()
-  logger.log("sending callback")
   return function()
-    logger.log("function called")
     if not self.isSendingAll then
       return
     end
@@ -130,7 +128,6 @@ function RessourcePageClass:getOnPostTableRefreshCallback()
       end
       if ressource.status == RessourceClass.RESSOURCE_STATUSES.craftable then
           if not MeUtils.isItemBeingCrafted(ressource.itemId) and hasFreeCpuLeft then
-            logger.log(ressource.itemId .. ressource.missingWithExternalInventoryAndMe)
             MeUtils.craftItem(ressource.itemId, ressource.missingWithExternalInventoryAndMe)
             local lineToOutput = string.format("Crafting %s %s", ressource.missingWithExternalInventoryAndMe, ressource.itemId)
             self.logElement:addLine(lineToOutput)
