@@ -37,7 +37,7 @@ function ToggleableButtonClass.new(self, x, y, text)
 
   -- Shouldnt override this unless you want to change toggle behavior
   -- to disable automatic untoggle, use disableAutomaticUntoggle
-  instance.onButtonPressedCallback = DefaultOnButtonPress
+  self:setOnElementTouched(DefaultOnButtonPress)
 
   instance.OnManualToggle = DefaultOnManualToggle
   instance.OnAutoUntoggle = DefaultOnAutomaticUntoggle
@@ -55,8 +55,6 @@ function ToggleableButtonClass.new(self, x, y, text)
 
   -- By default, can not untoggle manually
   instance.canUntoggleManually = false
-
-
 
   return instance
 end
@@ -118,7 +116,7 @@ function ToggleableButtonClass:toggle(timeUntilUndo)
         os.cancelTimer(self.toggledTimer)
     end
     
-    -- Stat a timer to toggle back
+    -- Start a timer to toggle back
     if timeUntilUndo ~= nil then
         ---@diagnostic disable-next-line: undefined-field
         self.toggledTimer = os.startTimer(timeUntilUndo)
@@ -147,7 +145,7 @@ function ToggleableButtonClass:handleTimerEvent(eventName, timerID)
     return false
 end
 
-function ToggleableButtonClass.onResumeAfterContextLost(self)
+function ToggleableButtonClass:onResumeAfterContextLost()
 
     -- force timerEnd as we probably have missed it...
 
@@ -158,11 +156,8 @@ function ToggleableButtonClass.onResumeAfterContextLost(self)
     ButtonClass.onResumeAfterContextLost(self)
 end
 
-function ToggleableButtonClass:executeMainAction()
+function ToggleableButtonClass:pressButton()
     self.OnManualToggle(self)
 end
-
-
-
 
 return ToggleableButtonClass

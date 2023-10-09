@@ -68,7 +68,7 @@ function RessourcePageClass:buildRessourcePage(parentPage)
   SendAllButton:changeStyle(SEND_ALL_TEXT_COLOR, INNER_ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, SEND_ALL_TEXT_COLOR)
   SendAllButton:setOnManualToggle(self:getOnSendAllPressedCallback())
   SendAllButton:disableAutomaticUntoggle()
-  SendAllButton:setOnDraw(self:getOnDrawSendAllButton())
+  SendAllButton:setOnDrawCallback(self:getOnDrawSendAllButton())
 
   self:setBlockDraw(true)
   self:setBackColor(ELEMENT_BACK_COLOR)

@@ -33,7 +33,7 @@ local function endProgram()
     isRunning = false
 end
 local exitButton = ButtonClass:new(monitorX, monitorY, "X")
-exitButton:setFunction(endProgram)
+exitButton:setOnElementTouched(endProgram)
 exitButton:changeStyle(nil, ELEMENT_BACK_COLOR)
 exitButton:setMargin(0)
 table.insert(RootPageButtonList, exitButton)

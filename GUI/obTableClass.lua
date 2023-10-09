@@ -110,7 +110,7 @@ function ObTableClass:setupOnDrawButton(button, key, isKey, position, data)
             self.onDrawButton(position, isKey, button, self.obList[position])
         end
     if self.onDrawButton then
-        button:setOnDraw(wrapper)
+        button:setOnDrawCallback(wrapper)
         return true
     end
     return false

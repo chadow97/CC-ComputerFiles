@@ -24,12 +24,12 @@ end
 -- Define the add() method to add button objects to the page
 function PageClass:add(pageElement)
     pageElement:setMonitor(self.monitor)
-    pageElement:setPage(self)
+    pageElement:setParentPage(self)
     table.insert(self.buttons, pageElement)
 end
 
-function PageClass:setPage(page)
-    self.page = page
+function PageClass:setParentPage(parentPage)
+    self.parentPage = parentPage
 end
 
 function PageClass:setBackColor(color)
@@ -74,8 +74,8 @@ end
 
 function PageClass:askForRedraw()
     -- if page has no parent, then we can draw, else we ask its parents to handle drawing.
-    if self.page then
-        self.page:askForRedraw(self) -- passing asker
+    if self.parentPage then
+        self.parentPage:askForRedraw(self) -- passing asker
     else
         self:draw()
     end

@@ -22,7 +22,7 @@ function PageStackClass:new(monitor)
   o:updateButtonPosition()
   o.exitButton:setMargin(0)
   o.exitButton:setMonitor(monitor)
-  o.exitButton:setPage(o)
+  o.exitButton:setParentPage(o)
 
   o.exitButton:setOnManualToggle(
       (function(button) 
@@ -62,7 +62,7 @@ function PageStackClass:pushPage(page)
   table.insert(self.pageStack, page)
 
   page:setMonitor(self.monitor)
-  page:setPage(self)
+  page:setParentPage(self)
   page:setSize(self:getSize())
   page:setPosition(self.posX, self.posY)
   logger.log("asking for redraw after pushing page")
@@ -136,8 +136,8 @@ function PageStackClass:setSize(sizeX,sizeY)
     self:updateButtonPosition()
 end
 
-function PageStackClass:setPage(page)
-    self.parentPage = page
+function PageStackClass:setParentPage(parentPage)
+    self.parentPage = parentPage
 end
 
 -- handle an event

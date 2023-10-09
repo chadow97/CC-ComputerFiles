@@ -30,7 +30,7 @@ local monX, monY =monitor.getSize()
 
 
 local ExitButton = ButtonClass:new(monX - 1, monY -1, "X")
-ExitButton:setFunction(endProgram)
+ExitButton:setOnElementTouched(endProgram)
 table.insert(buttonList, ExitButton)
 
 

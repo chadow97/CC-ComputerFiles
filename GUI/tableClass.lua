@@ -155,8 +155,8 @@ function TableClass:createButtonsForTable()
 
         self.scrollButtons.Up = Up
         self.scrollButtons.Down= Down
-        Up:setPage(self)
-        Down:setPage(self)
+        Up:setParentPage(self)
+        Down:setParentPage(self)
 
         Up:setOnManualToggle(
             (function(button) 
@@ -176,7 +176,7 @@ function TableClass:createButtonsForTable()
         local RefreshButton = ToggleableButtonClass:new(startX,startY, "R")
         RefreshButton:setMargin(0)
         RefreshButton:changeStyle(nil, self.backColor)
-        RefreshButton:setPage(self)
+        RefreshButton:setParentPage(self)
         RefreshButton:setOnManualToggle(            
             (function(button) 
             self:RefreshData()
@@ -244,7 +244,7 @@ function TableClass:setupOnDrawButton(button, key, isKey, position, data)
             self.onDrawButton(position, isKey, key, data, button)
         end
     if self.onDrawButton then
-        button:setOnDraw(wrapper)
+        button:setOnDrawCallback(wrapper)
         return true
     end
     return false
@@ -256,13 +256,13 @@ function TableClass:processTableElement(elementButton, key, value, position)
         return
     end
     local onTableElementPressed = function ()
-        if not self.page.pushPage then
+        if not self.parentPage.pushPage then
             return
         end
         local InnerTablePage = TableClass:new(self.monitor, nil, nil, key)
         InnerTablePage:setInternalTable(value)
         InnerTablePage:setTableValueDisplayed(self.tableValueDisplayed)
-        self.page:pushPage(InnerTablePage)
+        self.parentPage:pushPage(InnerTablePage)
     end
 
 
@@ -318,7 +318,7 @@ function TableClass:createButtonsForRow(key, value, position)
         local keyStringToDisplay = self:getStringToDisplay(key, true, position)
         keyButton = ToggleableButtonClass:new(0, 0, keyStringToDisplay)
         self:modifyButtonStyle(keyButton,true, position)
-        keyButton:setPage(self)
+        keyButton:setParentPage(self)
         keyButton:setUpperCornerPos(keyX,keyY)
         keyButton:forceWidthSize(self:getKeyRowWidth())
         keyButton:forceHeightSize(self:getRowHeight())
@@ -334,7 +334,7 @@ function TableClass:createButtonsForRow(key, value, position)
         self:processTableElement(valueButton, key, value , position)
     end
     self:modifyButtonStyle(valueButton, false, position)
-    valueButton:setPage(self)
+    valueButton:setParentPage(self)
     valueButton:setUpperCornerPos(valueX,valueY)
     valueButton:forceWidthSize(self:getValueRowWidth())
     valueButton:forceHeightSize(self:getRowHeight())
@@ -410,13 +410,13 @@ function TableClass:getMonitor()
 end
 
 -- Getter/setter for the page
-function TableClass:setPage(page)
-  self.page = page
+function TableClass:setParentPage(parentPage)
+  self.parentPage = parentPage
   self.areButtonsDirty = true;
 end
 
-function TableClass:getPage()
-  return self.page
+function TableClass:getParentPage()
+  return self.parentPage
 end
 
 -- Getter for isScrollable
@@ -526,8 +526,8 @@ end
 
 function TableClass:askForRedraw()
     -- if table has no parent, then we can draw, else we ask its parents to handle drawing.
-    if self.page then
-        self.page:askForRedraw(self) -- passing asker
+    if self.parentPage then
+        self.parentPage:askForRedraw(self) -- passing asker
     else
         self:draw()
     end
@@ -744,7 +744,7 @@ end
 function TableClass:pressAllButtons()
     local toDoForAllButtons = 
         function(button)
-            button:executeMainAction()
+            button:pressButton()
         end
     self:doForEachTableElement(toDoForAllButtons)
 end

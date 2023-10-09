@@ -63,14 +63,14 @@ local OnStop =
         keepHolding = false
     end)
 
-StopButton:setFunction(OnStop)
+StopButton:setOnElementTouched(OnStop)
 
 local OnRestart = 
     (function()
         keepHolding = false
     end)
 
-RestartButton:setFunction(OnRestart)    
+RestartButton:setOnElementTouched(OnRestart)   
 
 
 
