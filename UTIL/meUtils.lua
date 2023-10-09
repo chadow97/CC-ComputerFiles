@@ -77,15 +77,41 @@ function MeUtils.getFreeCpu()
     end
 end
 
-
-function MeUtils.craftItem(itemName, count , cpu)
+function MeUtils.getAllFreeCpus()
     if not MePeripheral then
         logger.log("Missing Me Peripheral")
         return
     end
+    local cpus = MePeripheral.getCraftingCPUs()
+    local freeCpus = {}
+    for key, cpu in pairs(cpus) do
+        if not cpu.isBusy then
+            cpu.name = key
+            table.insert(freeCpus, cpu)
+        end
+     end
+    return freeCpus
+end
+
+function MeUtils.isItemBeingCrafted(itemName)
+    if not MePeripheral then
+        logger.log("Missing Me Peripheral")
+        return
+    end
+    local itemTable = {name = itemName}
+    return MePeripheral.isItemCrafting(itemTable)
+end
+
+
+function MeUtils.craftItem(itemName, count)
+    if not MePeripheral then
+        logger.log("Missing Me Peripheral")
+        return
+    end
+    logger.log("noooo")
     local countToUse = count or 1
     local itemTable = {name = itemName, count = countToUse}
-    return MePeripheral.craftItem(itemTable, cpu)
+    return MePeripheral.craftItem(itemTable)
 end
 
 

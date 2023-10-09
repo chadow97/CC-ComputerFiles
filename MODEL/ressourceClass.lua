@@ -1,17 +1,19 @@
 -- WorkOrderClass.lua
 local ObClass = require("MODEL.obClass")  -- Adjust the path if necessary
 
-local RESSOURCE_STATUS_LIST = {
-    all_in_external_inv = 1,
-    all_in_me_or_ex = 2,
-    no_missing = 3,
-    missing_not_craftable = 4,
-    craftable = 5}
 
 local RessourceClass = {}
 
 RessourceClass.__index = RessourceClass
 setmetatable(RessourceClass, { __index = ObClass })
+
+
+RessourceClass.RESSOURCE_STATUSES = {
+    all_in_external_inv = 4,
+    all_in_me_or_ex = 2,
+    no_missing = 5,
+    missing_not_craftable = 3,
+    craftable = 1}
 
 RessourceClass.ACTIONS = {
     CRAFT = 1,
@@ -47,15 +49,15 @@ end
 function RessourceClass:getItemStatus()
 
     if self.missingInColony <= 0 then
-        return RESSOURCE_STATUS_LIST.no_missing
+        return RessourceClass.RESSOURCE_STATUSES.no_missing
     elseif self.missingWithExternalInventory <= 0 then
-        return RESSOURCE_STATUS_LIST.all_in_external_inv
+        return RessourceClass.RESSOURCE_STATUSES.all_in_external_inv
     elseif self.missingWithExternalInventoryAndMe <= 0 then
-        return RESSOURCE_STATUS_LIST.all_in_me_or_ex
+        return RessourceClass.RESSOURCE_STATUSES.all_in_me_or_ex
     elseif self.isCraftableInMeSystem then
-        return RESSOURCE_STATUS_LIST.craftable
+        return RessourceClass.RESSOURCE_STATUSES.craftable
     else
-        return RESSOURCE_STATUS_LIST.missing_not_craftable
+        return RessourceClass.RESSOURCE_STATUSES.missing_not_craftable
     end
 
 end
@@ -69,13 +71,13 @@ end
 function RessourceClass:GetDisplayString()
 
     local actionToDisplay = ""
-    if self.status == RESSOURCE_STATUS_LIST.no_missing or self.status == RESSOURCE_STATUS_LIST.all_in_external_inv then
+    if self.status == RessourceClass.RESSOURCE_STATUSES.no_missing or self.status == RessourceClass.RESSOURCE_STATUSES.all_in_external_inv then
         actionToDisplay = "Nothing to do."
-    elseif self.status == RESSOURCE_STATUS_LIST.all_in_me_or_ex then
+    elseif self.status == RessourceClass.RESSOURCE_STATUSES.all_in_me_or_ex then
         actionToDisplay = "Press to send to external inv."
-    elseif self.status == RESSOURCE_STATUS_LIST.missing_not_craftable then
+    elseif self.status == RessourceClass.RESSOURCE_STATUSES.missing_not_craftable then
         actionToDisplay = "Missing and cannot be crafted!"
-    elseif self.status == RESSOURCE_STATUS_LIST.craftable then
+    elseif self.status == RessourceClass.RESSOURCE_STATUSES.craftable then
         actionToDisplay = "Press to craft."
     end
 
@@ -88,13 +90,13 @@ function RessourceClass:getObStyle()
     local elementBackColor = nil
 
     local elementTextColor = colors.white
-    if self.status == RESSOURCE_STATUS_LIST.no_missing or self.status == RESSOURCE_STATUS_LIST.all_in_external_inv then
+    if self.status == RessourceClass.RESSOURCE_STATUSES.no_missing or self.status == RessourceClass.RESSOURCE_STATUSES.all_in_external_inv then
         elementTextColor = colors.green
-    elseif self.status == RESSOURCE_STATUS_LIST.all_in_me_or_ex then
+    elseif self.status == RessourceClass.RESSOURCE_STATUSES.all_in_me_or_ex then
         elementTextColor = colors.yellow
-    elseif self.status == RESSOURCE_STATUS_LIST.missing_not_craftable then
+    elseif self.status == RessourceClass.RESSOURCE_STATUSES.missing_not_craftable then
         elementTextColor = colors.red
-    elseif self.status == RESSOURCE_STATUS_LIST.craftable then
+    elseif self.status == RessourceClass.RESSOURCE_STATUSES.craftable then
         elementTextColor = colors.orange
     end
 
@@ -102,9 +104,9 @@ function RessourceClass:getObStyle()
 end
 
 function RessourceClass:getActionToDo()
-    if self.status == RESSOURCE_STATUS_LIST.craftable then
+    if self.status == RessourceClass.RESSOURCE_STATUSES.craftable then
         return RessourceClass.ACTIONS.CRAFT
-    elseif self.status == RESSOURCE_STATUS_LIST.all_in_me_or_ex then
+    elseif self.status == RessourceClass.RESSOURCE_STATUSES.all_in_me_or_ex then
         return RessourceClass.ACTIONS.SENDTOEXTERNAL
     else
         return RessourceClass.ACTIONS.NOTHING
@@ -116,5 +118,14 @@ end
 function RessourceClass.CreateRessource(ressourceRequirement, meDataForRessource, amountInExternalInventory)
     return RessourceClass:new(ressourceRequirement, meDataForRessource, amountInExternalInventory )
 end
+
+RessourceClass.SortByStatusFunction = 
+    function(a,b)
+        if a.status ~= b.status then
+            return a.status < b.status
+        else
+            return a.itemId < b.itemId
+        end
+    end
 
 return RessourceClass

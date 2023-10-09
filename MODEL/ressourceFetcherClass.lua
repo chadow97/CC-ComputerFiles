@@ -20,6 +20,7 @@ function RessourceFetcherClass:new(colonyPeripheral, workOrderId, externalChest)
     self.colonyPeripheral = colonyPeripheral
     self.workOrderId = workOrderId
     self.externalChest = externalChest
+    self.ressourceList = nil
     return self
 end
 
@@ -81,7 +82,17 @@ function RessourceFetcherClass:getData()
         table.insert(ressourceObList, ressourceOb)
     end
 
+    table.sort(ressourceObList, RessourceClass.SortByStatusFunction)
+    self.ressourceList = ressourceObList
+
     return ressourceObList
+end
+
+function RessourceFetcherClass:getAllRessourcesWithoutRefreshing()
+    if not self.ressourceList then
+        logger.log("Trying to get uninitialized ressource list!")
+    end
+    return self.ressourceList
 end
 
 

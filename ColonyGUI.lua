@@ -66,39 +66,6 @@ mainStackTable:setRowHeight(4)
 mainStackTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
 mainStackPage:changeStyle(nil, ELEMENT_BACK_COLOR)
 
-local mainStackPageSizeX, mainStackPageSizeY = mainStackPage:getSize()
-local mainStackPageX, mainStackPageY = mainStackPage:getPosition()
-
-local IsSendingAll = false;
-
-local function ProcessAll() 
-    
-end
-
-local function OnRefresh()
-        if IsSendingAll then
-            -- ProcessAll(currentRessources, itemsMap, extChestItemMap)
-        end
-end
-local function OnSendAllPressed()
-        IsSendingAll = not IsSendingAll
-end
-
-local function OnRessourcePressed(positionInTable, isKey, ressource)
-    -- do nothing if key, it shouldnt be displayed
-    if  isKey then
-        return
-    end
-    local actionToDo = ressource:getActionToDo()
-    logger.log(actionToDo)
-    if actionToDo == RessourceClass.ACTIONS.SENDTOEXTERNAL then
-        MeUtils.exportItem(ressource.item, ressource.missingWithExternalInventory)
-    elseif actionToDo == RessourceClass.ACTIONS.CRAFT then
-        MeUtils.craftItem(ressource.itemId, ressource.missingWithExternalInventoryAndMe)
-    end
-
-end
-
 local function OnWorkOrderPressed(positionInTable, isKey, workOrder)
     -- do nothing if key, it shouldnt be displayed
     if (isKey) then

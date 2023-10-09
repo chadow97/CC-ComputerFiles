@@ -55,7 +55,6 @@ function TableClass:new( monitor, posX, posY, title, sizeX, sizeY)
       onPostRefreshDataCallback = nil
     }
 
-
     setmetatable(properties, TableClass_mt)
     -- sets default scroll amount
     properties:setScrollAmount()
@@ -543,7 +542,7 @@ end
 
 function TableClass:handleRefreshDataEvent()
     self:RefreshData()
-    self:onPostRefreshData()
+    
 
 end
 
@@ -573,6 +572,7 @@ function TableClass:RefreshData()
 
     self:setInternalTable(NewInternalTable)
     self:askForRedraw()
+    self:onPostRefreshData()
 end
 
 function TableClass:draw()
