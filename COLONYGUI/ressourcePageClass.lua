@@ -27,7 +27,7 @@ setmetatable(RessourcePageClass, {__index = PageClass})
 
 
 function RessourcePageClass:new(monitor, parentPage, colonyPeripheral, workOrderId, externalChest)
-  self = setmetatable(PageClass.new(monitor), RessourcePageClass)
+  self = setmetatable(PageClass:new(monitor), RessourcePageClass)
 
   self.ressourceFetcher = RessourceFetcherClass:new(colonyPeripheral, workOrderId, externalChest)
   self.isSendingAll = false;

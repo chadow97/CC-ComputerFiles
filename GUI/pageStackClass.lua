@@ -64,8 +64,7 @@ function PageStackClass:pushPage(page)
   page:setMonitor(self.monitor)
   page:setParentPage(self)
   page:setSize(self:getSize())
-  page:setPosition(self.posX, self.posY)
-  logger.log("asking for redraw after pushing page")
+  page:setPos(self.posX, self.posY)
   self:askForRedraw(self)
 end
 

@@ -50,7 +50,7 @@ local workOrderPage = WorkOrderPageClass:new(monitor, pageStack, colonyPeriphera
 pageStack:pushPage(workOrderPage)
 pageStack:changeStyle(nil, ELEMENT_BACK_COLOR)
 
-local rootPage = PageClass.new(monitor)
+local rootPage = PageClass:new(monitor)
 rootPage:setBackColor(BACKGROUND_COLOR)
 rootPage:add(pageStack)
 rootPage:add(exitButton)

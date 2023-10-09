@@ -18,7 +18,8 @@ setmetatable(WorkOrderPageClass, {__index = PageClass})
 
 
 function WorkOrderPageClass:new(monitor, parentPage, colonyPeripheral, externalChest)
-  self = setmetatable(PageClass.new(monitor), WorkOrderPageClass)
+  logger.log(monitor)
+  self = setmetatable(PageClass:new(monitor), WorkOrderPageClass)
 
   self.ressourceFetcher = WorkOrderFetcherClass:new(colonyPeripheral)
   self.parentPage = parentPage
