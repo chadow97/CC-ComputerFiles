@@ -68,7 +68,7 @@ end
 -- Define a draw method for the ButtonClass
 function ButtonClass.draw(self, startLimitX, startLimitY, endLimitX, endLimitY)
   if self.onDraw then
-    self.onDraw()
+    self.onDraw(self)
   end
   local startX, startY, endX, endY = self:getArea()
   local startXToDraw = startX
@@ -129,7 +129,7 @@ function ButtonClass.draw(self, startLimitX, startLimitY, endLimitX, endLimitY)
 end
 
 function ButtonClass.handleTouchEvent(self, eventName, side, xPos, yPos)
-    
+
     if self:isPosInButton(xPos, yPos) then
         self.func(self)
         return true

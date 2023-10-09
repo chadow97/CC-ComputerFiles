@@ -12,7 +12,12 @@ local logger                = require "UTIL.logger"
 local ELEMENT_BACK_COLOR = colors.red
 local INNER_ELEMENT_BACK_COLOR = colors.lime
 local TEXT_COLOR = colors.yellow
+local SEND_ALL_TEXT_COLOR = colors.black
+
 local LOG_HEIGHT = 10
+
+local SEND_ALL_UNTOGGLED_TEXT = "Press to send/craft missing ressources."
+local SEND_ALL_TOGGLED_TEXT = "Sending and crafting! Press to stop."
 
 -- Define the RessourcePage Class 
 local RessourcePageClass = {}
@@ -57,11 +62,13 @@ function RessourcePageClass:buildRessourcePage(parentPage)
   logElement:changeStyle(nil, INNER_ELEMENT_BACK_COLOR)
   self.logElement = logElement
   
-  local SendAllButton = ToggleableButtonClass:new(1, 1, "Send/Craft ALL!")
+  local SendAllButton = ToggleableButtonClass:new(1, 1, SEND_ALL_UNTOGGLED_TEXT)
   SendAllButton:forceWidthSize(parentPageSizeX - 2)
   SendAllButton:setUpperCornerPos(parentPagePosX + 1, ressourceTableEndY + 1 + LOG_HEIGHT)
-  SendAllButton:changeStyle(nil, INNER_ELEMENT_BACK_COLOR)
+  SendAllButton:changeStyle(SEND_ALL_TEXT_COLOR, INNER_ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, SEND_ALL_TEXT_COLOR)
   SendAllButton:setOnManualToggle(self:getOnSendAllPressedCallback())
+  SendAllButton:disableAutomaticUntoggle()
+  SendAllButton:setOnDraw(self:getOnDrawSendAllButton())
 
   self:setBlockDraw(true)
   self:setBackColor(ELEMENT_BACK_COLOR)
@@ -71,6 +78,17 @@ function RessourcePageClass:buildRessourcePage(parentPage)
   self:add(logElement)
   self:setBlockDraw(false)
   ressourceTable:setBlockDraw(false)
+
+end
+
+function RessourcePageClass:getOnDrawSendAllButton()
+  return function(button)
+    if button.toggled then
+      button:setText(SEND_ALL_TOGGLED_TEXT)
+    else
+      button:setText(SEND_ALL_UNTOGGLED_TEXT)
+    end
+  end
 
 end
 
