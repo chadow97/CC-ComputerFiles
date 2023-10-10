@@ -32,7 +32,7 @@ end
 function WorkOrderPageClass:buildWorkOrderPage(parentPage)
 
 local parentPageSizeX, parentPageSizeY = parentPage:getSize()
-local parentPagePosX, parentPagePosY = parentPage:getPosition()
+local parentPagePosX, parentPagePosY = parentPage:getPos()
 
 local workOrderTable = ObTableClass:new(self.monitor, 1,1, "Work Orders")
 workOrderTable:setBlockDraw(true)

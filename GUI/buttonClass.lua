@@ -156,6 +156,19 @@ function ButtonClass:isPosInElement(x, y)
     return xInside and yInside
 end
 
+function ButtonClass:setBackColor(backColor)
+    self.backColor = backColor
+end
+
+function ButtonClass:setTextColor(textColor)
+    self.textColor = textColor
+end
+
+function ButtonClass:changeStyle(textColor, backColor)
+    self:setTextColor(textColor or self.textColor)
+    self:setBackColor(backColor or self.backColor)
+end
+
 function ButtonClass:getText()
     return self.text
 end

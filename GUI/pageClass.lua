@@ -7,7 +7,6 @@ PageClass.__index = PageClass
 setmetatable(PageClass, { __index = ElementClass })
 
 function PageClass:new(monitor, xPos, yPos)
-    logger.log(monitor)
     self = setmetatable(ElementClass:new(xPos, yPos), PageClass)
     self.elements = {}
     logger.callStackToFile()

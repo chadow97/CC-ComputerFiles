@@ -39,7 +39,7 @@ end
 function RessourcePageClass:buildRessourcePage(parentPage)
  
   local parentPageSizeX, parentPageSizeY = parentPage:getSize()
-  local parentPagePosX, parentPagePosY = parentPage:getPosition()
+  local parentPagePosX, parentPagePosY = parentPage:getPos()
 
   local ressourceTable = ObTableClass:new(self.monitor, 1,1, "ressource")
   ressourceTable:setBlockDraw(true)

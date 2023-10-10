@@ -8,6 +8,7 @@ local peripheralProxyClass = require("UTIL.peripheralProxy")
 local ChestWrapper = require("UTIL.chestWrapper")
 local GuiHandlerClass = require("GUI.guiHandlerClass")
 local WorkOrderPageClass = require("COLONYGUI.workOrderPageClass")
+local PageStackClass     = require("GUI.pageStackClass")
 
 -- Define constants
 local BACKGROUND_COLOR = colors.yellow
@@ -48,7 +49,7 @@ pageStack:setSize(monitorX - 2,monitorY - 2)
 pageStack:setPosition(2,2)
 local workOrderPage = WorkOrderPageClass:new(monitor, pageStack, colonyPeripheral, externalChest)
 pageStack:pushPage(workOrderPage)
-pageStack:changeStyle(nil, ELEMENT_BACK_COLOR)
+pageStack:changeExitButtonStyle(nil, ELEMENT_BACK_COLOR)
 
 local rootPage = PageClass:new(monitor)
 rootPage:setBackColor(BACKGROUND_COLOR)

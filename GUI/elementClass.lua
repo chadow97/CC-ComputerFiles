@@ -83,19 +83,6 @@ function ElementClass:getPos()
     return self.x,self.y
 end
 
-function ElementClass:setBackColor(backColor)
-    self.backColor = backColor
-end
-
-function ElementClass:setTextColor(textColor)
-    self.textColor = textColor
-end
-
-function ElementClass:changeStyle(textColor, backColor)
-    self:setTextColor(textColor or self.textColor)
-    self:setBackColor(backColor or self.backColor)
-end
-
 function ElementClass:setOnElementTouched(onElementTouchedCallback)
     self.onElementTouchedCallback = onElementTouchedCallback
 end

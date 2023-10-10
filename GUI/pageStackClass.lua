@@ -1,55 +1,38 @@
 local logger = require "UTIL.logger"
 local ToggleableButtonClass = require("GUI.toggleableButtonClass")
+local PageClass             = require("GUI.pageClass")
 -- define the PageStackClass
-PageStackClass = {}
+
+local PageStackClass = {}
+PageStackClass.__index = PageStackClass
+setmetatable(PageStackClass, { __index = PageClass })
+
 
 -- constructor
 function PageStackClass:new(monitor)
-  local o = {
-    pageStack = {},
-    monitor = monitor,
-    posX = 1,
-    posY = 1,
-    sizeX = 10,
-    sizeY = 10,
-    parentPage = nil,
-    exitButton = nil
-  }
-  setmetatable(o, self)
-  self.__index = self
+  self = setmetatable(PageClass:new(monitor), PageStackClass)
+  self.pageStack = {}
 
-  o.exitButton = ToggleableButtonClass:new(1,1, "X")
-  o:updateButtonPosition()
-  o.exitButton:setMargin(0)
-  o.exitButton:setMonitor(monitor)
-  o.exitButton:setParentPage(o)
+  self.exitButton = ToggleableButtonClass:new(1,1, "X")
+  self:updateButtonPosition()
+  self.exitButton:setMargin(0)
+  PageClass.add(self, self.exitButton)
 
-  o.exitButton:setOnManualToggle(
+  self.exitButton:setOnManualToggle(
       (function(button) 
-          o:popPage()
+          self:popPage()
       end)
   )
 
-
-  return o
+  return self
 end
 
 function PageStackClass:updateButtonPosition()
-    self.exitButton:setPos(self.posX+ self.sizeX - 1,self.posY)
+    self.exitButton:setPos(self.x+ self.sizeX - 1,self.y)
 end
 
-function PageStackClass:changeStyle(...)
+function PageStackClass:changeExitButtonStyle(...)
   self.exitButton:changeStyle(...)
-end
-
--- setter and getter for monitor
-function PageStackClass:setMonitor(monitor)
-  self.monitor = monitor
-  self.exitButton:setMonitor(monitor)
-end
-
-function PageStackClass:getMonitor()
-  return self.monitor
 end
 
 -- adding a page in a pageStackClass puts it on top of the stack
@@ -64,12 +47,16 @@ function PageStackClass:pushPage(page)
   page:setMonitor(self.monitor)
   page:setParentPage(self)
   page:setSize(self:getSize())
-  page:setPos(self.posX, self.posY)
+  page:setPos(self.x, self.y)
   self:askForRedraw(self)
 end
 
 -- pop the top page from the stack
 function PageStackClass:popPage()
+  if #self.pageStack == 0 then
+    logger.log("No pages inserted!!")
+    return
+  end
   if (#self.pageStack == 1) then
     return
   end
@@ -101,42 +88,14 @@ function PageStackClass:askForRedraw(asker)
     end
 end
 
--- draw the current stack of pages
-function PageStackClass:draw()
-
+function PageStackClass:internalDraw()
   self:getTopPage():draw()
   self.exitButton:draw()
 end
 
--- get the area covered by the page stack
-function PageStackClass:getArea()
-
-  return self.posX, self.posY, self.posX + self.sizeX - 1, self.posY + self.sizeY - 1, self.sizeX, self.sizeY
-end
-
--- get the size of the page stack
-function PageStackClass:getSize()
-    return self.sizeX, self.sizeY
-end
-
-function PageStackClass:setPosition(posX,posY)
-    self.posX = posX
-    self.posY = posY
+function PageStackClass:setPosition(x,y)
+    PageClass.setPos(self, x, y)
     self:updateButtonPosition()
-end
-
-function PageStackClass:getPosition()
-    return self.posX, self.posY
-end
-
-function PageStackClass:setSize(sizeX,sizeY)
-    self.sizeX = sizeX
-    self.sizeY = sizeY
-    self:updateButtonPosition()
-end
-
-function PageStackClass:setParentPage(parentPage)
-    self.parentPage = parentPage
 end
 
 -- handle an event
