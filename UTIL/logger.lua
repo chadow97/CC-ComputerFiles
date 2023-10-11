@@ -45,12 +45,12 @@ function logger.db(text)
     logger.log(text, logger.LOGGING_LEVEL.ALWAYS_DEBUG)
 end
 
-function logger.log(text, loglevel)
+function logger.log(text, logLevel)
     if not logger.isActive then
         return
     end
 
-    if logger.curLoggingLevel < loglevel then
+    if logLevel and logger.curLoggingLevel <= logLevel then
         return
     end
 
