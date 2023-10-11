@@ -1,38 +1,58 @@
 local pretty = require "cc.pretty"
 
+local logger = {}
 
-local logger = {
-    terminal = nil,
-    lastLineWriten = nil,
-    directory = "output",
-    fileName = nil,
-    isActive = nil
-}
+logger.LOGGING_LEVEL = {
+    ALWAYS_DEBUG = 1, -- these are temporary but we always went to see them
+    ALWAYS = 2,
+    ERROR = 3,
+    WARNING = 4,
+    DEBUG = 5
+    }
+logger.terminal = nil
+logger.lastLineWriten = nil
+logger.directory = "output"
+logger.fileName = nil
+logger.isActive = nil
+logger.curLoggingLevel = logger.LOGGING_LEVEL.WARNING
+
 
 local function getFilePath()
     return logger.directory  ..  "/" .. logger.fileName
 end
 
 
-function logger.init(terminal, fileName, shouldDeleteFile)
+function logger.init(terminal, fileName, shouldDeleteFile, loggingLevel)
     logger.terminal = terminal
     logger.fileName = fileName or "logger.log"
     logger.isActive = true
+    logger.setLoggingLevel(loggingLevel)
 
     if shouldDeleteFile then
         fs.delete(getFilePath())
     end
 end
 
+function logger.setLoggingLevel(loggingLevel)
+    logger.curLoggingLevel = loggingLevel or logger.curLoggingLevel
+end
+
 function logger.deactiveate()
     logger.isActive = false
 end
 
-function logger.log(text)
+function logger.db(text)
+    logger.log(text, logger.LOGGING_LEVEL.ALWAYS_DEBUG)
+end
+
+function logger.log(text, loglevel)
     if not logger.isActive then
         return
     end
 
+    if logger.curLoggingLevel < loglevel then
+        return
+    end
 
     if logger.terminal ~= nil then
         local originalTerminal = term.current()
