@@ -34,7 +34,7 @@ local sleepTime = 9
 
 table.remove(programArgs, 1)
 
-local page = PageClass.new(monitor)
+local page = PageClass:new(monitor)
 
 monitorX, monitorY = monitor.getSize()
 
@@ -74,7 +74,7 @@ RestartButton:setOnElementTouched(OnRestart)
 
 
 
-page:addButtons(buttonList)
+page:addElements(buttonList)
 page:disableErase()
 -- main loop
 while keepTesting do

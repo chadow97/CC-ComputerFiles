@@ -50,7 +50,7 @@ self:setBackColor(ELEMENT_BACK_COLOR)
 
 
 workOrderTable:setBlockDraw(false)
-self:add(workOrderTable)
+self:addElement(workOrderTable)
 self:setBlockDraw(false)
 
 end
@@ -62,9 +62,9 @@ function WorkOrderPageClass:getOnWorkOrderPressed()
         if (isKey) then
             return
         end
-
+        
         local ressourcePage = RessourcePageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, workOrder.id, self.externalChest)
-        self.parentPage:add(ressourcePage)
+        self.parentPage:addElement(ressourcePage)
     end
 end
 

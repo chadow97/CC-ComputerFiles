@@ -23,8 +23,8 @@ function TableClass:new( monitor, x, y, title, sizeX, sizeY)
     self.isScrollable = true
     self.sizeX = sizeX or DEFAULT_X_SIZE
     self.sizeY = sizeY or DEFAULT_Y_SIZE
-    self.internalTable = {}
-    self.internalButtonHolder = {} --TODO, should be elements maybe?
+    self.internalData = {}
+    self.tableElements = {}
     self.margin = 1
     self.buttonMargin = 1
     self.marginBetweenColumns = 1
@@ -116,14 +116,14 @@ end
 
 function TableClass:createElementButtons()
     local index = 1
-    for key, value in pairs(self.internalTable) do
-        self:createButtonsForRow(key, value, index)
+    for key, value in pairs(self.internalData) do
+        self:createTableElementsForRow(key, value, index)
         index = index + 1
     end
 end
 
 function TableClass:createButtonsForTable()
-    self.internalButtonHolder = {}
+    self.tableElements = {}
     self.scrollButtons = {}
     self:createElementButtons()
 
@@ -141,8 +141,8 @@ function TableClass:createButtonsForTable()
 
         self.scrollButtons.Up = Up
         self.scrollButtons.Down= Down
-        Up:setParentPage(self)
-        Down:setParentPage(self)
+        self:addElement(Up)
+        self:addElement(Down)
 
         Up:setOnManualToggle(
             (function(button) 
@@ -162,7 +162,7 @@ function TableClass:createButtonsForTable()
         local RefreshButton = ToggleableButtonClass:new(startX,startY, "R")
         RefreshButton:setMargin(0)
         RefreshButton:changeStyle(nil, self.backColor)
-        RefreshButton:setParentPage(self)
+        self:addElement(RefreshButton)
         RefreshButton:setOnManualToggle(            
             (function(button) 
             self:refreshData()
@@ -171,10 +171,7 @@ function TableClass:createButtonsForTable()
         self.refreshButton = RefreshButton
     end
 
-    self:setMonitorForAll()
     self.areButtonsDirty = false;
-
-
 end
 
 
@@ -196,7 +193,7 @@ function TableClass:scroll(isUp)
     end
 
    
-    local maxScroll = (self:getElementCount() - 1) * (self:getRowHeight() + self.marginBetweenRows) * -1
+    local maxScroll = (self:getRowCount() - 1) * (self:getRowHeight() + self.marginBetweenRows) * -1
 
     if (scrollGoal < maxScroll) then
         realScroll = maxScroll
@@ -223,7 +220,7 @@ function TableClass:setOnTableElementPressedCallbackForElement(element, key, isK
     return false
 end
 
-function TableClass:setOnTableElementDrawnCallbackForButton(element, key, isKey, position, data)
+function TableClass:setOnTableElementDrawnCallbackForElement(element, key, isKey, position, data)
     local wrapper =
         function()
             self.onTableElementDrawnCallback(position, isKey, key, data, element)
@@ -276,16 +273,16 @@ function TableClass:getStringToDisplayForElement(data, isKey, position)
     end
 end
 
-function TableClass:getButtonStyleAccordingToData(isKey, position)
+function TableClass:getTableElementStyleAccordingToData(isKey, position)
     -- return elementBackColor, elementTextColor
 
     -- always default 
     return nil,nil
 end
 
-function TableClass:updateElementStyleAccordingToData(button, isKey, position)
+function TableClass:updateElementStyleAccordingToData(tableElement, isKey, position)
     -- check if style was overriden
-    local elementBackColor, elementTextColor = self:getButtonStyleAccordingToData(isKey, position)
+    local elementBackColor, elementTextColor = self:getTableElementStyleAccordingToData(isKey, position)
     if not elementBackColor then
         elementBackColor = self.elementBackColor
     end
@@ -294,44 +291,44 @@ function TableClass:updateElementStyleAccordingToData(button, isKey, position)
         elementTextColor = self.textColor
     end
 
-    button:changeStyle(elementTextColor, elementBackColor)
+    tableElement:changeStyle(elementTextColor, elementBackColor)
 
 end
 
-function TableClass:createButtonsForRow(key, value, position)
+function TableClass:createTableElementsForRow(key, value, position)
 
     local keyX,keyY = self:getElementStart(position, true)
     local valueX, valueY = self:getElementStart(position, false)
 
-    local keyButton
+    local keyElement
     if self.displayKey then
         local keyStringToDisplay = self:getStringToDisplayForElement(key, true, position)
-        keyButton = ToggleableButtonClass:new(0, 0, keyStringToDisplay)
-        self:updateElementStyleAccordingToData(keyButton,true, position)
-        keyButton:setParentPage(self)
-        keyButton:setUpperCornerPos(keyX,keyY)
-        keyButton:forceWidthSize(self:getKeyRowWidth())
-        keyButton:forceHeightSize(self:getRowHeight())
-        self:setOnTableElementPressedCallbackForElement(keyButton, key, true, position, key)
-        self:setupOnDrawButton(keyButton, key, true, position, key)
+        keyElement = ToggleableButtonClass:new(0, 0, keyStringToDisplay)
+        self:updateElementStyleAccordingToData(keyElement,true, position)
+        keyElement:setUpperCornerPos(keyX,keyY)
+        keyElement:forceWidthSize(self:getKeyRowWidth())
+        keyElement:forceHeightSize(self:getRowHeight())
+        self:addElement(keyElement)
+        self:setOnTableElementPressedCallbackForElement(keyElement, key, true, position, key)
+        self:setupOnDrawButton(keyElement, key, true, position, key)
     end
     local typeOfValue = type(value)
     local displayedText = self:getStringToDisplayForElement(value, false, position)
     
     
-    local valueButton = ToggleableButtonClass:new(0, 0, displayedText)
+    local valueElement = ToggleableButtonClass:new(0, 0, displayedText)
     if (typeOfValue == "table")  then    
-        self:processTableElement(valueButton, key, value , position)
+        self:processTableElement(valueElement, key, value , position)
     end
-    self:updateElementStyleAccordingToData(valueButton, false, position)
-    valueButton:setParentPage(self)
-    valueButton:setUpperCornerPos(valueX,valueY)
-    valueButton:forceWidthSize(self:getValueRowWidth())
-    valueButton:forceHeightSize(self:getRowHeight())
-    self:setOnTableElementPressedCallbackForElement( valueButton, key, false, position, value)
-    self:setupOnDrawButton(valueButton,key, false, position, value)
+    self:updateElementStyleAccordingToData(valueElement, false, position)
+    self:addElement(valueElement)
+    valueElement:setUpperCornerPos(valueX,valueY)
+    valueElement:forceWidthSize(self:getValueRowWidth())
+    valueElement:forceHeightSize(self:getRowHeight())
+    self:setOnTableElementPressedCallbackForElement( valueElement, key, false, position, value)
+    self:setupOnDrawButton(valueElement,key, false, position, value)
 
-    self.internalButtonHolder[key] = {keyButton = keyButton, valueButton = valueButton}
+    self.tableElements[key] = {keyButton = keyElement, valueButton = valueElement}
 end
 
 
@@ -389,9 +386,8 @@ function TableClass:getValueRowWidth()
 end
 
 -- Getter/setter for the monitor
-function TableClass:setMonitor(monitor)  
+function TableClass:setMonitor(monitor)
   PageClass.setMonitor(self,monitor)
-  self:setMonitorForAll()
   self.areButtonsDirty = true;
 end
 
@@ -418,8 +414,8 @@ function TableClass:setHasManualRefresh(value)
 end
 
 -- Getter/setter for the internal table
-function TableClass:setInternalTable(internalTable)
-    self.internalTable = internalTable
+function TableClass:setInternalTable(internalData)
+    self.internalData = internalData
     self.areButtonsDirty = true;
 end
 
@@ -429,11 +425,11 @@ function TableClass:setDisplayKey(displayKey)
 end
 
 function TableClass:getInternalTable()
-  return self.internalTable
+  return self.internalData
 end
 
-function TableClass:getElementCount()
-    return #self.internalTable
+function TableClass:getRowCount()
+    return #self.internalData
 end
 
 -- Area where you can draw elements
@@ -459,7 +455,7 @@ function TableClass:doForEachTableElement(func, ...)
        
     local position = 1   
 
-    for key, elementButtons in pairs(self.internalButtonHolder) do
+    for key, elementButtons in pairs(self.tableElements) do
         local keyButton = elementButtons.keyButton
         local valueButton = elementButtons.valueButton
         -- call on key first
@@ -489,12 +485,6 @@ function TableClass:doForExtraButtons(func, ...)
 
 end
 
-function TableClass:doForAllElementsInPage(...)
-    self:doForEachTableElement(...)
-    self:doForScrollButtons(...)
-    self:doForExtraButtons(...)
-end
-
 function TableClass:askForRedraw() -- todo: this should be moved in the page class and should consider backcolor
     -- if table has no parent, then we can draw, else we ask its parents to handle drawing.
     if self.parentPage then
@@ -518,7 +508,7 @@ function TableClass:onPostRefreshData()
     end
 end
 
-function TableClass:SetOnPostRefreshDataCallback( callback )
+function TableClass:setOnPostRefreshDataCallback( callback )
     self.onPostRefreshDataCallback = callback
 end
 
@@ -532,7 +522,7 @@ function TableClass:refreshData()
     local NewInternalTable = self.onAskForNewData()
 
     -- nothing to do if table didn't change
-    if (not NewInternalTable or NewInternalTable == self.internalTable) then
+    if (not NewInternalTable or NewInternalTable == self.internalData) then
         return
     end
 
@@ -589,9 +579,9 @@ function TableClass:handleTouchEvent(eventName, side, xPos, yPos)
     local xInside = xPos >= startX and xPos <= endX
     local yInside = yPos >= startY and yPos <= endY
     if xInside and yInside then
-        elementIterator = self.allButtons
+        elementIterator = self.allElementsIterator
     else
-        elementIterator = self.extraButtons
+        elementIterator = self.nonTableElementsIterator
     end
 
     for element in elementIterator(self) do
@@ -602,7 +592,7 @@ function TableClass:handleTouchEvent(eventName, side, xPos, yPos)
 
 end
 
-function TableClass:handleEvent(eventName, ...) --todo , use pageClass when buttons are in elements
+function TableClass:handleEvent(eventName, ...) 
     if eventName == "refresh_data" then 
         return self:handleRefreshDataEvent()
     end
@@ -611,17 +601,7 @@ function TableClass:handleEvent(eventName, ...) --todo , use pageClass when butt
         return self:handleTouchEvent(eventName, ...)
     end
 
-    for button in self:allButtons() do
-        if button:handleEvent(eventName, ...) then
-            return true
-        end
-    end
-end
-
-function TableClass:setPosition(posX,posY)
-    self.posX = posX
-    self.posY = posY
-    self.areButtonsDirty = true;
+    return PageClass.handleEvent(self, eventName, ...)
 end
 
 function TableClass:setPos(x,y)
@@ -629,108 +609,23 @@ function TableClass:setPos(x,y)
     self.areButtonsDirty = true;
 end
 
-function TableClass:allButtons() --todo should just look at elements
-    local buttonKeys = {}
-    for key, _ in pairs(self.internalButtonHolder) do
-        table.insert(buttonKeys, key)
-    end
+function TableClass:nonTableElementsIterator()
 
-    local nonElementButtons = {}
+    local nonTableElements = {}
     if self.isScrollable then
-        table.insert(nonElementButtons, self.scrollButtons.Up)
-        table.insert(nonElementButtons, self.scrollButtons.Down)
+        table.insert(nonTableElements, self.scrollButtons.Up)
+        table.insert(nonTableElements, self.scrollButtons.Down)
     end
-    if self.hasManualRefresh then
-        table.insert(nonElementButtons, self.refreshButton)
-    end
-
-
-    local position = 1
-    local isKey = self.displayKey
-
-    return function ()
-        local button = nil
-        if (position <= #buttonKeys) then
-            local key = buttonKeys[position]
-            if isKey then
-                button = self.internalButtonHolder[key].keyButton
-                isKey = false
-            else
-                button = self.internalButtonHolder[key].valueButton
-                isKey = self.displayKey
-                position = position + 1
-            end
-        else
-            local nonElementPosition = position - #buttonKeys
-            button = nonElementButtons[nonElementPosition]
-            position = position + 1
-        end
-
-        return button
-    end
-end
-
-function TableClass:extraButtons()
-
-    local nonElementButtons = {}
-    if self.isScrollable then
-        table.insert(nonElementButtons, self.scrollButtons.Up)
-        table.insert(nonElementButtons, self.scrollButtons.Down)
-    end
-    if self.hasManualRefresh then
-        table.insert(nonElementButtons, self.refreshButton)
+    if self.refreshButton then
+        table.insert(nonTableElements, self.refreshButton)
     end
 
     local position = 1
-
     return function ()
-        local button = nil
-        button = nonElementButtons[position]
+        local button = nonTableElements[position]
         position = position + 1
-
         return button
     end
-end
-
-function TableClass:setMonitorForAll() --todo should use setMonitor when elements are use instead
-    local func = function(button) 
-        button:setMonitor(self.monitor)
-    end
-    self:doForAllElementsInPage(func)
-end
-
-function TableClass:onResumeAfterContextLost() --todo fix when using elements
-    local func = function(button) 
-        button:onResumeAfterContextLost()
-    end
-
-    self:doForAllElementsInPage(func)
-end
-
-function TableClass:pressAllButtons()
-    local toDoForAllButtons = 
-        function(button)
-            button:pressButton()
-        end
-    self:doForEachTableElement(toDoForAllButtons)
-end
-
-
--- static function
-
-function TableClass.createTableStack(monitor, posX, posY, sizeX,sizeY, table, tableName, displayTableFunction)
-
-    local newTable = TableClass:new(monitor, 1,1, tableName)
-
-    newTable:setTableValueDisplayed(displayTableFunction)
-    newTable:setInternalTable(table)
-    
-    local tableStack = PageStackClass:new(monitor)
-    tableStack:setSize(sizeX,sizeY)
-    tableStack:setPosition( posX,posY)
-    tableStack:pushPage(newTable)
-
-    return tableStack, newTable
 end
 
 -- Return the TableClass

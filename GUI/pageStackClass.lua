@@ -16,7 +16,7 @@ function PageStackClass:new(monitor)
   self.exitButton = ToggleableButtonClass:new(1,1, "X")
   self:updateButtonPosition()
   self.exitButton:setMargin(0)
-  PageClass.add(self, self.exitButton)
+  PageClass.addElement(self, self.exitButton)
 
   self.exitButton:setOnManualToggle(
       (function(button) 
@@ -36,7 +36,7 @@ function PageStackClass:changeExitButtonStyle(...)
 end
 
 -- adding a page in a pageStackClass puts it on top of the stack
-function PageStackClass:add(page)
+function PageStackClass:addElement(page)
   self:pushPage(page)
 end
 

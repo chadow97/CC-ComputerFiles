@@ -53,8 +53,8 @@ pageStack:changeExitButtonStyle(nil, ELEMENT_BACK_COLOR)
 
 local rootPage = PageClass:new(monitor)
 rootPage:setBackColor(BACKGROUND_COLOR)
-rootPage:add(pageStack)
-rootPage:add(exitButton)
+rootPage:addElement(pageStack)
+rootPage:addElement(exitButton)
 
 local shouldStopGuiLoop =
     function()

@@ -26,7 +26,7 @@ function ObTableClass:createElementButtons()
     --rewrite to not use internal table
     local index = 1
     for _, ob in pairs(self.obList) do
-        self:createButtonsForRow(index, "tempValue", index)
+        self:createTableElementsForRow(index, "tempValue", index)
         index = index + 1
     end
 end
@@ -47,8 +47,8 @@ function ObTableClass:getButtonStyleAccordingToData(isKey, position)
 end
 
 -- Getter/setter for the internal table
-function ObTableClass:setInternalTable(internalTable)
-    self.internalTable = nil
+function ObTableClass:setInternalTable(internalData)
+    self.internalData = nil
     logger.log("setInternalTable was called but is not implemented!")
 end
 
@@ -58,7 +58,7 @@ function ObTableClass:getInternalTable()
     return nil
 end
 
-function ObTableClass:getElementCount()
+function ObTableClass:getRowCount()
     return #self.obList
 end
 
@@ -115,21 +115,5 @@ function ObTableClass:setupOnDrawButton(button, key, isKey, position, data)
     end
     return false
 end
-
--- static function
-function ObTableClass.createTableStack(monitor, posX, posY, sizeX,sizeY, tableName, dataFetcher)
-
-    local newTable = ObTableClass:new(monitor, 1,1, tableName)
-    newTable:setDataFetcher(dataFetcher)
-    
-    local tableStack = PageStackClass:new(monitor)
-    tableStack:setSize(sizeX,sizeY)
-    tableStack:setPosition( posX,posY)
-    tableStack:pushPage(newTable)
-
-    return tableStack, newTable
-end
-
-
 
 return ObTableClass

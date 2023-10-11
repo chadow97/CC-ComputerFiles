@@ -42,8 +42,8 @@ local  displayTableFunction =  (function(value)
     end
 end)
 
-local pageStack1, internalTable = TableClass.createTableStack(monitor, 5, 5, 40, 30, MeUtils.getItemList(), "Item List", displayTableFunction)
-internalTable:setTableValueDisplayed(
+local pageStack1, internalData = TableClass.createTableStack(monitor, 5, 5, 40, 30, MeUtils.getItemList(), "Item List", displayTableFunction)
+internalData:setTableValueDisplayed(
 
 )
 table.insert(buttonList, pageStack1)
@@ -59,7 +59,7 @@ log:forceHeightSize(5)
 
 table.insert(buttonList, log)
 
-page:addButtons(buttonList)
+page:addElements(buttonList)
 page:draw()
 
 for i = 1, 10 do

@@ -23,7 +23,7 @@ function PageClass:new(monitor, xPos, yPos)
     return self
 end
 
-function PageClass:add(pageElement)
+function PageClass:addElement(pageElement)
     pageElement:setMonitor(self.monitor)
     pageElement:setParentPage(self)
     table.insert(self.elements, pageElement)
@@ -37,9 +37,9 @@ function PageClass:setBlockDraw( shouldBlockDraw )
     self.blockDraw = shouldBlockDraw
 end
 
-function PageClass:addButtons(buttonList)
+function PageClass:addElements(buttonList)
     for _, button in ipairs(buttonList) do      
-        self:add(button)
+        self:addElement(button)
     end
 end
 
@@ -115,6 +115,15 @@ function PageClass:setMonitor(monitor)
         element:setMonitor(monitor)
     end
 
+end
+
+function PageClass:allElementsIterator()
+    local position = 1
+    return function ()
+        local element = self.elements[position]
+        position = position + 1
+        return element 
+    end
 end
 
 return PageClass

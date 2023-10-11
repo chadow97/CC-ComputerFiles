@@ -52,7 +52,7 @@ function RessourcePageClass:buildRessourcePage(parentPage)
   ressourceTable:setSize(parentPageSizeX, parentPageSizeY - 4 - LOG_HEIGHT)
   ressourceTable:setPos(parentPagePosX,parentPagePosY)
   ressourceTable:setOnTableElementPressedCallback(RessourcePageClass.onRessourcePressed)
-  ressourceTable:SetOnPostRefreshDataCallback(self:getOnPostTableRefreshCallback())
+  ressourceTable:setOnPostRefreshDataCallback(self:getOnPostTableRefreshCallback())
   local _,_,_, ressourceTableEndY = ressourceTable:getArea()
   
   local logElement = LogClass:new(1,1)
@@ -73,9 +73,9 @@ function RessourcePageClass:buildRessourcePage(parentPage)
   self:setBlockDraw(true)
   self:setBackColor(ELEMENT_BACK_COLOR)
 
-  self:add(ressourceTable)
-  self:add(SendAllButton)
-  self:add(logElement)
+  self:addElement(ressourceTable)
+  self:addElement(SendAllButton)
+  self:addElement(logElement)
   self:setBlockDraw(false)
   ressourceTable:setBlockDraw(false)
 
@@ -90,6 +90,11 @@ function RessourcePageClass:getOnDrawSendAllButton()
     end
   end
 
+end
+
+function RessourcePageClass:draw(...)
+  logger.db("heee")
+  PageClass.draw(self, ...)
 end
 
 function RessourcePageClass:getOnSendAllPressedCallback()
