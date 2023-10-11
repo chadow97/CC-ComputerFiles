@@ -55,7 +55,6 @@ function ButtonClass:internalDraw(startLimitX, startLimitY, endLimitX, endLimitY
   end
 
   CustomPaintUtils.drawFilledBox(startXToDraw, startYtoDraw, endXToDraw, endYToDraw,  self.backColor, self.monitor)
-  
   if (self.y < startYtoDraw or self.y > endYToDraw) then
     return
   end
@@ -145,15 +144,6 @@ function ButtonClass:getTextLines()
         return {self.text}
     end
 
-end
-
-function ButtonClass:isPosInElement(x, y)
-
-    local startX, startY, endX, endY = self:getArea()
-    local xInside = x >= startX and x <= endX
-    local yInside = y >= startY and y <= endY
-
-    return xInside and yInside
 end
 
 function ButtonClass:setBackColor(backColor)

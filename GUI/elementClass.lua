@@ -19,6 +19,8 @@ end
 function ElementClass:askForRedraw()
     if self.parentPage then
         self.parentPage:askForRedraw(self) -- passing asker
+    else
+        self:draw()
     end
 end
 
@@ -70,8 +72,12 @@ function ElementClass:getArea()
     logger.log("Called unimplemented getArea")
 end
 
-function ElementClass:isPosInElement(x, y)
-    logger.log("Called unimplemented isPosInElement")
+function ElementClass:isPosInElement(x, y) 
+    local startX, startY, endX, endY = self:getArea()
+    local xInside = x >= startX and x <= endX
+    local yInside = y >= startY and y <= endY
+
+    return xInside and yInside
 end
 
 function ElementClass:setPos(x, y)

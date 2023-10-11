@@ -18,7 +18,6 @@ setmetatable(WorkOrderPageClass, {__index = PageClass})
 
 
 function WorkOrderPageClass:new(monitor, parentPage, colonyPeripheral, externalChest)
-  logger.log(monitor)
   self = setmetatable(PageClass:new(monitor), WorkOrderPageClass)
 
   self.ressourceFetcher = WorkOrderFetcherClass:new(colonyPeripheral)
@@ -43,8 +42,8 @@ workOrderTable:setRowHeight(5)
 workOrderTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
 workOrderTable:setHasManualRefresh(true)
 workOrderTable:setSize(parentPageSizeX, parentPageSizeY)
-workOrderTable:setPosition(parentPagePosX,parentPagePosY)
-workOrderTable:setOnPressFunc(self:getOnWorkOrderPressed())
+workOrderTable:setPos(parentPagePosX,parentPagePosY)
+workOrderTable:setOnTableElementPressedCallback(self:getOnWorkOrderPressed())
 
 self:setBlockDraw(true)
 self:setBackColor(ELEMENT_BACK_COLOR)

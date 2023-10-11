@@ -125,6 +125,7 @@ end
 
 
 function ToggleableButtonClass:handleEvent(eventName, ...)
+    
     if (eventName == "timer") then
         return self:handleTimerEvent(eventName, ...)
     end

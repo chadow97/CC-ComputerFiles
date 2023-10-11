@@ -1,6 +1,7 @@
 -- ObTableClass.lua
 local TableClass = require("GUI.tableClass")  -- Adjust the path if necessary
 local logger     = require("UTIL.logger")
+local PageStackClass = require("GUI.pageStackClass")
 
 local ObTableClass = {}
 
@@ -18,7 +19,7 @@ end
 
 function ObTableClass:setDataFetcher(dataFetcher)
     self.dataFetcher = dataFetcher
-    self:RefreshData()
+    self:refreshData()
 end
 
 function ObTableClass:createElementButtons()
@@ -30,7 +31,7 @@ function ObTableClass:createElementButtons()
     end
 end
 
-function ObTableClass:getStringToDisplay(data, isKey, position)
+function ObTableClass:getStringToDisplayForElement(data, isKey, position)
     --rewrite to use OB data
 
     if isKey then
@@ -40,7 +41,7 @@ function ObTableClass:getStringToDisplay(data, isKey, position)
     end
 end
 
-function ObTableClass:getButtonStyle(isKey, position)
+function ObTableClass:getButtonStyleAccordingToData(isKey, position)
     -- return elementBackColor, elementTextColor
     return self.obList[position]:getObStyle()
 end
@@ -61,7 +62,7 @@ function ObTableClass:getElementCount()
     return #self.obList
 end
 
-function ObTableClass:RefreshData()
+function ObTableClass:refreshData()
     -- ask data handler for new data
 
     -- refresh is not setup
@@ -89,15 +90,14 @@ function ObTableClass:processTableElement(elementButton, key, value, position)
 
 end
 
-function ObTableClass:setupOnManualToggle(button, key, isKey, position, data)
+function ObTableClass:setOnTableElementPressedCallbackForElement(button, key, isKey, position, data)
 
-    
     local  wrapper =
         function()
-            self.onPressFunc(position, isKey, self.obList[position])
+            self.onTableElementPressedCallback(position, isKey, self.obList[position])
         end 
 
-    if self.onPressFunc then
+    if self.onTableElementPressedCallback then
         button:setOnManualToggle(wrapper)
         return true
     end

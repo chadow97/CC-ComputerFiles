@@ -6,6 +6,8 @@ local PageClass = {}
 PageClass.__index = PageClass
 setmetatable(PageClass, { __index = ElementClass })
 
+local DEFAULT_BACK_COLOR = colors.black
+
 function PageClass:new(monitor, xPos, yPos)
     self = setmetatable(ElementClass:new(xPos, yPos), PageClass)
     self.elements = {}
@@ -16,7 +18,7 @@ function PageClass:new(monitor, xPos, yPos)
     self:setMonitor(monitor)
     self.sizeX, self.sizeY = self.monitor.getSize()
     self.eraseOnDraw = true
-    self.backColor = colors.black
+    self.backColor = DEFAULT_BACK_COLOR
     self.blockDraw = false
     return self
 end
@@ -82,12 +84,11 @@ function PageClass:setSize(sizeX,sizeY)
     self.sizeY = sizeY
 end
 
-
 -- Define the handleEvent method to handle events on the page
 function PageClass:handleEvent(...)
     for i = #self.elements, 1, -1 do
-        local button = self.elements[i]
-        if button:handleEvent(...) then
+        local element = self.elements[i]
+        if element:handleEvent(...) then
             return true
         end
     end
