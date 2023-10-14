@@ -1,6 +1,7 @@
 local perTypes = {
     chest = "minecraft:chest",
     furnace = "minecraft:furnace",
+    barrel = "minecraft:barrel",
     monitor = "monitor",
     printer = "printer",
     advanced_modem = "modem_advanced",

@@ -4,29 +4,34 @@ local PerTypes = require("UTIL.perTypes")
 
 
 
--- Define the ChestWrapper class as a subclass of PeripheralWrapper
-local ChestWrapper = {}
-ChestWrapper.__index = ChestWrapper
-setmetatable(ChestWrapper, { __index = PeripheralWrapper })
+
+local InventoryWrapper = {}
+InventoryWrapper.__index = InventoryWrapper
+setmetatable(InventoryWrapper, { __index = PeripheralWrapper })
 
 
 -- Constructor function for creating new instances of the class
-function ChestWrapper:new(peripheralNameOrType)
+function InventoryWrapper:new(peripheralNameOrType)
     local internalPerNameOrType = peripheralNameOrType or PerTypes.chest
+
     local instance = PeripheralWrapper.new(self, internalPerNameOrType)
     if not instance then
-        return nil
+        instance = PeripheralWrapper.new(self, PerTypes.barrel)
+    end
+    if not instance then
+      logger.log("No inventory found!", logger.LOGGING_LEVEL.WARNING)
+      return nil
     end
     -- Check if the peripheral is a chest
-    if instance.type ~= PerTypes.chest then
+    if instance.type ~= PerTypes.chest or instance.type ~= PerTypes.barrel then
         return nil
     end
-    setmetatable(instance, ChestWrapper)
+    setmetatable(instance, InventoryWrapper)
     return instance
 end
 
 -- Method for getting all items in the chest
-function ChestWrapper:getAllItems()
+function InventoryWrapper:getAllItems()
     --get Total amount
     local totalAmount = {} --format {name:count}
     -- returns all the different stacks
@@ -43,7 +48,7 @@ function ChestWrapper:getAllItems()
 end
 
 
-function ChestWrapper:__index(key)
+function InventoryWrapper:__index(key)
     --save debug info!
     local info = debug.getinfo(2, "Sl")
 
@@ -61,4 +66,4 @@ function ChestWrapper:__index(key)
     end
   end
 
-return ChestWrapper
+return InventoryWrapper

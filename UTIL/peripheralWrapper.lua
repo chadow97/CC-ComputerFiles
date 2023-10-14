@@ -13,7 +13,7 @@ function PeripheralWrapper:new(peripheralNameOrType)
     local per = peripheral.find(peripheralNameOrType)
     -- if type didnt work, try as a name
     if not per then
-        per.wrap(peripheralNameOrType)
+        peripheral.wrap(peripheralNameOrType)
     end
     if not per then
         return nil
