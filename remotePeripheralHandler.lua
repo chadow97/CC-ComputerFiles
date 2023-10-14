@@ -12,7 +12,7 @@ logger.init(terminal)
 logger.terminal.clear() 
 
 -- Open the rednet modem
-rednet.open("back")
+rednet.open("left")
 
 -- Method for handling getMethods requests
 local function handleGetMethods(peripheralName, senderID)

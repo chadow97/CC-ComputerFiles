@@ -6,15 +6,16 @@ local PeripheralProxy = {}
 PeripheralProxy.__index = PeripheralProxy
 
 -- Constructor function for creating new instances of the class
-function PeripheralProxy:new(channel, peripheralName)
+function PeripheralProxy:new(channel, peripheralName, side)
     local instance = {}
     setmetatable(instance, PeripheralProxy)
 
     instance.channel = channel
     instance.peripheralName = peripheralName
 
-
-    rednet.open("back")
+    local oppenedSide = side or "back"
+    rednet.open(oppenedSide)
+    logger.log("Openned rednet on side:" .. oppenedSide)
 
     return instance
 end

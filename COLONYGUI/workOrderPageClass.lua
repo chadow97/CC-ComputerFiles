@@ -55,7 +55,6 @@ self:setBlockDraw(false)
 
 end
 
--- Define static functions 
 function WorkOrderPageClass:getOnWorkOrderPressed()
     return function(positionInTable, isKey, workOrder)
         -- do nothing if key, it shouldnt be displayed

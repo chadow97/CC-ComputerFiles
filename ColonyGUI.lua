@@ -40,7 +40,7 @@ exitButton:setMargin(0)
 table.insert(RootPageButtonList, exitButton)
 
 -- Setup proxy to mineColonies
-local colonyPeripheral = peripheralProxyClass:new(CHANNEL, "colonyIntegrator" )
+local colonyPeripheral = peripheralProxyClass:new(CHANNEL, "colonyIntegrator","right")
 
 local externalChest = ChestWrapper:new()
 

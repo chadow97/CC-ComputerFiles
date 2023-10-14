@@ -1,5 +1,9 @@
+local logger = require("UTIL.logger")
+
 local modem = peripheral.find("modem") or error("No modem attached", 0)
 local channel = 2
+logger.init(term.current())
+logger.db(modem)
 modem.transmit(channel, channel, "Ping!")
 print("sent message on channel " .. channel)
 

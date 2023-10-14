@@ -16,7 +16,6 @@ table.remove(functionArgs,1)
 
 
 local per = peripheralProxyClass:new(channel, peripheralType )
---print(per:getRemoteMethods())
---print(per.getTextScaaaaale())
+
 
 logger.logToFile(per:callMethod(methodName,unpack(functionArgs)))
