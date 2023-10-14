@@ -4,6 +4,14 @@ local PageClass = require("GUI.pageClass")
 local MonUtils = require("UTIL.monUtils")
 local logger = require("UTIL.logger")
 
+--Setup autocomplete
+local completion = require "cc.shell.completion"
+local complete = completion.build(
+    {completion.file}
+)
+
+shell.setCompletionFunction("programTester.lua", complete)
+
 
 logger.init(term.current())
 logger.deactiveate()
