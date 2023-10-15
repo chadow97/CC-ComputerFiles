@@ -7,6 +7,8 @@ local RessourceClass        = require "MODEL.ressourceClass"
 local MeUtils               = require "UTIL.meUtils"
 local logger                = require "UTIL.logger"
 local WorkOrderPageClass    = require "COLONYGUI.workOrderPageClass"
+local BuilderPageClass      = require "COLONYGUI.builderPageClass"
+local InventoryManagerClass = require "MODEL.inventoryManagerClass"
 
 -- Define constants
 
@@ -22,11 +24,11 @@ setmetatable(MainMenuPageClass, {__index = PageClass})
 
 
 
-function MainMenuPageClass:new(monitor, parentPage, colonyPeripheral, externalChest)
+function MainMenuPageClass:new(monitor, parentPage, colonyPeripheral, document)
   self = setmetatable(PageClass:new(monitor), MainMenuPageClass)
   self.monitor = monitor
   self.colonyPeripheral = colonyPeripheral
-  self.externalChest = externalChest
+  self.document = document
   self:buildMainMenuPage(parentPage)
   return self
 end
@@ -41,19 +43,35 @@ function MainMenuPageClass:buildMainMenuPage(parentPage)
   WorkOrdersButton:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + 1)
   WorkOrdersButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
   WorkOrdersButton:setOnManualToggle(self:getOnWorkOrdersPressed())
+  WorkOrdersButton:setCenterText(true)
 
+  local WorkersButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Manage builders and target inventories.")
+  WorkersButton:forceWidthSize(parentPageSizeX - 2)
+  WorkersButton:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + 5)
+  WorkersButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+  WorkersButton:setOnManualToggle(self:getOnManageBuildersPressed())
+  WorkersButton:setCenterText(true)
 
   self:setBlockDraw(true)
   self:setBackColor(ELEMENT_BACK_COLOR)
 
   self:addElement(WorkOrdersButton)
+  self:addElement(WorkersButton)
   self:setBlockDraw(false)
 end
 
 function MainMenuPageClass:getOnWorkOrdersPressed()
-  return function()      
-      local WorkOrderPageClass = WorkOrderPageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, self.externalChest)
-      self.parentPage:addElement(WorkOrderPageClass)
+  return function()
+      local inventoryManager = self.document:getManagerForType(InventoryManagerClass.TYPE)  
+      local WorkOrderPage = WorkOrderPageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, inventoryManager:getFirstInventory())
+      self.parentPage:addElement(WorkOrderPage)
+  end
+end
+
+function MainMenuPageClass:getOnManageBuildersPressed()
+  return function()
+    local BuilderPage = BuilderPageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, self.document)
+    self.parentPage:addElement(BuilderPage)
   end
 end
 

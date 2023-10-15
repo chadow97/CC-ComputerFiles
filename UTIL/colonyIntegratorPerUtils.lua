@@ -113,6 +113,29 @@ function ColonyIntegratorPerUtils.getBuildingByPosition(per, position)
     return buildingRequested
 end
 
+function ColonyIntegratorPerUtils.getBuilders(per)
+    return ColonyIntegratorPerUtils.getCitizensByType(per, "builder")
+end
+
+function ColonyIntegratorPerUtils.getCitizensByType(per, type)
+    if not type then
+        return ColonyIntegratorPerUtils.getCitizens(per)
+    end
+    local citizensForType = {}
+    local citizens = ColonyIntegratorPerUtils.getCitizens(per)
+    for _, citizen in pairs(citizens) do
+        if citizen.work and citizen.work.type == type then
+            table.insert(citizensForType, citizen)
+        end
+    end
+    return citizensForType
+    
+end
+
+function ColonyIntegratorPerUtils.getCitizens(per)
+    return per.getCitizens()[1]
+end
+
 function ColonyIntegratorPerUtils.getBuilderHutInfoFromWorkOrder(per, workOrder)
     local builderHutPosition = workOrder.builder
     local builderHutInfo = nil

@@ -9,6 +9,7 @@ local ChestWrapper = require("UTIL.chestWrapper")
 local GuiHandlerClass = require("GUI.guiHandlerClass")
 local MainMenuPageClass = require("COLONYGUI.mainMenuPageClass")
 local PageStackClass     = require("GUI.pageStackClass")
+local ColonyDocumentClass= require("COLONYGUI.colonyDocumentClass")
 
 -- Define constants
 local BACKGROUND_COLOR = colors.yellow
@@ -25,8 +26,8 @@ local monitorX, monitorY = monitor.getSize()
 -- Initialize logger for debug
 logger.init(term.current(), "ColonyGUI", true)
 
--- Table to hold all buttons of the root page
-local RootPageButtonList = {}
+-- Create document, allows to retrieve data.
+local document = ColonyDocumentClass:new()
 
 -- Setup exit program button
 local isRunning = true
@@ -37,17 +38,15 @@ local exitButton = ButtonClass:new(monitorX, monitorY, "X")
 exitButton:setOnElementTouched(endProgram)
 exitButton:changeStyle(nil, ELEMENT_BACK_COLOR)
 exitButton:setMargin(0)
-table.insert(RootPageButtonList, exitButton)
+
 
 -- Setup proxy to mineColonies
 local colonyPeripheral = peripheralProxyClass:new(CHANNEL, "colonyIntegrator","right")
 
-local externalChest = ChestWrapper:new()
-
 local pageStack = PageStackClass:new(monitor)
 pageStack:setSize(monitorX - 2,monitorY - 2)
 pageStack:setPosition(2,2)
-local mainMenuPage = MainMenuPageClass:new(monitor, pageStack, colonyPeripheral, externalChest)
+local mainMenuPage = MainMenuPageClass:new(monitor, pageStack, colonyPeripheral, document)
 pageStack:pushPage(mainMenuPage)
 pageStack:changeExitButtonStyle(nil, ELEMENT_BACK_COLOR)
 

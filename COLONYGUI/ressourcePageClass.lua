@@ -93,7 +93,6 @@ function RessourcePageClass:getOnDrawSendAllButton()
 end
 
 function RessourcePageClass:draw(...)
-  logger.db("heee")
   PageClass.draw(self, ...)
 end
 

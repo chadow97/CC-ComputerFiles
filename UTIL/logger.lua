@@ -50,7 +50,7 @@ function logger.log(text, logLevel)
         return
     end
 
-    if logLevel and logger.curLoggingLevel <= logLevel then
+    if logLevel and logger.curLoggingLevel < logLevel then
         return
     end
 

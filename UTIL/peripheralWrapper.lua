@@ -6,15 +6,21 @@ local PeripheralWrapper = {}
 PeripheralWrapper.__index = PeripheralWrapper
 
 -- Constructor function for creating new instances of the class
-function PeripheralWrapper:new(peripheralNameOrType)
+function PeripheralWrapper:new(peripheralNameTypeOrPer)
     local instance = {}
     setmetatable(instance, PeripheralWrapper)
     -- assume type was passed
-    local per = peripheral.find(peripheralNameOrType)
-    -- if type didnt work, try as a name
-    if not per then
-        peripheral.wrap(peripheralNameOrType)
+    local per
+    if type(peripheralNameTypeOrPer) == "table" then
+        per = peripheralNameTypeOrPer
+    else
+        per = peripheral.find(peripheralNameTypeOrPer)
+        -- if type didnt work, try as a name
+        if not per then
+            peripheral.wrap(peripheralNameOrType)
+        end
     end
+
     if not per then
         return nil
     end
@@ -24,6 +30,7 @@ function PeripheralWrapper:new(peripheralNameOrType)
 
     return instance
 end
+
 
 -- Method for calling a specific method on the peripheral
 function PeripheralWrapper:callMethod(methodName, ...)

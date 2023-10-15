@@ -24,6 +24,7 @@ function ButtonClass:new(xPos, yPos, text)
   self.forceWidthSize = nil
   self.forceHeightSize = nil
   self.shouldSplitText = true
+  self.shouldCenterText = false
   return self
 end
 
@@ -63,6 +64,8 @@ function ButtonClass:internalDraw(startLimitX, startLimitY, endLimitX, endLimitY
 
   local indexToStart = math.max(1, startXToDraw - self.x + 1)
   local indexToEnd = math.min(self:availableTextSize(), endXToDraw - self.x + 1)
+  local maxTextSize = indexToEnd - indexToStart + 1
+
 
   if (indexToEnd - indexToStart < 0) then
     return
@@ -76,8 +79,14 @@ function ButtonClass:internalDraw(startLimitX, startLimitY, endLimitX, endLimitY
     if currentLine > endYToWrite then
         break
     end
+
     self.monitor.setCursorPos(self.x, currentLine)
-    local textToWrite = string.sub(line, indexToStart, indexToEnd) 
+    local textToWrite = string.sub(line, indexToStart, indexToEnd)
+    if self.shouldCenterText then
+        local lettersToWrite = #line
+        local spacesToAdd = math.max(0,math.floor((maxTextSize - lettersToWrite + 1)/2))
+        textToWrite = string.rep(" ", spacesToAdd) .. textToWrite 
+    end
     self.monitor.write(textToWrite)
     currentLine = currentLine + 1
   end
@@ -171,6 +180,10 @@ function ButtonClass:setUpperCornerPos(x,y)
     self.x = x + self.margin
     self.y = y + self.margin
 
+end
+
+function ButtonClass:setCenterText(shouldCenterText)
+    self.shouldCenterText = shouldCenterText
 end
 
 function ButtonClass:setMargin(margin)

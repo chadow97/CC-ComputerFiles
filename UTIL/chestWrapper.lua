@@ -11,8 +11,8 @@ setmetatable(InventoryWrapper, { __index = PeripheralWrapper })
 
 
 -- Constructor function for creating new instances of the class
-function InventoryWrapper:new(peripheralNameOrType)
-    local internalPerNameOrType = peripheralNameOrType or PerTypes.chest
+function InventoryWrapper:new(peripheralNameTypeOrPer)
+    local internalPerNameOrType = peripheralNameTypeOrPer or PerTypes.chest
 
     local instance = PeripheralWrapper.new(self, internalPerNameOrType)
     if not instance then
@@ -23,8 +23,9 @@ function InventoryWrapper:new(peripheralNameOrType)
       return nil
     end
     -- Check if the peripheral is a chest
-    if instance.type ~= PerTypes.chest or instance.type ~= PerTypes.barrel then
-        return nil
+    if instance.type ~= PerTypes.chest and instance.type ~= PerTypes.barrel then
+      logger.log("Invalid peripheral type!", logger.LOGGING_LEVEL.WARNING)
+      return nil
     end
     setmetatable(instance, InventoryWrapper)
     return instance
