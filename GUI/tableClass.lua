@@ -123,6 +123,8 @@ function TableClass:createElementButtons()
 end
 
 function TableClass:createButtonsForTable()
+
+    self.elements = {}
     self.tableElements = {}
     self.scrollButtons = {}
     self:createElementButtons()
@@ -172,6 +174,12 @@ function TableClass:createButtonsForTable()
     end
 
     self.areButtonsDirty = false;
+    logger.logToFile("After create buttons for table :" .. self. id)
+    logger.logToFile("The elements in tables are:")
+    for element in self:allElementsIterator() do
+        logger.logToFile(element.id)
+    end
+    logger.logToFile("LIST DONE")
 end
 
 
@@ -559,6 +567,8 @@ function TableClass:draw() --todo fix to work with elements instead of custom lo
     local drawElement = function(button) 
         button:draw(self:getAreaForElements())
     end
+
+    logger.logToFile("Table drawing is:" .. self.id)
     self:doForEachTableElement(drawElement)
 
     --4th step: draw srollbuttons
@@ -586,9 +596,18 @@ function TableClass:handleTouchEvent(eventName, side, xPos, yPos)
 
     for element in elementIterator(self) do
         if element:handleEvent(eventName, side, xPos, yPos) then
+            logger.logToFile("The element that handled the touch event is:" .. element.id)
+            logger.logToFile("Table that received touch event is:" .. self.id)
+            logger.logToFile("The elements in tables are:")
+            for element in elementIterator(self) do
+                logger.logToFile(element.id)
+            end
+            logger.logToFile("LIST DONE")
             return true
         end
     end
+
+    return false
 
 end
 

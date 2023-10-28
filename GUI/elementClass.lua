@@ -1,4 +1,5 @@
 local logger = require("UTIL.logger")
+local IdGenerator = require("UTIL.IdGenerator")
 -- Define the ButtonClass table
 
 local ElementClass = {}
@@ -13,6 +14,7 @@ function ElementClass:new(xPos, yPos)
   self.parentPage = nil
   self.onElementTouchedCallback = nil
   self.onDrawCallback = nil
+  self.id = IdGenerator.generateId()
   return self
 end
 

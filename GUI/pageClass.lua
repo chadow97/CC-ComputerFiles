@@ -11,7 +11,6 @@ local DEFAULT_BACK_COLOR = colors.black
 function PageClass:new(monitor, xPos, yPos)
     self = setmetatable(ElementClass:new(xPos, yPos), PageClass)
     self.elements = {}
-    logger.callStackToFile()
     -- By default, area is entire monitor
     self.x = xPos or 1
     self.y = yPos or 1

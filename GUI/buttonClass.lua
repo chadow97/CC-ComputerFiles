@@ -1,6 +1,5 @@
 local logger = require("UTIL.logger")
 local CustomPaintUtils = require("UTIL.customPaintUtils")
-local IdGenerator = require("UTIL.IdGenerator")
 local stringUtils = require('UTIL.stringUtils')
 local ElementClass= require('GUI.elementClass')
 
@@ -20,7 +19,6 @@ function ButtonClass:new(xPos, yPos, text)
   self.margin = 1
   self.backColor = DEFAULT_BACK_COLOR
   self.textColor = DEFAULT_TEXT_COLOR
-  self.id = IdGenerator.generateId()
   self.forceWidthSize = nil
   self.forceHeightSize = nil
   self.shouldSplitText = true
