@@ -77,11 +77,11 @@ function ToggleableButtonClass:updateStyle()
         self.textColor = self.untoggledTextColor
         self.backColor = self.untoggledBackColor
     end
+    self:setElementDirty()
 
 end
 
 function ToggleableButtonClass:onTimerEnd()
-
     self.toggledTimer = nil
     self:toggle()
     self.OnAutoUntoggle(self)
@@ -102,6 +102,7 @@ function ToggleableButtonClass:changeStyle(untoggledTextColor, untoggledBackColo
     self.untoggledBackColor = untoggledBackColor or self.untoggledBackColor
 
     self:updateStyle()
+    self:setElementDirty()
 
 end
 
@@ -139,7 +140,7 @@ function ToggleableButtonClass:handleEvent(eventName, ...)
 end
 
 function ToggleableButtonClass:handleTimerEvent(eventName, timerID)
-    if self.toggledTimer == timerID then
+    if self.toggledTimer == timerID then      
         self:onTimerEnd()
         return true
     end

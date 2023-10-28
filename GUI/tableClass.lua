@@ -60,6 +60,7 @@ function TableClass:changeStyle(backColor, elementBackColor, textColor)
     self.elementBackColor = elementBackColor or self.elementBackColor
     self.textColor = textColor or self.textColor
     self.areButtonsDirty = true
+    self:setElementDirty()
 
 end
 
@@ -70,6 +71,7 @@ end
 function TableClass:setColumnCount(columnCount)
     self.columnCount = columnCount or 1
     self.areButtonsDirty = true;
+    self:setElementDirty()
 end
 
 
@@ -83,7 +85,7 @@ function TableClass:setScrollAmount(amount)
     else
         self.scrollAmount = amount
     end
-
+    self:setElementDirty()
 end
 
 function TableClass:setOnTableElementPressedCallback(func)
@@ -100,6 +102,7 @@ end
 function TableClass:setRowHeight(rowHeight)
    self.rowHeight = rowHeight 
    self.areButtonsDirty = true
+   self:setElementDirty()
 end
 
 function TableClass:updateButtonsForScroll()
@@ -160,7 +163,7 @@ function TableClass:createButtonsForTable()
         self:updateButtonsForScroll()
 
     end
-    if (self.hasManualRefresh) then
+    if (self.hasManualRefresh) then     
         local RefreshButton = ToggleableButtonClass:new(startX,startY, "R")
         RefreshButton:setMargin(0)
         RefreshButton:changeStyle(nil, self.backColor)
@@ -170,16 +173,15 @@ function TableClass:createButtonsForTable()
             self:refreshData()
             end)
         )
+        if self.refreshButton then
+            RefreshButton.toggled = self.refreshButton.toggled
+            RefreshButton.toggledTimer = self.refreshButton.toggledTimer
+        end
         self.refreshButton = RefreshButton
     end
 
     self.areButtonsDirty = false;
-    logger.logToFile("After create buttons for table :" .. self. id)
-    logger.logToFile("The elements in tables are:")
-    for element in self:allElementsIterator() do
-        logger.logToFile(element.id)
-    end
-    logger.logToFile("LIST DONE")
+    self:setElementDirty()
 end
 
 
@@ -414,22 +416,26 @@ function TableClass:getIsScrollable()
 function TableClass:setIsScrollable(value)
     self.isScrollable = value
     self.areButtonsDirty = true;
+    self:setElementDirty()
 end
 
 function TableClass:setHasManualRefresh(value)
     self.hasManualRefresh = value
     self.areButtonsDirty = true;
+    self:setElementDirty()
 end
 
 -- Getter/setter for the internal table
 function TableClass:setInternalTable(internalData)
     self.internalData = internalData
     self.areButtonsDirty = true;
+    self:setElementDirty()
 end
 
 function TableClass:setDisplayKey(displayKey)
     self.displayKey = displayKey
     self.areButtonsDirty = true;
+    self:setElementDirty()
 end
 
 function TableClass:getInternalTable()
@@ -491,15 +497,6 @@ function TableClass:doForExtraButtons(func, ...)
         func(self.refreshButton, nil, nil, ...)
     end
 
-end
-
-function TableClass:askForRedraw() -- todo: this should be moved in the page class and should consider backcolor
-    -- if table has no parent, then we can draw, else we ask its parents to handle drawing.
-    if self.parentPage then
-        self.parentPage:askForRedraw(self) -- passing asker
-    else
-        self:draw()
-    end
 end
 
 function TableClass:setOnAskForNewData(func)

@@ -51,7 +51,7 @@ function MeUtils.exportItem(itemName, count, containerName)
     end
     local containerNameToUse = containerName
     if not containerNameToUse then
-        containerNameToUse = peripheralWrapper:new(perTypes.chest).name
+        containerNameToUse = peripheralWrapper:new(perTypes.barrel).name
     end
     local countToUse = count
     if not countToUse then

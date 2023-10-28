@@ -5,6 +5,12 @@ local IdGenerator = require("UTIL.IdGenerator")
 local ElementClass = {}
 ElementClass.__index = ElementClass
 
+ElementClass.DIRTY_STATES = {
+    CLEAN = 1,
+    SELF_DIRTY = 2,
+    PARENT_DIRTY = 3
+}
+
 -- Define a constructor for the ButtonClass
 function ElementClass:new(xPos, yPos)
   self = setmetatable({}, ElementClass)
@@ -15,12 +21,42 @@ function ElementClass:new(xPos, yPos)
   self.onElementTouchedCallback = nil
   self.onDrawCallback = nil
   self.id = IdGenerator.generateId()
+  self:setParentDirty()
   return self
 end
 
-function ElementClass:askForRedraw()
+function ElementClass:shouldAskParentForRedraw()
+    return self.dirtyState == ElementClass.DIRTY_STATES.PARENT_DIRTY
+end
+
+function ElementClass:shouldDrawElement()
+    return self.dirtyState ~= ElementClass.DIRTY_STATES.CLEAN
+end
+
+function ElementClass:setParentDirty()
+    self.dirtyState = ElementClass.DIRTY_STATES.PARENT_DIRTY
+end
+
+function ElementClass:setElementDirty()
+    self.dirtyState = ElementClass.DIRTY_STATES.SELF_DIRTY
+end
+
+function ElementClass:removeDirty()
+    self.dirtyState = ElementClass.DIRTY_STATES.CLEAN
+end
+
+function ElementClass:canDraw(asker)
     if self.parentPage then
-        self.parentPage:askForRedraw(self) -- passing asker
+        -- by default, you can draw ur child if ur parent allows ur to draw yourself
+        return self.parentPage:canDraw(self)
+    end
+    -- if no parent, child can be drawn
+    return true
+end
+
+function ElementClass:askForRedraw(asker)
+    if self.parentPage and self:shouldAskParentForRedraw() then
+        self.parentPage:askForRedraw(self)
     else
         self:draw()
     end
@@ -28,6 +64,7 @@ end
 
 function ElementClass:setMonitor(monitor)
     self.monitor = monitor
+    self:setParentDirty()
 end
 
 function ElementClass:setOnDrawCallback( onDrawCallback)
@@ -35,10 +72,15 @@ function ElementClass:setOnDrawCallback( onDrawCallback)
 end
 
 function ElementClass:draw(startLimitX, startLimitY, endLimitX, endLimitY)
+    if not self:canDraw(self) then
+        return
+    end
     if self.onDrawCallback then
         self:onDrawCallback()
     end
+
     self:internalDraw(startLimitX, startLimitY, endLimitX, endLimitY)
+    self:removeDirty()
 end
 
 function ElementClass:internalDraw(startLimitX, startLimitY, endLimitX, endLimitY)
@@ -85,6 +127,7 @@ end
 function ElementClass:setPos(x, y)
     self.x = x
     self.y = y
+    self:setParentDirty()
 end
 
 function ElementClass:getPos()
@@ -97,6 +140,7 @@ end
 
 function ElementClass:setParentPage(page)
     self.parentPage = page
+    self:setParentDirty()
 end
 
 function ElementClass:onResumeAfterContextLost()

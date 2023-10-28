@@ -17,7 +17,7 @@ function PeripheralWrapper:new(peripheralNameTypeOrPer)
         per = peripheral.find(peripheralNameTypeOrPer)
         -- if type didnt work, try as a name
         if not per then
-            peripheral.wrap(peripheralNameOrType)
+            peripheral.wrap(peripheralNameTypeOrPer)
         end
     end
 

@@ -58,6 +58,7 @@ function LogClass:addLine(lineToAdd)
 
     -- Set the text and request a redraw, merging concatenation and empty line appending in one step
     self:setText(table.concat(linesToDisplay, "\n") .. string.rep("\n", numberOfEmptyLines))
+    self:setParentDirty()
     self:askForRedraw(self)
 end
 

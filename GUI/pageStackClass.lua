@@ -48,6 +48,7 @@ function PageStackClass:pushPage(page)
   page:setParentPage(self)
   page:setSize(self:getSize())
   page:setPos(self.x, self.y)
+  self:setElementDirty()
   self:askForRedraw(self)
 end
 
@@ -72,20 +73,21 @@ function PageStackClass:getTopPage()
     return self.pageStack[#self.pageStack]
 end
 
+function PageStackClass:canDraw(asker)
+  -- page stack doesnt allow any drawing unless its the top page, as the other pages are hidden under.
+  if asker ~= self:getTopPage() and asker ~= self and asker ~= self.exitButton then
+    return false
+  end
+  return PageClass.canDraw(self, asker)
+end
+
+
 function PageStackClass:askForRedraw(asker)
     -- PageStackClass in control of area, if page is shown it is ok to draw
-
-    if asker == self.exitButton then
-        self:draw()
+    if asker ~= self:getTopPage() and asker ~= self and asker ~= self.exitButton then
+      return
     end
-
-    if asker == self:getTopPage() or asker == self then
-      if self.page then
-        self.page:askForRedraw()
-      else
-        self:draw()
-      end
-    end
+    PageClass.askForRedraw(self,asker)
 end
 
 function PageStackClass:internalDraw()
@@ -96,6 +98,7 @@ end
 function PageStackClass:setPosition(x,y)
     PageClass.setPos(self, x, y)
     self:updateButtonPosition()
+    self:setElementDirty()
 end
 
 -- handle an event

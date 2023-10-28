@@ -26,10 +26,12 @@ function PageClass:addElement(pageElement)
     pageElement:setMonitor(self.monitor)
     pageElement:setParentPage(self)
     table.insert(self.elements, pageElement)
+    self:setElementDirty()
 end
 
 function PageClass:setBackColor(color)
     self.backColor = color or self.backColor
+    self:setElementDirty()
 end
 
 function PageClass:setBlockDraw( shouldBlockDraw )
@@ -81,17 +83,18 @@ end
 function PageClass:setSize(sizeX,sizeY)
     self.sizeX = sizeX
     self.sizeY = sizeY
+    self:setParentDirty()
 end
 
 -- Define the handleEvent method to handle events on the page
-function PageClass:handleEvent(...)
+function PageClass:handleEvent(eventName, ...)
     for i = #self.elements, 1, -1 do
         local element = self.elements[i]
-        if element:handleEvent(...) then
+        if element:handleEvent(eventName, ...) then
             return true
         end
     end
-    return ElementClass.handleEvent(self, ...)
+    return ElementClass.handleEvent(self, eventName, ...)
 end
 
 function PageClass:onResumeAfterContextLost()

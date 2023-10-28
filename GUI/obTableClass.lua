@@ -81,6 +81,7 @@ function ObTableClass:refreshData()
 
     self.obList = NewObList
     self.areButtonsDirty = true
+    self:setElementDirty()
     self:askForRedraw()
     self:onPostRefreshData()
 end
