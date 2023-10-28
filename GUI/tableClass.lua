@@ -187,6 +187,7 @@ function TableClass:createButtonsForTable()
         self.titleElement = LabelClass:new(titleStartX,titleStartY,self.title)
         self.titleElement:setMargin(0)
         self.titleElement:setTextColor(colors.black)
+        self.titleElement:setBackColor(self.backColor)
         self:addElement(self.titleElement)
     end
 
@@ -557,33 +558,13 @@ function TableClass:draw() --todo fix to work with elements instead of custom lo
         self:createButtonsForTable()
     end
 
-    -- 1st step: draw background
-    local startX, startY, endX, endY = self:getArea()
-    CustomPaintUtils.drawFilledBox(startX, startY, endX, endY,  self.backColor, self.monitor)
-
-    -- 2nd step: draw title if needed
-    local titleStartX, titleStartY = self:getTitleArea()
-    self.monitor.setCursorPos(titleStartX, titleStartY)
-    self.monitor.setTextColor(colors.black)
-    if self.title then
-        self.monitor.write(self.title)
-    end
-
-    -- 3rd step: draw table buttons
-    local drawElement = function(button) 
+    local setLimit = function(button) 
         button:setLimit(self:getAreaForElements())
-        button:draw()
     end
-    self:doForEachTableElement(drawElement)
+    self:doForEachTableElement(setLimit)
 
-    --4th step: draw srollbuttons
+    PageClass.draw(self)
 
-    local drawButtonFunction = function(button)
-        button:draw()
-    end
-
-    self:doForScrollButtons(drawButtonFunction)
-    self:doForExtraButtons(drawButtonFunction)
 end
 
 function TableClass:handleTouchEvent(eventName, side, xPos, yPos)
