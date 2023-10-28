@@ -22,6 +22,7 @@ function ElementClass:new(xPos, yPos)
   self.onDrawCallback = nil
   self.id = IdGenerator.generateId()
   self:setParentDirty()
+  self.blockDraw = false
   return self
 end
 
@@ -71,7 +72,16 @@ function ElementClass:setOnDrawCallback( onDrawCallback)
     self.onDrawCallback = onDrawCallback
 end
 
-function ElementClass:draw(startLimitX, startLimitY, endLimitX, endLimitY)
+function ElementClass:setBlockDraw( shouldBlockDraw )
+    self.blockDraw = shouldBlockDraw
+end
+
+function ElementClass:draw()
+
+    if self.blockDraw then
+        return
+    end
+
     if not self:canDraw(self) then
         return
     end
@@ -79,11 +89,11 @@ function ElementClass:draw(startLimitX, startLimitY, endLimitX, endLimitY)
         self:onDrawCallback()
     end
 
-    self:internalDraw(startLimitX, startLimitY, endLimitX, endLimitY)
+    self:internalDraw()
     self:removeDirty()
 end
 
-function ElementClass:internalDraw(startLimitX, startLimitY, endLimitX, endLimitY)
+function ElementClass:internalDraw()
     logger.log("Called not implemented draw!")
 end
 

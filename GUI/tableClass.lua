@@ -329,6 +329,7 @@ function TableClass:createTableElementsForRow(key, value, position)
         keyElement:setUpperCornerPos(keyX,keyY)
         keyElement:forceWidthSize(self:getKeyRowWidth())
         keyElement:forceHeightSize(self:getRowHeight())
+        keyElement:setLimit(self:getAreaForElements())
         self:addElement(keyElement)
         self:setOnTableElementPressedCallbackForElement(keyElement, key, true, position, key)
         self:setupOnDrawButton(keyElement, key, true, position, key)
@@ -346,6 +347,7 @@ function TableClass:createTableElementsForRow(key, value, position)
     valueElement:setUpperCornerPos(valueX,valueY)
     valueElement:forceWidthSize(self:getValueRowWidth())
     valueElement:forceHeightSize(self:getRowHeight())
+    valueElement:setLimit(self:getAreaForElements())
     self:setOnTableElementPressedCallbackForElement( valueElement, key, false, position, value)
     self:setupOnDrawButton(valueElement,key, false, position, value)
 
@@ -547,23 +549,14 @@ function TableClass:refreshData()
     self:onPostRefreshData()
 end
 
-function TableClass:draw() --todo fix to work with elements instead of custom logic, might need to set title as a button??
-
+function TableClass:internalDraw() 
+   
     -- CreateButtons if needed
-    if self.blockDraw then
-        return
-    end
-
     if self.areButtonsDirty then
         self:createButtonsForTable()
     end
 
-    local setLimit = function(button) 
-        button:setLimit(self:getAreaForElements())
-    end
-    self:doForEachTableElement(setLimit)
-
-    PageClass.draw(self)
+    PageClass.internalDraw(self)
 
 end
 

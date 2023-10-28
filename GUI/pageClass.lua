@@ -18,7 +18,6 @@ function PageClass:new(monitor, xPos, yPos)
     self.sizeX, self.sizeY = self.monitor.getSize()
     self.eraseOnDraw = true
     self.backColor = DEFAULT_BACK_COLOR
-    self.blockDraw = false
     return self
 end
 
@@ -32,10 +31,6 @@ end
 function PageClass:setBackColor(color)
     self.backColor = color or self.backColor
     self:setElementDirty()
-end
-
-function PageClass:setBlockDraw( shouldBlockDraw )
-    self.blockDraw = shouldBlockDraw
 end
 
 function PageClass:addElements(buttonList)
@@ -52,22 +47,13 @@ function PageClass:getElements()
     return self.elements
 end
 
--- Define the draw method to draw the page
-function PageClass:draw(startLimitX, startLimitY, endLimitX, endLimitY)
-    if self.blockDraw then
-        return
-    end
-    ElementClass.draw(self, startLimitX, startLimitY, endLimitX, endLimitY)
-
-end
-
-function PageClass:internalDraw(startLimitX, startLimitY, endLimitX, endLimitY)
+function PageClass:internalDraw()
     if self.eraseOnDraw then
         local startX, startY, endX, endY = self:getArea()
         CustomPaintUtils.drawFilledBox(startX, startY, endX, endY,  self.backColor, self.monitor)
     end
     for _, element in ipairs(self.elements) do
-        element:draw(startLimitX, startLimitY, endLimitX, endLimitY)
+        element:draw()
     end
 
 end
