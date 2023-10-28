@@ -3,6 +3,7 @@ local CustomPaintUtils = require("UTIL.customPaintUtils")
 local logger = require("UTIL.logger")
 local PageStackClass = require("GUI.pageStackClass")
 local PageClass      = require("GUI.pageClass")
+local LabelClass     = require("GUI.labelClass")
 
 local DEFAULT_X_SIZE = 20
 local DEFAULT_Y_SIZE = 20
@@ -37,6 +38,7 @@ function TableClass:new( monitor, x, y, title, sizeX, sizeY)
     self.keyRowProportion = 0.3
     self.scrollButtons = {}
     self.refreshButton = nil
+    self.titleElement = nil
     self.scrollAmount = nil
     self.currentScroll = 0
     self.getValueToDisplayForTableCallback = DEFAULT_TABLE_VALUE_DISPLAYED
@@ -178,6 +180,14 @@ function TableClass:createButtonsForTable()
             RefreshButton.toggledTimer = self.refreshButton.toggledTimer
         end
         self.refreshButton = RefreshButton
+    end
+
+    if self.title then
+        local titleStartX, titleStartY = self:getTitleArea()
+        self.titleElement = LabelClass:new(titleStartX,titleStartY,self.title)
+        self.titleElement:setMargin(0)
+        self.titleElement:setTextColor(colors.black)
+        self:addElement(self.titleElement)
     end
 
     self.areButtonsDirty = false;
