@@ -23,11 +23,21 @@ function ButtonClass:new(xPos, yPos, text)
   self.forceHeightSize = nil
   self.shouldSplitText = true
   self.shouldCenterText = false
+  self.limitArea = { startX = nil, startY = nil, endX = nil, endY = nil}
   return self
 end
 
+function ButtonClass:setLimit(startLimitX, startLimitY, endLimitX, endLimitY)
+    self.limitArea = { startX = startLimitX, startY = startLimitY, endX = endLimitX, endY = endLimitY}
+end
+
+function ButtonClass:getLimitValues()
+    return self.limitArea.startX, self.limitArea.startY, self.limitArea.endX, self.limitArea.endY
+end
+
 -- Define a draw method for the ButtonClass
-function ButtonClass:internalDraw(startLimitX, startLimitY, endLimitX, endLimitY)
+function ButtonClass:internalDraw()
+  local startLimitX, startLimitY, endLimitX, endLimitY = self:getLimitValues()
   local startX, startY, endX, endY = self:getArea()
   local startXToDraw = startX
   local startYtoDraw = startY
