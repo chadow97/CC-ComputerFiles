@@ -10,8 +10,8 @@ local function makeButton(_text, _xpos, _ypos, _margin, _color, _functionToCall)
         _margin = defaultMargin
     end
 
-    ySize = 1 
-    xSize = #_text
+    local ySize = 1 
+    local xSize = #_text
 
     paintutils.drawFilledBox(_xpos - _margin, _ypos - _margin, _xpos+xSize + _margin -1, _ypos+ySize - 1 + _margin ,  _color)
     monitor.setCursorPos(_xpos, _ypos)

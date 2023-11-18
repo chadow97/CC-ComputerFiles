@@ -47,7 +47,7 @@ local document = DocumentClass:new()
 
 local page = PageClass:new(monitor, 1,1, document)
 
-monitorX, monitorY = monitor.getSize()
+local monitorX, monitorY = monitor.getSize()
 
 
 local buttonList = {}
@@ -107,13 +107,14 @@ while keepTesting do
             local count = math.floor(percent / 10)
             local squareString = string.rep('O', count)
             local emptyString = string.rep(".", 10- count)
+            local percentString = ""
 
             if percent < 10 then
-                percent = '0' .. percent
+                percentString = '0' .. percent
             else
-                percent = tostring(percent)
+                percentString = tostring(percent)
             end
-            CountdownButton.text = "" .. percent .. "%:" .. squareString ..emptyString
+            CountdownButton.text = "" .. percentString .. "%:" .. squareString ..emptyString
             page:draw()
             sleep(0.1)
             

@@ -1,4 +1,4 @@
-function string_to_type(str)
+local function string_to_type(str)
     local tbl = load("return " .. str)
     if tbl then
       return tbl()

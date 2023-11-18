@@ -43,7 +43,7 @@ local function handleCallMethod(peripheralName, methodName, senderID, args)
         end
 
         -- call method
-        local success, result = pcall(peripheralObj[methodName], unpack(serializedArgs))
+        local success, result = pcall(peripheralObj[methodName], table.unpack(serializedArgs))
         if success then
             message = {result}
         else 

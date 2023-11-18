@@ -84,7 +84,7 @@ function GuiHandlerClass:loop()
       self:handleRefresh()
     end
     
-    self.mainPage:handleEvent(unpack(eventData))
+    self.mainPage:handleEvent(table.unpack(eventData))
   end
 end
 

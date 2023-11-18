@@ -1,3 +1,4 @@
+---@class AreaClass
 local logger = require "UTIL.logger"
 local stringUtils = require "UTIL.stringUtils"
 -- Command.lua

@@ -324,8 +324,8 @@ function TableClass:getDefaultOnTableElementPressedCallback()
         if not self.parentPage.pushPage then
             return
         end
-        local InnerTablePage = TableClass:new(self.monitor, nil, nil, key)
-        InnerTablePage:setInternalTable(value)
+        local InnerTablePage = TableClass:new(self.monitor, nil, nil, nil)
+        InnerTablePage:setInternalTable(nil)
         InnerTablePage:setTableValueDisplayed(self.getValueToDisplayForTableCallback)
         self.parentPage:pushPage(InnerTablePage)    
     end

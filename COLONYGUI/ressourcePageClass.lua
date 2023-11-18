@@ -70,6 +70,7 @@ function RessourcePageClass:onBuildCustomPage()
   local SendAllButton = ToggleableButtonClass:new(1, 1, SEND_ALL_UNTOGGLED_TEXT, self.document)
   SendAllButton:forceWidthSize(parentPageSizeX - 2)
   SendAllButton:setUpperCornerPos(parentPagePosX + 1, ressourceTableEndY + 1 + LOG_HEIGHT)
+---@diagnostic disable-next-line: redundant-parameter
   SendAllButton:changeStyle(SEND_ALL_TEXT_COLOR, INNER_ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, SEND_ALL_TEXT_COLOR)
   SendAllButton:setOnManualToggle(self:getOnSendAllPressedCallback())
   SendAllButton:disableAutomaticUntoggle()

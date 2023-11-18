@@ -1,4 +1,4 @@
-args = {...}
+local args = {...}
 print("Printing all arguments:")
 for k,v in pairs(args) do
     print(k,v)
