@@ -67,6 +67,10 @@ function logger.log(text, logLevel)
     end
 end
 
+function logger.logObToFile(object)
+    logger.logToFile(tostring(object))
+end
+
 function logger.logToFile(text)
 
     if not logger.isActive then

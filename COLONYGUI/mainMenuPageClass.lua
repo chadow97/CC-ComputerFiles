@@ -1,4 +1,4 @@
-local PageClass = require "GUI.pageClass"
+
 local RessourceFetcherClass = require "MODEL.ressourceFetcherClass"
 local ObTableClass          = require "GUI.obTableClass"
 local LogClass              = require "GUI.logClass"
@@ -9,6 +9,7 @@ local logger                = require "UTIL.logger"
 local WorkOrderPageClass    = require "COLONYGUI.workOrderPageClass"
 local BuilderPageClass      = require "COLONYGUI.builderPageClass"
 local InventoryManagerClass = require "MODEL.inventoryManagerClass"
+local CustomPageClass       = require "GUI.customPageClass"
 
 -- Define constants
 
@@ -20,58 +21,64 @@ local TEXT_COLOR = colors.yellow
 -- Define the RessourcePage Class 
 local MainMenuPageClass = {}
 MainMenuPageClass.__index = MainMenuPageClass
-setmetatable(MainMenuPageClass, {__index = PageClass})
-
-
+setmetatable(MainMenuPageClass, {__index = CustomPageClass})
 
 function MainMenuPageClass:new(monitor, parentPage, colonyPeripheral, document)
-  self = setmetatable(PageClass:new(monitor), MainMenuPageClass)
-  self.monitor = monitor
+  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "MainMenu"), MainMenuPageClass)
+
   self.colonyPeripheral = colonyPeripheral
-  self.document = document
-  self:buildMainMenuPage(parentPage)
+
+  self:buildCustomPage()
+
   return self
 end
 
-function MainMenuPageClass:buildMainMenuPage(parentPage)
+function MainMenuPageClass:__tostring() 
+  return CustomPageClass.__tostring(self)
+end
+
+function MainMenuPageClass:onBuildCustomPage()
+  local parentPageSizeX, parentPageSizeY = self.parentPage:getSize()
+  local parentPagePosX, parentPagePosY = self.parentPage:getPos()
  
-  local parentPageSizeX, parentPageSizeY = parentPage:getSize()
-  local parentPagePosX, parentPagePosY = parentPage:getPos()
- 
-  local WorkOrdersButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Manage work orders.")
+  local WorkOrdersButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Manage work orders.", self.document)
   WorkOrdersButton:forceWidthSize(parentPageSizeX - 2)
   WorkOrdersButton:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + 1)
   WorkOrdersButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
   WorkOrdersButton:setOnManualToggle(self:getOnWorkOrdersPressed())
   WorkOrdersButton:setCenterText(true)
 
-  local WorkersButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Manage builders and target inventories.")
+  local WorkersButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Manage builders and target inventories.", self.document)
+  local x,y = self.monitor.getSize()
   WorkersButton:forceWidthSize(parentPageSizeX - 2)
   WorkersButton:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + 5)
   WorkersButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
   WorkersButton:setOnManualToggle(self:getOnManageBuildersPressed())
   WorkersButton:setCenterText(true)
 
-  self:setBlockDraw(true)
+  
   self:setBackColor(ELEMENT_BACK_COLOR)
 
   self:addElement(WorkOrdersButton)
   self:addElement(WorkersButton)
-  self:setBlockDraw(false)
 end
 
 function MainMenuPageClass:getOnWorkOrdersPressed()
   return function()
+      self.document:startEdition()
       local inventoryManager = self.document:getManagerForType(InventoryManagerClass.TYPE)  
-      local WorkOrderPage = WorkOrderPageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, inventoryManager:getFirstInventory())
+      local WorkOrderPage = WorkOrderPageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, inventoryManager:getFirstInventory(), self.document)
       self.parentPage:addElement(WorkOrderPage)
+      self.document:endEdition()
   end
 end
 
 function MainMenuPageClass:getOnManageBuildersPressed()
   return function()
+    self.document:startEdition()
     local BuilderPage = BuilderPageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, self.document)
     self.parentPage:addElement(BuilderPage)
+    self.document:endEdition()
   end
 end
 

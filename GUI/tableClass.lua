@@ -4,6 +4,7 @@ local logger = require("UTIL.logger")
 local PageStackClass = require("GUI.pageStackClass")
 local PageClass      = require("GUI.pageClass")
 local LabelClass     = require("GUI.labelClass")
+local stringUtils    = require("UTIL.stringUtils")
 
 local DEFAULT_X_SIZE = 20
 local DEFAULT_Y_SIZE = 20
@@ -18,8 +19,8 @@ local TableClass = {}
 TableClass.__index = TableClass
 setmetatable(TableClass, { __index = PageClass })
 
-function TableClass:new( monitor, x, y, title, sizeX, sizeY)
-    self = setmetatable(PageClass:new(monitor,x,y), TableClass)
+function TableClass:new( monitor, x, y, title, sizeX, sizeY, document)
+    self = setmetatable(PageClass:new(monitor,x,y, document), TableClass)
     self.title =title
     self.isScrollable = true
     self.sizeX = sizeX or DEFAULT_X_SIZE
@@ -51,11 +52,22 @@ function TableClass:new( monitor, x, y, title, sizeX, sizeY)
     self.onTableElementDrawnCallback = nil
     self.onAskForNewDataCallback = nil
     self.onPostRefreshDataCallback = nil
+    self.type = "table"
 
     -- sets default scroll amount
     self:setScrollAmount()
     return self
   end
+
+function TableClass:__tostring() 
+    return stringUtils.Format("[Table %(id), Title:%(title), nElements:%(nelements), Position:%(position), Size:%(size) ]",
+                              {id = self.id,
+                              title = stringUtils.Truncate(tostring(self.title),20),
+                              nelements = #self.elements,
+                              position = (stringUtils.CoordToString(self.x, self.y)),
+                              size = (stringUtils.CoordToString(self:getSize()))})
+   
+end
 
 function TableClass:changeStyle(backColor, elementBackColor, textColor)
     self.backColor = backColor or self.backColor
@@ -137,10 +149,10 @@ function TableClass:createButtonsForTable()
     local startX, startY, endX, endY = self:getArea()
     if (self.isScrollable) then
 
-        local Up = ToggleableButtonClass:new(endX,endY-1, "U")
+        local Up = ToggleableButtonClass:new(endX,endY-1, "U", self.document)
         Up:setMargin(0)
 
-        local Down = ToggleableButtonClass:new(endX, endY, "D")
+        local Down = ToggleableButtonClass:new(endX, endY, "D", self.document)
         Down:setMargin(0)
 
         Up:changeStyle(nil, self.backColor)
@@ -166,7 +178,7 @@ function TableClass:createButtonsForTable()
 
     end
     if (self.hasManualRefresh) then     
-        local RefreshButton = ToggleableButtonClass:new(startX,startY, "R")
+        local RefreshButton = ToggleableButtonClass:new(startX,startY, "R", self.document)
         RefreshButton:setMargin(0)
         RefreshButton:changeStyle(nil, self.backColor)
         self:addElement(RefreshButton)
@@ -184,7 +196,7 @@ function TableClass:createButtonsForTable()
 
     if self.title then
         local titleStartX, titleStartY = self:getTitleArea()
-        self.titleElement = LabelClass:new(titleStartX,titleStartY,self.title)
+        self.titleElement = LabelClass:new(titleStartX,titleStartY,self.title, self.document)
         self.titleElement:setMargin(0)
         self.titleElement:setTextColor(colors.black)
         self.titleElement:setBackColor(self.backColor)
@@ -195,8 +207,59 @@ function TableClass:createButtonsForTable()
     self:setElementDirty()
 end
 
+function TableClass:createScrollButtons()
+    local Up = ToggleableButtonClass:new(1,1, "U")
+    Up:setMargin(0)
+
+    local Down = ToggleableButtonClass:new(1, 1, "D")
+    Down:setMargin(0)
+   
+    Up:setOnManualToggle(
+        (function(button) 
+            self:scroll(true)
+        end)
+    )
+    Down:setOnManualToggle(
+        (function(button) 
+            self:scroll(false)
+        end)
+    )
+
+    self.scrollButtons.Up = Up
+    self.scrollButtons.Down= Down
+    self:addElement(Up)
+    self:addElement(Down)
+end
+
+function TableClass:updateScrollButtons()
+    if self.isScrollable then
+        if (not self.scrollButtons.Up or not self.scrollButtons.Down) then
+            self:createScrollButtons()
+        end
+        
+        self.scrollButtons.Up:changeStyle(nil, self.backColor)
+        self.scrollButtons.Down:changeStyle(nil, self.backColor)
+
+        local _, _, endX, endY = self:getArea()
+        self.scrollButtons.Up:setPos(endX,endY-1)
+        self.scrollButtons.Down:setPos(endX, endY)
+
+    else
+        if (self.scrollButtons.Up) then
+            self:removeElement(self.scrollButtons.Up)
+            self.scrollButtons.Up = nil
+        end
+        if (self.scrollButtons.Down) then
+            self:removeElement(self.scrollButtons.Down)
+            self.scrollButtons.Down = nil 
+        end
+    
+    end
+end
+
 
 function TableClass:scroll(isUp)
+    self.document:startEdition()
     if not self.isScrollable then
         return
     end
@@ -222,8 +285,10 @@ function TableClass:scroll(isUp)
 
     local realMovement = realScroll - self.currentScroll
     self.currentScroll = self.currentScroll + realMovement
-
     self:updateButtonsForScroll()
+    self:setElementDirty()
+    self.document:registerCurrentAreaAsDirty(self)
+    self.document:endEdition()
 end
 
 
@@ -324,7 +389,7 @@ function TableClass:createTableElementsForRow(key, value, position)
     local keyElement
     if self.displayKey then
         local keyStringToDisplay = self:getStringToDisplayForElement(key, true, position)
-        keyElement = ToggleableButtonClass:new(0, 0, keyStringToDisplay)
+        keyElement = ToggleableButtonClass:new(0, 0, keyStringToDisplay, self.document)
         self:updateElementStyleAccordingToData(keyElement,true, position)
         keyElement:setUpperCornerPos(keyX,keyY)
         keyElement:forceWidthSize(self:getKeyRowWidth())
@@ -338,7 +403,7 @@ function TableClass:createTableElementsForRow(key, value, position)
     local displayedText = self:getStringToDisplayForElement(value, false, position)
     
     
-    local valueElement = ToggleableButtonClass:new(0, 0, displayedText)
+    local valueElement = ToggleableButtonClass:new(0, 0, displayedText, self.document)
     if (typeOfValue == "table")  then    
         self:processTableElement(valueElement, key, value , position)
     end
@@ -545,12 +610,10 @@ function TableClass:refreshData()
     end
 
     self:setInternalTable(NewInternalTable)
-    self:askForRedraw()
     self:onPostRefreshData()
 end
 
 function TableClass:internalDraw() 
-   
     -- CreateButtons if needed
     if self.areButtonsDirty then
         self:createButtonsForTable()

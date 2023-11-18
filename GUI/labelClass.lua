@@ -1,17 +1,28 @@
 local logger = require("UTIL.logger")
 local ButtonClass = require("GUI.buttonClass")
+local stringUtils = require("UTIL.stringUtils")
 
 -- Define the LabelClass class
 local LabelClass = {}
 LabelClass.__index = LabelClass
 setmetatable(LabelClass, {__index = ButtonClass})
 
-function LabelClass.new(self, x, y, text)
-  local instance = ButtonClass.new(self, x, y, text) 
+function LabelClass.new(self, x, y, text, document)
+  local instance = ButtonClass.new(self, x, y, text, document) 
   setmetatable(instance, self)
   self.__index = self
+  self.type = "label"
 
   return instance
+end
+
+function LabelClass:__tostring() 
+  return stringUtils.Format("[Label %(id), Text: %(text), Position:%(position), Size:%(size) ]",
+                            {id = self.id, 
+                            text = stringUtils.Truncate(tostring(self.text), 20), 
+                            position = (stringUtils.CoordToString(self.x, self.y)),
+                            size = (stringUtils.CoordToString(self:getSize()))})
+ 
 end
 
 function LabelClass:setOnElementTouched(...)

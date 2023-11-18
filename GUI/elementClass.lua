@@ -1,5 +1,6 @@
 local logger = require("UTIL.logger")
 local IdGenerator = require("UTIL.IdGenerator")
+local AreaClass = require("UTIL.areaClass")
 -- Define the ButtonClass table
 
 local ElementClass = {}
@@ -12,18 +13,37 @@ ElementClass.DIRTY_STATES = {
 }
 
 -- Define a constructor for the ButtonClass
-function ElementClass:new(xPos, yPos)
-  self = setmetatable({}, ElementClass)
-  self.x = xPos or 1
-  self.y = yPos or 1
-  self.monitor = nil
-  self.parentPage = nil
-  self.onElementTouchedCallback = nil
-  self.onDrawCallback = nil
-  self.id = IdGenerator.generateId()
-  self:setParentDirty()
-  self.blockDraw = false
-  return self
+function ElementClass:new(xPos, yPos, document)
+  local instance = setmetatable({}, ElementClass)
+  if not document then
+    logger.callStackToFile()
+    assert(false, "Document is nil!")
+  end
+  instance.x = xPos or 1
+  instance.y = yPos or 1
+  instance.monitor = nil
+  instance.parentPage = nil
+  instance.onElementTouchedCallback = nil
+  instance.onDrawCallback = nil
+  instance.id = IdGenerator.generateId()
+  instance:setParentDirty()
+  instance.blockDraw = false
+  instance.document = document
+  instance.type = "element"
+  return instance
+end
+
+function ElementClass:__tostring()
+ return assert(false, "toStringShouldBeOverloaded")
+end
+
+function ElementClass:getChildElements()
+    return assert(false, "getChildElements not implemented")
+end
+
+function ElementClass:canTryToOnlyDrawChild(dirtyArea, child)
+    -- by default, if an area fits a child we should probably only draw that child
+    return true
 end
 
 function ElementClass:shouldAskParentForRedraw()
@@ -47,20 +67,15 @@ function ElementClass:removeDirty()
 end
 
 function ElementClass:canDraw(asker)
+    if self.blockDraw then 
+        return false
+    end
     if self.parentPage then
         -- by default, you can draw ur child if ur parent allows ur to draw yourself
         return self.parentPage:canDraw(self)
     end
     -- if no parent, child can be drawn
     return true
-end
-
-function ElementClass:askForRedraw(asker)
-    if self.parentPage and self:shouldAskParentForRedraw() then
-        self.parentPage:askForRedraw(self)
-    else
-        self:draw()
-    end
 end
 
 function ElementClass:setMonitor(monitor)
@@ -78,13 +93,10 @@ end
 
 function ElementClass:draw()
 
-    if self.blockDraw then
-        return
-    end
-
     if not self:canDraw(self) then
         return
     end
+    -- for debug: logger.logToFile("Drawing :" .. tostring(self))
     if self.onDrawCallback then
         self:onDrawCallback()
     end
@@ -124,6 +136,10 @@ end
 
 function ElementClass:getArea()
     logger.log("Called unimplemented getArea")
+end
+
+function ElementClass:getAreaAsObject()
+    return AreaClass:new(self:getArea())
 end
 
 function ElementClass:isPosInElement(x, y) 

@@ -1,8 +1,8 @@
-local PageClass = require "GUI.pageClass"
 local ObTableClass          = require "GUI.obTableClass"
 local logger                = require "UTIL.logger"
 local WorkOrderFetcherClass = require "MODEL.workOrderFetcherClass"
 local RessourcePageClass    = require "COLONYGUI.ressourcePageClass"
+local CustomPageClass       = require "GUI.customPageClass"
 
 -- Define constants
 
@@ -13,45 +13,43 @@ local TEXT_COLOR = colors.yellow
 -- Define the RessourcePage Class 
 local WorkOrderPageClass = {}
 WorkOrderPageClass.__index = WorkOrderPageClass
-setmetatable(WorkOrderPageClass, {__index = PageClass})
+setmetatable(WorkOrderPageClass, {__index = CustomPageClass})
 
 
 
-function WorkOrderPageClass:new(monitor, parentPage, colonyPeripheral, externalChest)
-  self = setmetatable(PageClass:new(monitor), WorkOrderPageClass)
+function WorkOrderPageClass:new(monitor, parentPage, colonyPeripheral, externalChest, document)
+  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "workOrderPage"), WorkOrderPageClass)
 
   self.ressourceFetcher = WorkOrderFetcherClass:new(colonyPeripheral)
   self.parentPage = parentPage
   self.colonyPeripheral = colonyPeripheral
-  self:buildWorkOrderPage(parentPage)
   self.externalChest = externalChest
+  self:buildCustomPage()
   return self
 end
 
-function WorkOrderPageClass:buildWorkOrderPage(parentPage)
+function WorkOrderPageClass:__tostring() 
+    return CustomPageClass.__tostring(self)
+  end
 
-local parentPageSizeX, parentPageSizeY = parentPage:getSize()
-local parentPagePosX, parentPagePosY = parentPage:getPos()
+function WorkOrderPageClass:onBuildCustomPage()
 
-local workOrderTable = ObTableClass:new(self.monitor, 1,1, "Work Orders")
-workOrderTable:setBlockDraw(true)
-workOrderTable:setDataFetcher(self.ressourceFetcher)
-workOrderTable:setDisplayKey(false)
-workOrderTable.title = nil
-workOrderTable:setRowHeight(5)
-workOrderTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
-workOrderTable:setHasManualRefresh(true)
-workOrderTable:setSize(parentPageSizeX, parentPageSizeY)
-workOrderTable:setPos(parentPagePosX,parentPagePosY)
-workOrderTable:setOnTableElementPressedCallback(self:getOnWorkOrderPressed())
+    local parentPageSizeX, parentPageSizeY = self.parentPage:getSize()
+    local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 
-self:setBlockDraw(true)
-self:setBackColor(ELEMENT_BACK_COLOR)
+    local workOrderTable = ObTableClass:new(self.monitor, 1,1, "Work Orders", nil, nil, self.document)
+    workOrderTable:setDataFetcher(self.ressourceFetcher)
+    workOrderTable:setDisplayKey(false)
+    workOrderTable.title = nil
+    workOrderTable:setRowHeight(5)
+    workOrderTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
+    workOrderTable:setHasManualRefresh(true)
+    workOrderTable:setSize(parentPageSizeX, parentPageSizeY)
+    workOrderTable:setPos(parentPagePosX,parentPagePosY)
+    workOrderTable:setOnTableElementPressedCallback(self:getOnWorkOrderPressed())
 
-
-workOrderTable:setBlockDraw(false)
-self:addElement(workOrderTable)
-self:setBlockDraw(false)
+    self:setBackColor(ELEMENT_BACK_COLOR)
+    self:addElement(workOrderTable)
 
 end
 
@@ -62,7 +60,7 @@ function WorkOrderPageClass:getOnWorkOrderPressed()
             return
         end
         
-        local ressourcePage = RessourcePageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, workOrder.id, self.externalChest)
+        local ressourcePage = RessourcePageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, workOrder.id, self.externalChest, self.document)
         self.parentPage:addElement(ressourcePage)
     end
 end

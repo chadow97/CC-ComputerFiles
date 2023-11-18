@@ -24,17 +24,17 @@ MonUtils.resetMonitor(monitor)
 local monitorX, monitorY = monitor.getSize()
 
 -- Initialize logger for debug
-logger.init(term.current(), "ColonyGUI", true)
+logger.init(term.current(), "ColonyGUI.log", true)
 
 -- Create document, allows to retrieve data.
 local document = ColonyDocumentClass:new()
-
+document:startEdition()
 -- Setup exit program button
 local isRunning = true
 local function endProgram()
     isRunning = false
 end
-local exitButton = ButtonClass:new(monitorX, monitorY, "X")
+local exitButton = ButtonClass:new(monitorX, monitorY, "X", document)
 exitButton:setOnElementTouched(endProgram)
 exitButton:changeStyle(nil, ELEMENT_BACK_COLOR)
 exitButton:setMargin(0)
@@ -43,14 +43,14 @@ exitButton:setMargin(0)
 -- Setup proxy to mineColonies
 local colonyPeripheral = peripheralProxyClass:new(CHANNEL, "colonyIntegrator","right")
 
-local pageStack = PageStackClass:new(monitor)
+local pageStack = PageStackClass:new(monitor, document)
 pageStack:setSize(monitorX - 2,monitorY - 2)
 pageStack:setPosition(2,2)
 local mainMenuPage = MainMenuPageClass:new(monitor, pageStack, colonyPeripheral, document)
 pageStack:pushPage(mainMenuPage)
 pageStack:changeExitButtonStyle(nil, ELEMENT_BACK_COLOR)
 
-local rootPage = PageClass:new(monitor)
+local rootPage = PageClass:new(monitor, 1, 1, document)
 rootPage:setBackColor(BACKGROUND_COLOR)
 rootPage:addElement(pageStack)
 rootPage:addElement(exitButton)
@@ -59,7 +59,9 @@ local shouldStopGuiLoop =
     function()
         return not isRunning
     end
-local guiHandler = GuiHandlerClass:new(REFRESH_DELAY, rootPage, shouldStopGuiLoop)
+local guiHandler = GuiHandlerClass:new(REFRESH_DELAY, rootPage, shouldStopGuiLoop, document)
+document:registerEverythingAsDirty()
+document:endEdition()
 guiHandler:loop()
 
 

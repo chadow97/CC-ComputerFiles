@@ -1,6 +1,7 @@
 local logger = require "UTIL.logger"
 local ToggleableButtonClass = require("GUI.toggleableButtonClass")
 local PageClass             = require("GUI.pageClass")
+local stringUtils           = require("UTIL.stringUtils")
 -- define the PageStackClass
 
 local PageStackClass = {}
@@ -9,13 +10,14 @@ setmetatable(PageStackClass, { __index = PageClass })
 
 
 -- constructor
-function PageStackClass:new(monitor)
-  self = setmetatable(PageClass:new(monitor), PageStackClass)
+function PageStackClass:new(monitor, document)
+  self = setmetatable(PageClass:new(monitor, 1,1, document), PageStackClass)
   self.pageStack = {}
 
-  self.exitButton = ToggleableButtonClass:new(1,1, "X")
+  self.exitButton = ToggleableButtonClass:new(1,1, "X", self.document)
   self:updateButtonPosition()
   self.exitButton:setMargin(0)
+  self.type = "pageStack"
   PageClass.addElement(self, self.exitButton)
 
   self.exitButton:setOnManualToggle(
@@ -25,6 +27,41 @@ function PageStackClass:new(monitor)
   )
 
   return self
+end
+
+function PageStackClass:__tostring() 
+  return stringUtils.Format("[PageStack %(id), nElements:%(nelements), #Pages:%(npages), TopPageId:%(toppage), Position:%(position), Size:%(size) ]",
+                            {id = self.id,
+                            nelements = #self.elements,
+                            npages = #self.pageStack,
+                            toppage = self:getTopPage().id,
+                            position = (stringUtils.CoordToString(self.x, self.y)),
+                            size = (stringUtils.CoordToString(self:getSize()))})
+ 
+end
+
+function PageStackClass:getChildElements()
+    local childs = {}
+    local topPage = self:getTopPage()
+    if topPage then
+      table.insert(childs, topPage)      
+    end
+    for _, childElement in ipairs(self.elements) do
+      table.insert(childs,childElement)
+    end
+    return childs
+end
+
+function PageStackClass:canTryToOnlyDrawChild(dirtyArea, child)
+  -- if asking a child on top of the page, nothing to consider
+  if child ~= self:getTopPage() then
+    return true
+  end
+  -- if asking something on the back of the page, make sure childs will not erase overlay elements
+  if dirtyArea:contains(self.exitButton:getAreaAsObject()) then
+    return false
+  end
+  return true
 end
 
 function PageStackClass:updateButtonPosition()
@@ -42,18 +79,19 @@ end
 
 -- push a page onto the stack
 function PageStackClass:pushPage(page)
+  self.document:startEdition()
   table.insert(self.pageStack, page)
-
   page:setMonitor(self.monitor)
   page:setParentPage(self)
   page:setSize(self:getSize())
   page:setPos(self.x, self.y)
-  self:setElementDirty()
-  self:askForRedraw(self)
+  self.document:registerCurrentAreaAsDirty(self)
+  self.document:endEdition()
 end
 
 -- pop the top page from the stack
 function PageStackClass:popPage()
+  
   if #self.pageStack == 0 then
     logger.log("No pages inserted!!")
     return
@@ -61,12 +99,13 @@ function PageStackClass:popPage()
   if (#self.pageStack == 1) then
     return
   end
+  self.document:startEdition()
   table.remove(self.pageStack)
 
   self:getTopPage():onResumeAfterContextLost()
+  self.document:registerCurrentAreaAsDirty(self)
+  self.document:endEdition()
 
-
-  self:askForRedraw(self)
 end
 
 function PageStackClass:getTopPage()
@@ -79,15 +118,6 @@ function PageStackClass:canDraw(asker)
     return false
   end
   return PageClass.canDraw(self, asker)
-end
-
-
-function PageStackClass:askForRedraw(asker)
-    -- PageStackClass in control of area, if page is shown it is ok to draw
-    if asker ~= self:getTopPage() and asker ~= self and asker ~= self.exitButton then
-      return
-    end
-    PageClass.askForRedraw(self,asker)
 end
 
 function PageStackClass:internalDraw()

@@ -1,5 +1,6 @@
 -- InventoryClass.lua
 local ObClass = require("MODEL.obClass")  -- Adjust the path if necessary
+local stringUtils = require("UTIL.stringUtils")
 
 
 local InventoryClass = {}
@@ -16,6 +17,10 @@ function InventoryClass:new(inventoryWrapper)
     return self
 end
 
+function InventoryClass:__tostring()
+    return stringUtils.UFormat("[Inventory object %s]", self.name)
+end
+
 -- Overriding GetKeyDisplayString method
 function InventoryClass:GetKeyDisplayString()
     return self.uniqueKey
@@ -25,6 +30,10 @@ end
 function InventoryClass:GetDisplayString()
     local displayString = string.format(self.uniqueKey)
     return displayString
+end
+
+function InventoryClass:getAllItems()
+    return self.InventoryWrapper:getAllItems()
 end
 
 

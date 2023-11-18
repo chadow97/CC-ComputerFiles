@@ -21,7 +21,7 @@ function InventoryManagerClass:new()
 end
 
 function InventoryManagerClass:getFirstInventory()
-    return self:getObs()[0]
+    return self:getObs()[1]
 end
 
 function InventoryManagerClass:getObs(type)

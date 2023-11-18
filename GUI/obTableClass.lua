@@ -2,6 +2,7 @@
 local TableClass = require("GUI.tableClass")  -- Adjust the path if necessary
 local logger     = require("UTIL.logger")
 local PageStackClass = require("GUI.pageStackClass")
+local stringUtils    = require("UTIL.stringUtils")
 
 local ObTableClass = {}
 
@@ -9,12 +10,23 @@ ObTableClass.__index = ObTableClass
 setmetatable(ObTableClass, { __index = TableClass })
 
 -- Constructor for ObTableClass
-function ObTableClass:new( ... )
-    self = setmetatable(TableClass:new( ... ), ObTableClass)
+function ObTableClass:new(  monitor, x, y, title, sizeX, sizeY, document )
+    self = setmetatable(TableClass:new(  monitor, x, y, title, sizeX, sizeY, document ), ObTableClass)
     self.obList = {}
     self.dataFetcher = nil
+    self.type = "obClassTable"
 
     return self
+end
+
+function ObTableClass:__tostring() 
+    return stringUtils.Format("[ObTable %(id), Title:%(title), #ob:%(nob), Position:%(position), Size:%(size) ]",
+                              {id = self.id,
+                              title = stringUtils.Truncate(tostring(self.title),20),
+                              nob = #self.obList,
+                              position = (stringUtils.CoordToString(self.x, self.y)),
+                              size = (stringUtils.CoordToString(self:getSize()))})
+   
 end
 
 function ObTableClass:setDataFetcher(dataFetcher)
@@ -78,12 +90,13 @@ function ObTableClass:refreshData()
     if (not NewObList or NewObList == self.obList) then
         return
     end
-
+    self.document:startEdition()
     self.obList = NewObList
     self.areButtonsDirty = true
     self:setElementDirty()
-    self:askForRedraw()
     self:onPostRefreshData()
+    self.document:registerCurrentAreaAsDirty(self)
+    self.document:endEdition()
 end
 
 function ObTableClass:processTableElement(elementButton, key, value, position)

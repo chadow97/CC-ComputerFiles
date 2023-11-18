@@ -1,6 +1,7 @@
+local logger = require "UTIL.logger"
 local GuiHandlerClass = {}
 
-function GuiHandlerClass:new(refreshDelay, mainPage, shouldStopFunc)
+function GuiHandlerClass:new(refreshDelay, mainPage, shouldStopFunc, document)
     if not mainPage then
         error("Gui handler must have a page!")
     end
@@ -8,12 +9,25 @@ function GuiHandlerClass:new(refreshDelay, mainPage, shouldStopFunc)
       refreshDelay = refreshDelay or 1,
       mainPage = mainPage,
       shouldStopFunc = shouldStopFunc or function() return false end,
-      onRefreshCallbacks = {}
+      onRefreshCallbacks = {},
+      document = document
     }
     setmetatable(o, self)
+
+    -- make sure to draw when edition is done.
+    document:addEditionListener(o)
+
     self.__index = self
     return o
   end
+
+function GuiHandlerClass:onEditionEnded()
+  local elementsToDraw = self.document:getElementsToDraw(self.mainPage)
+  for _, elementToDraw in ipairs(elementsToDraw) do
+    elementToDraw:draw()
+  end
+  self.document:clean()
+end
   
 
 function GuiHandlerClass:setRefreshDelay(rate)
@@ -41,8 +55,6 @@ end
 function GuiHandlerClass:loop()
   local refreshTimerID = nil
   local timerStartTime = nil
-
-  self.mainPage:draw()
   
   while not self.shouldStopFunc() do
     local timeSinceLastUpdate = 0

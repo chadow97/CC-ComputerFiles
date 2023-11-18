@@ -3,6 +3,7 @@ local ToggleableButtonClass = require("GUI.toggleableButtonClass")
 local PageClass = require("GUI.pageClass")
 local MonUtils = require("UTIL.monUtils")
 local logger = require("UTIL.logger")
+local DocumentClass = require("MODEL.documentClass")
 
 --Setup autocomplete
 local completion = require "cc.shell.completion"
@@ -42,22 +43,24 @@ local sleepTime = 9
 
 table.remove(programArgs, 1)
 
-local page = PageClass:new(monitor)
+local document = DocumentClass:new()
+
+local page = PageClass:new(monitor, 1,1, document)
 
 monitorX, monitorY = monitor.getSize()
 
 
 local buttonList = {}
-local StopButton = ButtonClass:new( monitorX - 14, monitorY - 1, "Stop")
+local StopButton = ButtonClass:new( monitorX - 14, monitorY - 1, "Stop", document)
 StopButton:changeStyle(colors.black, colors.red)
 table.insert(buttonList, StopButton)
 
-local RestartButton = ButtonClass:new(monitorX - 7, monitorY - 1, "Restart")
+local RestartButton = ButtonClass:new(monitorX - 7, monitorY - 1, "Restart", document)
 RestartButton:changeStyle(colors.black, colors.green)
 
 table.insert(buttonList, RestartButton)
 
-local CountdownButton = ButtonClass:new(monitorX - 14, monitorY - 5, "Countdown")
+local CountdownButton = ButtonClass:new(monitorX - 14, monitorY - 5, "Countdown", document)
 CountdownButton:changeStyle(colors.black, colors.orange)
 CountdownButton:forceHeightSize(3)
 CountdownButton:forceWidthSize(16)
@@ -83,7 +86,7 @@ RestartButton:setOnElementTouched(OnRestart)
 
 
 page:addElements(buttonList)
-page:disableErase()
+page:setIsTransparentBack(true)
 -- main loop
 while keepTesting do
     MonUtils.resetMonitor(monitor)

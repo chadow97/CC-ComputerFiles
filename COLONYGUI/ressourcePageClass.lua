@@ -1,4 +1,3 @@
-local PageClass = require "GUI.pageClass"
 local RessourceFetcherClass = require "MODEL.ressourceFetcherClass"
 local ObTableClass          = require "GUI.obTableClass"
 local LogClass              = require "GUI.logClass"
@@ -6,6 +5,7 @@ local ToggleableButtonClass = require "GUI.toggleableButtonClass"
 local RessourceClass        = require "MODEL.ressourceClass"
 local MeUtils               = require "UTIL.meUtils"
 local logger                = require "UTIL.logger"
+local CustomPageClass       = require "GUI.customPageClass"
 
 -- Define constants
 
@@ -22,27 +22,32 @@ local SEND_ALL_TOGGLED_TEXT = "Sending and crafting! Press to stop."
 -- Define the RessourcePage Class 
 local RessourcePageClass = {}
 RessourcePageClass.__index = RessourcePageClass
-setmetatable(RessourcePageClass, {__index = PageClass})
+setmetatable(RessourcePageClass, {__index = CustomPageClass})
 
 
 
-function RessourcePageClass:new(monitor, parentPage, colonyPeripheral, workOrderId, externalChest)
-  self = setmetatable(PageClass:new(monitor), RessourcePageClass)
-
+function RessourcePageClass:new(monitor, parentPage, colonyPeripheral, workOrderId, externalChest, document)
+  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "ressourcePage"), RessourcePageClass)
   self.ressourceFetcher = RessourceFetcherClass:new(colonyPeripheral, workOrderId, externalChest)
   self.isSendingAll = false;
 
-  self:buildRessourcePage(parentPage)
+  --temp while chest association isnt setup..
+  logger.logToFile("Using default inventory" .. tostring(externalChest))
+
+  self:buildCustomPage()
   return self
 end
 
-function RessourcePageClass:buildRessourcePage(parentPage)
- 
-  local parentPageSizeX, parentPageSizeY = parentPage:getSize()
-  local parentPagePosX, parentPagePosY = parentPage:getPos()
+function RessourcePageClass:__tostring() 
+  return CustomPageClass.__tostring(self)
+end
 
-  local ressourceTable = ObTableClass:new(self.monitor, 1,1, "ressource")
-  ressourceTable:setBlockDraw(true)
+function RessourcePageClass:onBuildCustomPage()
+ 
+  local parentPageSizeX, parentPageSizeY = self.parentPage:getSize()
+  local parentPagePosX, parentPagePosY = self.parentPage:getPos()
+
+  local ressourceTable = ObTableClass:new(self.monitor, 1,1, "ressource", nil, nil, self.document)
   ressourceTable:setDataFetcher(self.ressourceFetcher)
   ressourceTable:setDisplayKey(false)
   ressourceTable:setRowHeight(8)
@@ -55,14 +60,14 @@ function RessourcePageClass:buildRessourcePage(parentPage)
   ressourceTable:setOnPostRefreshDataCallback(self:getOnPostTableRefreshCallback())
   local _,_,_, ressourceTableEndY = ressourceTable:getArea()
   
-  local logElement = LogClass:new(1,1)
+  local logElement = LogClass:new(1,1,"", self.document)
   logElement:setUpperCornerPos(parentPagePosY + 1, ressourceTableEndY + 1)
   logElement:forceWidthSize(parentPageSizeX - 2)
   logElement:forceHeightSize(LOG_HEIGHT)
   logElement:changeStyle(nil, INNER_ELEMENT_BACK_COLOR)
   self.logElement = logElement
   
-  local SendAllButton = ToggleableButtonClass:new(1, 1, SEND_ALL_UNTOGGLED_TEXT)
+  local SendAllButton = ToggleableButtonClass:new(1, 1, SEND_ALL_UNTOGGLED_TEXT, self.document)
   SendAllButton:forceWidthSize(parentPageSizeX - 2)
   SendAllButton:setUpperCornerPos(parentPagePosX + 1, ressourceTableEndY + 1 + LOG_HEIGHT)
   SendAllButton:changeStyle(SEND_ALL_TEXT_COLOR, INNER_ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, SEND_ALL_TEXT_COLOR)
@@ -70,14 +75,11 @@ function RessourcePageClass:buildRessourcePage(parentPage)
   SendAllButton:disableAutomaticUntoggle()
   SendAllButton:setOnDrawCallback(self:getOnDrawSendAllButton())
 
-  self:setBlockDraw(true)
   self:setBackColor(ELEMENT_BACK_COLOR)
 
   self:addElement(ressourceTable)
   self:addElement(SendAllButton)
   self:addElement(logElement)
-  self:setBlockDraw(false)
-  ressourceTable:setBlockDraw(false)
 
 end
 
@@ -90,10 +92,6 @@ function RessourcePageClass:getOnDrawSendAllButton()
     end
   end
 
-end
-
-function RessourcePageClass:draw(...)
-  PageClass.draw(self, ...)
 end
 
 function RessourcePageClass:getOnSendAllPressedCallback()

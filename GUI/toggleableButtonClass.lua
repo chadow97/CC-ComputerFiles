@@ -1,5 +1,6 @@
 local logger = require("UTIL.logger")
 local ButtonClass = require("GUI.buttonClass")
+local stringUtils = require('UTIL.stringUtils')
 
 local DefaultToggledTextColor = colors.white
 local DefaultToggledBackColor = colors.red
@@ -8,11 +9,10 @@ local DefaultUntoggleTime = 0.5
 
 
 local function DefaultOnButtonPress(toggleButton)
-
+    
     if toggleButton.canUntoggleManually or not toggleButton.toggled then
         toggleButton:toggle(toggleButton.untoggleTime)
         toggleButton.OnManualToggle(toggleButton)
-        toggleButton:askForRedraw()
     end
 end
 
@@ -29,15 +29,16 @@ local ToggleableButtonClass = {}
 ToggleableButtonClass.__index = ToggleableButtonClass
 setmetatable(ToggleableButtonClass, {__index = ButtonClass})
 
-function ToggleableButtonClass.new(self, x, y, text)
-  local instance = ButtonClass.new(self, x, y, text) 
+function ToggleableButtonClass:new(...)
+  local instance = setmetatable(ButtonClass.new(self, ...), ButtonClass)
   setmetatable(instance, self)
-  self.__index = self
+
+  instance.type = "toggleButtton"
 
 
   -- Shouldnt override this unless you want to change toggle behavior
   -- to disable automatic untoggle, use disableAutomaticUntoggle
-  self:setOnElementTouched(DefaultOnButtonPress)
+  instance:setOnElementTouched(DefaultOnButtonPress)
 
   instance.OnManualToggle = DefaultOnManualToggle
   instance.OnAutoUntoggle = DefaultOnAutomaticUntoggle
@@ -57,6 +58,17 @@ function ToggleableButtonClass.new(self, x, y, text)
   instance.canUntoggleManually = false
 
   return instance
+end
+
+function ToggleableButtonClass:__tostring()
+    return stringUtils.Format("[ToggleButton %(id), Text: %(text), Position:%(position), Size:%(size), isToggled:%(istoggled) ]",
+                                {
+                                id = self.id, 
+                                text = stringUtils.Truncate(tostring(self.text), 20), 
+                                position = (stringUtils.CoordToString(self.x, self.y)),
+                                size = (stringUtils.CoordToString(self:getSize())),
+                                istoggled = tostring(self.toggled)
+                                })
 end
 
 function ToggleableButtonClass:setOnManualToggle( newFunc )
@@ -82,10 +94,11 @@ function ToggleableButtonClass:updateStyle()
 end
 
 function ToggleableButtonClass:onTimerEnd()
+    self.document:startEdition()
     self.toggledTimer = nil
     self:toggle()
     self.OnAutoUntoggle(self)
-    self:askForRedraw()
+    self.document:endEdition()
 end
 
 function ToggleableButtonClass:isPressed()
@@ -107,7 +120,7 @@ function ToggleableButtonClass:changeStyle(untoggledTextColor, untoggledBackColo
 end
 
 function ToggleableButtonClass:toggle(timeUntilUndo)
-
+    self.document:startEdition()
     self.toggled = not self.toggled
     self:updateStyle()
 
@@ -121,7 +134,9 @@ function ToggleableButtonClass:toggle(timeUntilUndo)
     if timeUntilUndo ~= nil then
         ---@diagnostic disable-next-line: undefined-field
         self.toggledTimer = os.startTimer(timeUntilUndo)
-    end    
+    end 
+    self.document:registerCurrentAreaAsDirty(self)
+    self.document:endEdition()   
 end
 
 

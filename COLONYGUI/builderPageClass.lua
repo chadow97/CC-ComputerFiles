@@ -1,9 +1,9 @@
-local PageClass = require "GUI.pageClass"
 local ObTableClass          = require "GUI.obTableClass"
 local logger                = require "UTIL.logger"
 local RessourcePageClass    = require "COLONYGUI.ressourcePageClass"
 local BuilderFetcherClass   = require "MODEL.builderFetcherClass"
 local InventoryManagerClass = require "MODEL.inventoryManagerClass"
+local CustomPageClass       = require "GUI.customPageClass"
 
 -- Define constants
 
@@ -14,29 +14,27 @@ local TEXT_COLOR = colors.yellow
 -- Define the RessourcePage Class 
 local BuilderPageClass = {}
 BuilderPageClass.__index = BuilderPageClass
-setmetatable(BuilderPageClass, {__index = PageClass})
+setmetatable(BuilderPageClass, {__index = CustomPageClass})
 
 
 
 function BuilderPageClass:new(monitor, parentPage, colonyPeripheral, document)
-  self = setmetatable(PageClass:new(monitor), BuilderPageClass)
+  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "BuilderPage"), BuilderPageClass)
 
   self.ressourceFetcher = BuilderFetcherClass:new(colonyPeripheral)
-  self.parentPage = parentPage
   self.colonyPeripheral = colonyPeripheral
-  self.document = document
-  self:buildBuilderPage(parentPage)
+
+  self:buildCustomPage()
   return self
 end
 
-function BuilderPageClass:buildBuilderPage(parentPage)
+function BuilderPageClass:onBuildCustomPage()
 
-local parentPageSizeX, parentPageSizeY = parentPage:getSize()
-local parentPagePosX, parentPagePosY = parentPage:getPos()
+local parentPageSizeX, parentPageSizeY = self.parentPage:getSize()
+local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 local sizeXForTables = (parentPageSizeX - 1)/2
 
-local workOrderTable = ObTableClass:new(self.monitor, 1,1, "Builders")
-workOrderTable:setBlockDraw(true)
+local workOrderTable = ObTableClass:new(self.monitor, 1,1, "Builders", nil, nil, self.document)
 workOrderTable:setDataFetcher(self.ressourceFetcher)
 workOrderTable:setDisplayKey(false)
 workOrderTable.title = nil
@@ -47,8 +45,7 @@ workOrderTable:setSize(sizeXForTables, parentPageSizeY)
 workOrderTable:setPos(parentPagePosX,parentPagePosY)
 workOrderTable:setOnTableElementPressedCallback(self:getOnBuilderPressed())
 
-local inventoryTable = ObTableClass:new(self.monitor, 1,1, "Inventories")
-inventoryTable:setBlockDraw(true)
+local inventoryTable = ObTableClass:new(self.monitor, 1,1, "Inventories", nil, nil, self.document)
 inventoryTable:setDataFetcher(self.document:getManagerForType(InventoryManagerClass.TYPE))
 inventoryTable:setDisplayKey(false)
 inventoryTable.title = nil
@@ -59,16 +56,14 @@ inventoryTable:setSize(sizeXForTables, parentPageSizeY)
 inventoryTable:setPos(parentPagePosX + sizeXForTables + 1,parentPagePosY)
 inventoryTable:setOnTableElementPressedCallback(self:getOnBuilderPressed())
 
-self:setBlockDraw(true)
 self:setBackColor(ELEMENT_BACK_COLOR)
 
 self:addElement(workOrderTable)
 self:addElement(inventoryTable)
+end
 
-inventoryTable:setBlockDraw(false)
-workOrderTable:setBlockDraw(false)
-self:setBlockDraw(false)
-
+function BuilderPageClass:__tostring() 
+  return CustomPageClass.__tostring(self)
 end
 
 function BuilderPageClass:getOnBuilderPressed()

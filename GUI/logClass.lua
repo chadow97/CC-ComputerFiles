@@ -1,5 +1,6 @@
 local logger = require("UTIL.logger")
 local ButtonClass = require("GUI.buttonClass")
+local stringUtils = require("UTIL.stringUtils")
 
 
 
@@ -15,10 +16,11 @@ local LogClass = {}
 LogClass.__index = LogClass
 setmetatable(LogClass, {__index = ButtonClass})
 
-function LogClass:new(x, y, text)
-  local instance = ButtonClass.new(self, x, y, text) 
+function LogClass:new(x, y, text, document)
+  local instance = ButtonClass.new(self, x, y, text, document) 
   setmetatable(instance, self)
   self.__index = self
+  self.type = "label"
 
 
   -- Shouldnt override this unless you want to change toggle behavior
@@ -33,6 +35,14 @@ function LogClass:new(x, y, text)
 
 
   return instance
+end
+
+function LogClass:__tostring() 
+  return stringUtils.Format("[Log %(id), Text: %(text), Position:%(position), Size:%(size) ]",
+                            {id = self.id, 
+                            text = stringUtils.Truncate(tostring(self.text), 20), 
+                            position = (stringUtils.CoordToString(self.x, self.y)),
+                            size = (stringUtils.CoordToString(self:getSize()))})
 end
 
 function LogClass:addLine(lineToAdd)
@@ -59,7 +69,6 @@ function LogClass:addLine(lineToAdd)
     -- Set the text and request a redraw, merging concatenation and empty line appending in one step
     self:setText(table.concat(linesToDisplay, "\n") .. string.rep("\n", numberOfEmptyLines))
     self:setParentDirty()
-    self:askForRedraw(self)
 end
 
 return LogClass

@@ -13,18 +13,33 @@ ButtonClass.__index = ButtonClass
 setmetatable(ButtonClass, { __index = ElementClass })
 
 -- Define a constructor for the ButtonClass
-function ButtonClass:new(xPos, yPos, text)
-  self = setmetatable(ElementClass:new(xPos, yPos), ButtonClass)
-  self.text = text
-  self.margin = 1
-  self.backColor = DEFAULT_BACK_COLOR
-  self.textColor = DEFAULT_TEXT_COLOR
-  self.forceWidthSize = nil
-  self.forceHeightSize = nil
-  self.shouldSplitText = true
-  self.shouldCenterText = false
-  self.limitArea = { startX = nil, startY = nil, endX = nil, endY = nil}
-  return self
+function ButtonClass:new(xPos, yPos, text, document)
+  local instance = setmetatable(ElementClass:new(xPos, yPos, document), ButtonClass)
+  instance.text = text
+  instance.margin = 1
+  instance.backColor = DEFAULT_BACK_COLOR
+  instance.textColor = DEFAULT_TEXT_COLOR
+  instance.forcedWidthSize = nil
+  instance.forcedHeightSize = nil
+  instance.shouldSplitText = true
+  instance.shouldCenterText = false
+  instance.limitArea = { startX = nil, startY = nil, endX = nil, endY = nil}
+  instance.type = "element"
+  return instance
+end
+
+function ButtonClass:__tostring() 
+    return stringUtils.Format("[Button %(id), Text: %(text), Position:%(position), Size:%(size) ]",
+                              {id = self.id, 
+                              text = stringUtils.Truncate(tostring(self.text), 20), 
+                              position = (stringUtils.CoordToString(self.x, self.y)),
+                              size = (stringUtils.CoordToString(self:getSize()))})
+   
+end
+
+function ButtonClass:getChildElements()
+    -- buttons have no children! How sad!
+    return {}
 end
 
 function ButtonClass:setLimit(startLimitX, startLimitY, endLimitX, endLimitY)
@@ -38,7 +53,8 @@ end
 -- Define a draw method for the ButtonClass
 function ButtonClass:internalDraw()
   local startLimitX, startLimitY, endLimitX, endLimitY = self:getLimitValues()
-  local startX, startY, endX, endY = self:getArea()
+  local startX, startY, endX, endY = self:getArea(false)
+
   local startXToDraw = startX
   local startYtoDraw = startY
   local endXToDraw = endX
@@ -111,7 +127,11 @@ function ButtonClass:handleEvent(eventName, ...)
 end
 
 -- Define a getArea method for the ButtonClass
-function ButtonClass:getArea()
+function ButtonClass:getArea( shouldLimit)
+    -- should limit by default
+    if not shouldLimit then
+        shouldLimit = true
+    end
     local startTextX, startTextY, sizeTextX, sizeTextY, endTextX, endTextY = self:getTextArea()
     local startX = startTextX - self.margin
     local startY = startTextY - self.margin
@@ -124,7 +144,35 @@ function ButtonClass:getArea()
     local endX = startX + sizeX - 1
     local endY = startY + sizeY - 1
 
+    if not shouldLimit then
+        return startX, startY, endX, endY, sizeX, sizeY        
+    end
+
+    -- we want the actual area that is shown to the user, so we have to consider limits!
+    local startLimitX, startLimitY, endLimitX, endLimitY = self:getLimitValues()
+    if startLimitX then
+        startX = math.max(startX, startLimitX)
+    end
+
+    if startLimitY then
+        startY = math.max(startY, startLimitY)
+    end
+    if endLimitX then
+        endX = math.min(endX, endLimitX)
+    end
+    if endLimitY then 
+        endY = math.min(endY, endLimitY)
+    end
+
+    sizeX = endX - startX + 1
+    sizeY = endY - startY + 1
+
     return startX, startY, endX, endY, sizeX, sizeY
+end
+
+function ButtonClass:getSize()
+    local _, _, _,_, sizeX, sizeY = self:getArea()
+    return sizeX, sizeY
 end
 
 function ButtonClass:getTextArea()
