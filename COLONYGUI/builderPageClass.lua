@@ -119,12 +119,6 @@ function BuilderPageClass:getOnDrawTableElement(isForBuilder)
         local drawnOb = tableToConsider:getObFromButton(tableButton)
         local isASelectedButton = drawnOb:getUniqueKey() == selectedKey
 
-        logger.logToFile("drawing button!")
-        logger.logToFile(tostring(tableButton))
-        logger.logToFile(drawnOb)
-        logger.logToFile(isASelectedButton)
-        logger.callStackToFile()
-
         tableButton:forceToggle(isASelectedButton)
     end
 end

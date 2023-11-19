@@ -78,7 +78,6 @@ end
 
 function ToggleableButtonClass:setProperties(properties)
     for propertyKey, propertyValue in pairs(properties) do
-        logger.logToFile(propertyKey)
         if propertyKey == ToggleableButtonClass.properties.automatic_untoggle and 
            not propertyValue then
             self:disableAutomaticUntoggle()

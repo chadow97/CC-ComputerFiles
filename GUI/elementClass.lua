@@ -18,7 +18,6 @@ ElementClass.properties = { on_draw_function = "on_draw_function"}
 function ElementClass:new(xPos, yPos, document)
   local instance = setmetatable({}, ElementClass)
   if not document then
-    logger.callStackToFile()
     assert(false, "Document is nil!")
   end
   instance.x = xPos or 1
@@ -106,7 +105,7 @@ function ElementClass:draw()
     if not self:canDraw(self) then
         return
     end
-    -- for debug: logger.logToFile("Drawing :" .. tostring(self))
+    logger.logToFile("Drawing :" .. tostring(self), logger.LOGGING_LEVEL.INFO)
     if self.onDrawCallback then
         self:onDrawCallback()
     end

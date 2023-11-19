@@ -18,4 +18,4 @@ table.remove(functionArgs,1)
 local per = peripheralProxyClass:new(channel, peripheralType )
 
 
-logger.logToFile(per:callMethod(methodName,table.unpack(functionArgs)))
+logger.logToFile(per:callMethod(methodName,table.unpack(functionArgs)), logger.LOGGING_LEVEL.INFO)

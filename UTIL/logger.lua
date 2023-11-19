@@ -8,7 +8,7 @@ logger.LOGGING_LEVEL = {
     ALWAYS = 2,
     ERROR = 3,
     WARNING = 4,
-    DEBUG = 5
+    INFO = 5
     }
 logger.terminal = nil
 logger.lastLineWriten = nil
@@ -47,11 +47,7 @@ function logger.db(text)
 end
 
 function logger.log(text, logLevel)
-    if not logger.isActive then
-        return
-    end
-
-    if logLevel and logger.curLoggingLevel < logLevel then
+    if not logger.canLog(logLevel) then
         return
     end
 
@@ -68,14 +64,25 @@ function logger.log(text, logLevel)
     end
 end
 
-function logger.logObToFile(object)
-    logger.logToFile(tostring(object))
+function logger.logGenericTableToFile(object, logLevel)
+    logger.logToFile(CustomPrintUtils.getAnythingString(object), logLevel)
 end
 
-function logger.logToFile(objectToPrint)
-    local text = CustomPrintUtils.getAnythingString(objectToPrint)
-
+function logger.canLog(logLevel)
     if not logger.isActive then
+        return false
+    end
+
+    if logLevel and logger.curLoggingLevel < logLevel then
+        return false
+    end
+
+    return true
+end
+
+function logger.logToFile(objectToPrint, logLevel)
+
+    if not logger.canLog(logLevel) then
         return
     end
 
@@ -83,14 +90,15 @@ function logger.logToFile(objectToPrint)
        logger.fileName = "logger.log" 
     end
 
-    local path = getFilePath()
-    
+    local text = tostring(objectToPrint)
 
+    local path = getFilePath()
     local file = fs.open(path, "a")
     ---@diagnostic disable-next-line: param-type-mismatch
     local time = textutils.formatTime(os.time("local"))
+    local logLevelString = logger.logLevelToString(logLevel)
 
-    file.writeLine(pretty.render(pretty.group(pretty.text("[") .. pretty.pretty(time) .. pretty.text("]:").. pretty.pretty(text))))
+    file.writeLine(pretty.render(pretty.group(pretty.text("[") .. pretty.pretty(time) .. pretty.text("-") .. pretty.text(logLevelString) .. pretty.text("]:").. pretty.pretty(text))))
     file.close()
 
 end
@@ -121,6 +129,20 @@ function logger.callStackToFile()
 
     file.close()
 
+end
+
+function logger.logLevelToString(logLevel)
+    if logLevel == logger.LOGGING_LEVEL.ALWAYS_DEBUG then
+        return "ALWAYS_DEBUG"
+    elseif logLevel == logger.LOGGING_LEVEL.INFO then
+        return "INFO"
+    elseif logLevel == logger.LOGGING_LEVEL.ERROR then
+        return "ERROR"
+    elseif logLevel == logger.LOGGING_LEVEL.WARNING then
+        return "WARNING"
+    else
+        return "ALWAYS"
+    end
 end
 
 

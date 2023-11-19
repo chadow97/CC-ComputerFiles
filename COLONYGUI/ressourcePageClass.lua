@@ -32,7 +32,7 @@ function RessourcePageClass:new(monitor, parentPage, colonyPeripheral, workOrder
   self.isSendingAll = false;
 
   --temp while chest association isnt setup..
-  logger.logToFile("Using default inventory" .. tostring(externalChest))
+  logger.logToFile("Using default inventory" .. tostring(externalChest), logger.LOGGING_LEVEL.INFO)
 
   self:buildCustomPage()
   return self
