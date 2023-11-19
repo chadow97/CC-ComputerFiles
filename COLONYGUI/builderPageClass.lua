@@ -44,7 +44,7 @@ local builderTable = ObTableClass:new(self.monitor, 1,1, "Builders", nil, nil, s
 builderTable:setDataFetcher(self.ressourceFetcher)
 builderTable:setDisplayKey(false)
 builderTable.title = nil
-builderTable:setRowHeight(6)
+builderTable:setRowHeight(7)
 builderTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
 builderTable:setHasManualRefresh(true)
 builderTable:setSize(sizeXForTables, parentPageSizeY)
@@ -85,15 +85,30 @@ function BuilderPageClass:getOnBuilderPressed()
         end
         
         self:changeSelectedItem(true, builderOb)
+        if builderOb.associatedInventory then
+            self:changeSelectedItem(false, builderOb.associatedInventory)
+        end
     end
 end
 
 function BuilderPageClass:getOnInventoryPressed()
     return function(positionInTable, isKey, inventoryOb)
+
         if isKey then
             return
         end
+
+        if not self.currentlySelectedBuilder then
+            logger.logToFile("No selected builder!")
+            return
+        end
+        self.document:startEdition()
         self:changeSelectedItem(false, inventoryOb)
+        logger.logToFile(self.currentlySelectedBuilder)
+        self.currentlySelectedBuilder:setAssociatedInventory(self.currentlySelectedInventory)
+        self.builderTable.areButtonsDirty = true;
+        self.document:registerCurrentAreaAsDirty(self.builderTable)
+        self.document:endEdition()
 
     end
 end

@@ -47,6 +47,7 @@ function ObTableClass:createElementButtons()
     end
 end
 
+
 function ObTableClass:getObFromButton(button)
     for _,ob in pairs(self.obList) do
         if ob:getUniqueKey() == button.uniqueObKey then

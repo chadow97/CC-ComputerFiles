@@ -428,7 +428,6 @@ function TableClass:createTableElementsForRow(key, value, position)
 end
 
 
-
 function TableClass:getElementStart(position, isKey)
 
     -- get column and row for element

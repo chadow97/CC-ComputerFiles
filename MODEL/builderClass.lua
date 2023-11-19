@@ -1,5 +1,6 @@
 -- WorkOrderClass.lua
 local ObClass = require("MODEL.obClass")  -- Adjust the path if necessary
+local logger  = require("UTIL.logger")
 
 
 local BuilderClass = {}
@@ -11,6 +12,7 @@ function BuilderClass:new(builderData)
     local uniqueKey = builderData.id
     self = setmetatable(ObClass:new(uniqueKey), BuilderClass)
     self.id = self.uniqueKey
+    self.associatedInventory = nil
 
 
     self.name = builderData.name
@@ -23,6 +25,10 @@ function BuilderClass:new(builderData)
     return self
 end
 
+function BuilderClass:setAssociatedInventory(inventory)
+    self.associatedInventory = inventory
+end
+
 -- Overriding GetKeyDisplayString method
 function BuilderClass:GetKeyDisplayString()
     return self.uniqueKey
@@ -30,7 +36,16 @@ end
 
 -- Overriding GetDisplayString method
 function BuilderClass:GetDisplayString()
-    return string.format("ID:%s \nName: %s\nHut level:%s\nStatus:%s", self.id, self.name, self.builderHutLevel, self.state)
+    local inventoryDisplay = "Error (Will use default!)"
+    if self.associatedInventory then
+        inventoryDisplay = self.associatedInventory:GetDisplayString()
+    end
+    return string.format("ID: %s \nName: %s\nHut level: %s\nStatus: %s\nTarget Inventory: %s", 
+                         self.id, 
+                         self.name, 
+                         self.builderHutLevel, 
+                         self.state, 
+                         inventoryDisplay)
 end
 
 
