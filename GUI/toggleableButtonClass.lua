@@ -11,8 +11,10 @@ local DefaultUntoggleTime = 0.5
 local function DefaultOnButtonPress(toggleButton)
     
     if toggleButton.canUntoggleManually or not toggleButton.toggled then
+        toggleButton.document:startEdition()
         toggleButton:toggle(toggleButton.untoggleTime)
         toggleButton.OnManualToggle(toggleButton)
+        toggleButton.document:endEdition()
     end
 end
 
@@ -28,6 +30,9 @@ end
 local ToggleableButtonClass = {}
 ToggleableButtonClass.__index = ToggleableButtonClass
 setmetatable(ToggleableButtonClass, {__index = ButtonClass})
+
+
+ToggleableButtonClass.properties = { automatic_untoggle = "automatic_untoggle"}
 
 function ToggleableButtonClass:new(...)
   local instance = setmetatable(ButtonClass.new(self, ...), ButtonClass)
@@ -69,6 +74,18 @@ function ToggleableButtonClass:__tostring()
                                 size = (stringUtils.CoordToString(self:getSize())),
                                 istoggled = tostring(self.toggled)
                                 })
+end
+
+function ToggleableButtonClass:setProperties(properties)
+    for propertyKey, propertyValue in pairs(properties) do
+        logger.logToFile(propertyKey)
+        if propertyKey == ToggleableButtonClass.properties.automatic_untoggle and 
+           not propertyValue then
+            self:disableAutomaticUntoggle()
+        end
+    end
+
+    ButtonClass.setProperties(self, properties)
 end
 
 function ToggleableButtonClass:setOnManualToggle( newFunc )
@@ -137,6 +154,13 @@ function ToggleableButtonClass:toggle(timeUntilUndo)
     end 
     self.document:registerCurrentAreaAsDirty(self)
     self.document:endEdition()   
+end
+
+function ToggleableButtonClass:forceToggle( isToggled)
+    if self.toggled ~= isToggled then
+        self.toggled = isToggled
+        self:updateStyle()
+    end
 end
 
 

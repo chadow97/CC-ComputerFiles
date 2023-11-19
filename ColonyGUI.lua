@@ -15,7 +15,7 @@ local ColonyDocumentClass= require("COLONYGUI.colonyDocumentClass")
 local BACKGROUND_COLOR = colors.yellow
 local ELEMENT_BACK_COLOR = colors.red
 
-local REFRESH_DELAY = 100
+local REFRESH_DELAY = 5
 local CHANNEL = 1
 
 -- Setup Monitor

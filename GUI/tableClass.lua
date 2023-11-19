@@ -53,6 +53,7 @@ function TableClass:new( monitor, x, y, title, sizeX, sizeY, document)
     self.onAskForNewDataCallback = nil
     self.onPostRefreshDataCallback = nil
     self.type = "table"
+    self.tableElementProperties = {}
 
     -- sets default scroll amount
     self:setScrollAmount()
@@ -67,6 +68,10 @@ function TableClass:__tostring()
                               position = (stringUtils.CoordToString(self.x, self.y)),
                               size = (stringUtils.CoordToString(self:getSize()))})
    
+end
+
+function TableClass:setTableElementsProperties(properties)
+    self.tableElementProperties = properties or {}
 end
 
 function TableClass:changeStyle(backColor, elementBackColor, textColor)
@@ -395,6 +400,7 @@ function TableClass:createTableElementsForRow(key, value, position)
         keyElement:forceWidthSize(self:getKeyRowWidth())
         keyElement:forceHeightSize(self:getRowHeight())
         keyElement:setLimit(self:getAreaForElements())
+        keyElement:setProperties(self.tableElementProperties)
         self:addElement(keyElement)
         self:setOnTableElementPressedCallbackForElement(keyElement, key, true, position, key)
         self:setupOnDrawButton(keyElement, key, true, position, key)
@@ -413,10 +419,12 @@ function TableClass:createTableElementsForRow(key, value, position)
     valueElement:forceWidthSize(self:getValueRowWidth())
     valueElement:forceHeightSize(self:getRowHeight())
     valueElement:setLimit(self:getAreaForElements())
+    valueElement:setProperties(self.tableElementProperties)
     self:setOnTableElementPressedCallbackForElement( valueElement, key, false, position, value)
     self:setupOnDrawButton(valueElement,key, false, position, value)
 
     self.tableElements[key] = {keyButton = keyElement, valueButton = valueElement}
+    return keyElement, valueElement
 end
 
 

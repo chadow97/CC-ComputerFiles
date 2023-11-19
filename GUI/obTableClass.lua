@@ -38,9 +38,42 @@ function ObTableClass:createElementButtons()
     --rewrite to not use internal table
     local index = 1
     for _, ob in pairs(self.obList) do
-        self:createTableElementsForRow(index, "tempValue", index)
+        local keyButton, valueButton  = self:createTableElementsForRow(index, "tempValue", index)
+        if keyButton then
+            keyButton.uniqueObKey = ob:getUniqueKey()
+        end
+        valueButton.uniqueObKey = ob:getUniqueKey()
         index = index + 1
     end
+end
+
+function ObTableClass:getObFromButton(button)
+    for _,ob in pairs(self.obList) do
+        if ob:getUniqueKey() == button.uniqueObKey then
+            return ob
+        end
+    end
+    assert(false, "No ob corresponds to that button!")
+end
+
+function ObTableClass:getButtonFromOb(ob, getKey)
+    if not getKey then
+        getKey = false
+    end
+    for _, kvButtons in pairs(self.tableElements) do
+        local buttonToConsider 
+        if getKey then
+            buttonToConsider = kvButtons["keyButton"]
+        else
+            buttonToConsider = kvButtons["valueButton"]
+
+        end
+        if buttonToConsider.uniqueObKey == ob:getUniqueKey() then
+            return buttonToConsider
+        end  
+
+    end
+    assert(false, "No button corresponds to that ob!")
 end
 
 function ObTableClass:getStringToDisplayForElement(data, isKey, position)

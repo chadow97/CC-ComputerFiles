@@ -12,6 +12,8 @@ ElementClass.DIRTY_STATES = {
     PARENT_DIRTY = 3
 }
 
+ElementClass.properties = { on_draw_function = "on_draw_function"}
+
 -- Define a constructor for the ButtonClass
 function ElementClass:new(xPos, yPos, document)
   local instance = setmetatable({}, ElementClass)
@@ -89,6 +91,14 @@ end
 
 function ElementClass:setBlockDraw( shouldBlockDraw )
     self.blockDraw = shouldBlockDraw
+end
+
+function ElementClass:setProperties(properties)
+    for propertyKey, propertyValue in pairs(properties) do
+        if propertyKey == ElementClass.properties.on_draw_function then
+            self:setOnDrawCallback(propertyValue)
+        end
+    end
 end
 
 function ElementClass:draw()

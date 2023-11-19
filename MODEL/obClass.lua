@@ -9,6 +9,10 @@ function ObClass:new(uniqueKey)
     return self
 end
 
+function ObClass:getUniqueKey()
+    return self.uniqueKey
+end
+
 
 function ObClass:GetDisplayString()
     -- No implementation

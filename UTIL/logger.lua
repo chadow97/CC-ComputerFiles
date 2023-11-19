@@ -1,4 +1,5 @@
 local pretty = require "cc.pretty"
+local CustomPrintUtils = require "UTIL.customPrintUtils"
 
 local logger = {}
 
@@ -71,7 +72,8 @@ function logger.logObToFile(object)
     logger.logToFile(tostring(object))
 end
 
-function logger.logToFile(text)
+function logger.logToFile(objectToPrint)
+    local text = CustomPrintUtils.getAnythingString(objectToPrint)
 
     if not logger.isActive then
         return

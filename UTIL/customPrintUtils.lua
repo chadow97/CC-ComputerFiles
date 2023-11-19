@@ -28,19 +28,7 @@ local function getElementString(_element, _depthLeft, _currentDepth)
 
     local typ = type(_element)
     local result = ""
-    if typ == "string" then
-        result = result .. _element
-    elseif typ == "number" then
-        result = result .. _element
-    elseif typ == "boolean" then 
-        if (_element) then
-            result = result .. "true"
-        else 
-            result = result .. "false"
-        end
-    elseif typ == "nil" then 
-        result = result .. "nil"
-    elseif typ == "table" then
+    if typ == "table" then
         if hasReachedEnd then
             result = "cannot print table because maximum depth is reached"
         else 
@@ -58,10 +46,8 @@ local function getElementString(_element, _depthLeft, _currentDepth)
             -- END OF STRING FOR TABLE
         end
 
-    elseif typ == "function" then
-        result = result .. "function"
     else
-        result = result .. "Unhandled type: " .. typ
+        result = result .. tostring(_element)
     end  
     return result
 end
@@ -80,6 +66,6 @@ function CustomPrintUtils.getAnythingString(_anything, _maxDepth)
     return(getElementString(_anything, _maxDepth))
 end
 
-local anything1 = {[{"heheheh"}] = "hi"}
+
 
 return CustomPrintUtils
