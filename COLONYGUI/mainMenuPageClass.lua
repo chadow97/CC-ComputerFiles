@@ -76,7 +76,7 @@ end
 function MainMenuPageClass:getOnManageBuildersPressed()
   return function()
     self.document:startEdition()
-    local BuilderPage = BuilderPageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, self.document)
+    local BuilderPage = BuilderPageClass:new(self.monitor, self.parentPage, self.document)
     self.parentPage:addElement(BuilderPage)
     self.document:endEdition()
   end

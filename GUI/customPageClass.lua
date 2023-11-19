@@ -1,7 +1,6 @@
 local PageClass = require "GUI.pageClass"
 local ObTableClass          = require "GUI.obTableClass"
 local logger                = require "UTIL.logger"
-local BuilderFetcherClass   = require "MODEL.builderFetcherClass"
 local InventoryManagerClass = require "MODEL.inventoryManagerClass"
 local stringUtils           = require "UTIL.stringUtils"
 

@@ -26,8 +26,11 @@ local monitorX, monitorY = monitor.getSize()
 -- Initialize logger for debug
 logger.init(term.current(), "ColonyGUI.log", true)
 
+-- Setup proxy to mineColonies
+local colonyPeripheral = peripheralProxyClass:new(CHANNEL, "colonyIntegrator","right")
+
 -- Create document, allows to retrieve data.
-local document = ColonyDocumentClass:new()
+local document = ColonyDocumentClass:new(colonyPeripheral)
 document:startEdition()
 -- Setup exit program button
 local isRunning = true
@@ -40,8 +43,6 @@ exitButton:changeStyle(nil, ELEMENT_BACK_COLOR)
 exitButton:setMargin(0)
 
 
--- Setup proxy to mineColonies
-local colonyPeripheral = peripheralProxyClass:new(CHANNEL, "colonyIntegrator","right")
 
 local pageStack = PageStackClass:new(monitor, document)
 pageStack:setSize(monitorX - 2,monitorY - 2)

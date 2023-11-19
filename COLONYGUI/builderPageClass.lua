@@ -1,7 +1,7 @@
 local ObTableClass          = require "GUI.obTableClass"
 local logger                = require "UTIL.logger"
 local RessourcePageClass    = require "COLONYGUI.ressourcePageClass"
-local BuilderFetcherClass   = require "MODEL.builderFetcherClass"
+local BuilderManagerClass   = require "MODEL.builderManagerClass"
 local InventoryManagerClass = require "MODEL.inventoryManagerClass"
 local CustomPageClass       = require "GUI.customPageClass"
 local ToggleableButtonClass = require "GUI.toggleableButtonClass"
@@ -20,11 +20,9 @@ setmetatable(BuilderPageClass, {__index = CustomPageClass})
 
 
 
-function BuilderPageClass:new(monitor, parentPage, colonyPeripheral, document)
+function BuilderPageClass:new(monitor, parentPage, document)
   self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "BuilderPage"), BuilderPageClass)
 
-  self.ressourceFetcher = BuilderFetcherClass:new(colonyPeripheral)
-  self.colonyPeripheral = colonyPeripheral
   self.builderTable = nil
   self.inventoryTable = nil
   self.currentlySelectedBuilder = nil
@@ -41,7 +39,7 @@ local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 local sizeXForTables = (parentPageSizeX - 1)/2
 
 local builderTable = ObTableClass:new(self.monitor, 1,1, "Builders", nil, nil, self.document)
-builderTable:setDataFetcher(self.ressourceFetcher)
+builderTable:setDataFetcher(self.document:getManagerForType(BuilderManagerClass.TYPE))
 builderTable:setDisplayKey(false)
 builderTable.title = nil
 builderTable:setRowHeight(7)

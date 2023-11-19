@@ -30,6 +30,7 @@ end
 
 
 function ManagerClass:refreshObjects()
+    logger.log("refresh should be implemented")
 end
 
 return ManagerClass
