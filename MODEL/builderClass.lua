@@ -8,11 +8,12 @@ BuilderClass.__index = BuilderClass
 setmetatable(BuilderClass, { __index = ObClass })
 
 -- Constructor for WorkOrderClass
-function BuilderClass:new(builderData)
+function BuilderClass:new(builderData, manager)
     local uniqueKey = builderData.id
     self = setmetatable(ObClass:new(uniqueKey), BuilderClass)
     self.id = self.uniqueKey
-    self.associatedInventory = nil
+    self.associatedInventoryName = nil
+    self.manager = manager
 
 
     self.name = builderData.name
@@ -25,8 +26,13 @@ function BuilderClass:new(builderData)
     return self
 end
 
-function BuilderClass:setAssociatedInventory(inventory)
-    self.associatedInventory = inventory
+function BuilderClass:setAssociatedInventory(inventoryName)
+    self.associatedInventoryName = inventoryName
+    self.manager:onAssociationModified(self)
+end
+
+function BuilderClass:getAssociatedInventory()
+    return self.associatedInventoryName
 end
 
 -- Overriding GetKeyDisplayString method
@@ -37,8 +43,8 @@ end
 -- Overriding GetDisplayString method
 function BuilderClass:GetDisplayString()
     local inventoryDisplay = "Error (Will use default!)"
-    if self.associatedInventory then
-        inventoryDisplay = self.associatedInventory:GetDisplayString()
+    if self.associatedInventoryName then
+        inventoryDisplay = self.associatedInventoryName
     end
     return string.format("ID: %s \nName: %s\nHut level: %s\nStatus: %s\nTarget Inventory: %s", 
                          self.id, 

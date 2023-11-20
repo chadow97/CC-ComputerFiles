@@ -24,7 +24,11 @@ function InventoryManagerClass:getFirstInventory()
     return self:getObs()[1]
 end
 
-function InventoryManagerClass:getObs(type)
+function InventoryManagerClass:getDefaultInventory()
+    return self:getFirstInventory()
+end
+
+function InventoryManagerClass:getObs()
     if self.shouldRefresh then
         self:refreshObjects()
     end

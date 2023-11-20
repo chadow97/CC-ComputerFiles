@@ -14,7 +14,7 @@ function ColonyDocumentClass:new(colonyPeripheral)
 
 
     self:registerManager(InventoryManagerClass:new())
-    self:registerManager(BuilderManagerClass:new(colonyPeripheral))
+    self:registerManager(BuilderManagerClass:new(colonyPeripheral, self))
 
     return self
 end

@@ -67,7 +67,7 @@ function MainMenuPageClass:getOnWorkOrdersPressed()
   return function()
       self.document:startEdition()
       local inventoryManager = self.document:getManagerForType(InventoryManagerClass.TYPE)  
-      local WorkOrderPage = WorkOrderPageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, inventoryManager:getFirstInventory(), self.document)
+      local WorkOrderPage = WorkOrderPageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, self.document)
       self.parentPage:addElement(WorkOrderPage)
       self.document:endEdition()
   end

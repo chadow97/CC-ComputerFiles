@@ -16,7 +16,9 @@ function WorkOrderClass:new(uniqueKey, buildingType, builderHutData)
         self.nameOfBuiltersHut = builderHutData.name
         self.locationOfBuilderHut = builderHutData.location
         local citizens = builderHutData.citizens
+        assert(#citizens == 1, "TOO MANY CITIZENS IN BUILDERS HUT!")
         self.builderName = citizens[1].name
+        self.builderID = citizens[1].id
     else
         self.hasBuilder = false
     end

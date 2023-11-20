@@ -6,6 +6,9 @@ local RessourceClass        = require "MODEL.ressourceClass"
 local MeUtils               = require "UTIL.meUtils"
 local logger                = require "UTIL.logger"
 local CustomPageClass       = require "GUI.customPageClass"
+local InventoryManagerClass = require "MODEL.inventoryManagerClass"
+local BuilderManagerClass   = require "MODEL.builderManagerClass"
+local stringUtils           = require "UTIL.stringUtils"
 
 -- Define constants
 
@@ -26,15 +29,18 @@ setmetatable(RessourcePageClass, {__index = CustomPageClass})
 
 
 
-function RessourcePageClass:new(monitor, parentPage, colonyPeripheral, workOrderId, externalChest, document)
+function RessourcePageClass:new(monitor, parentPage, colonyPeripheral, workOrderId, inventoryOb, document)
   self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "ressourcePage"), RessourcePageClass)
-  self.ressourceFetcher = RessourceFetcherClass:new(colonyPeripheral, workOrderId, externalChest)
-  self.isSendingAll = false;
+  logger.logToFile("Using inventory:")
+  logger.logToFile(inventoryOb)
 
-  --temp while chest association isnt setup..
-  logger.logToFile("Using default inventory" .. tostring(externalChest), logger.LOGGING_LEVEL.INFO)
+  self.ressourceFetcher = RessourceFetcherClass:new(colonyPeripheral, workOrderId, inventoryOb)
+  self.isSendingAll = false;
+  self.inventoryOb = inventoryOb
+  self.logElement = nil
 
   self:buildCustomPage()
+  self.logElement:addLine("Sending to: " .. tostring(inventoryOb))
   return self
 end
 
@@ -56,7 +62,7 @@ function RessourcePageClass:onBuildCustomPage()
   ressourceTable:setHasManualRefresh(true)
   ressourceTable:setSize(parentPageSizeX, parentPageSizeY - 4 - LOG_HEIGHT)
   ressourceTable:setPos(parentPagePosX,parentPagePosY)
-  ressourceTable:setOnTableElementPressedCallback(RessourcePageClass.onRessourcePressed)
+  ressourceTable:setOnTableElementPressedCallback(self:getOnRessourcePressed())
   ressourceTable:setOnPostRefreshDataCallback(self:getOnPostTableRefreshCallback())
   local _,_,_, ressourceTableEndY = ressourceTable:getArea()
   
@@ -125,7 +131,7 @@ function RessourcePageClass:getOnPostTableRefreshCallback()
           break;
          end
       if ressource.status == RessourceClass.RESSOURCE_STATUSES.all_in_me_or_ex then
-        MeUtils.exportItem(ressource.itemId, ressource.missingWithExternalInventory)
+        MeUtils.exportItem(ressource.itemId, ressource.missingWithExternalInventory, self.inventoryOb:getUniqueKey())
         local lineToOutput = string.format("Sent %s %s to externalStorage", ressource.missingWithExternalInventory, ressource.itemId)
         self.logElement:addLine(lineToOutput)
       end
@@ -141,6 +147,23 @@ function RessourcePageClass:getOnPostTableRefreshCallback()
     end
   end
 end
+
+function RessourcePageClass:getOnRessourcePressed()
+    local ressourcePage = self
+    return function (positionInTable, isKey, ressource)
+          -- do nothing if key, it shouldnt be displayed
+        if  isKey then
+            return
+        end
+        local actionToDo = ressource:getActionToDo()
+        if actionToDo == RessourceClass.ACTIONS.SENDTOEXTERNAL then
+            MeUtils.exportItem(ressource.itemId, ressource.missingWithExternalInventory,  ressourcePage.inventoryOb:getUniqueKey())
+        elseif actionToDo == RessourceClass.ACTIONS.CRAFT then
+            MeUtils.craftItem(ressource.itemId, ressource.missingWithExternalInventoryAndMe)
+        end
+            end
+end
+
 
 -- Define static functions 
 function RessourcePageClass.onRessourcePressed(positionInTable, isKey, ressource)

@@ -125,7 +125,7 @@ function ColonyIntegratorPerUtils.getCitizensByType(per, type)
     local citizens = ColonyIntegratorPerUtils.getCitizens(per)
     for _, citizen in pairs(citizens) do
         if citizen.work and citizen.work.type == type then
-            table.insert(citizensForType, citizen)
+            citizensForType[citizen.id] = citizen
         end
     end
     return citizensForType

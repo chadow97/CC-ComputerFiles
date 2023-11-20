@@ -27,6 +27,7 @@ function BuilderPageClass:new(monitor, parentPage, document)
   self.inventoryTable = nil
   self.currentlySelectedBuilder = nil
   self.currentlySelectedInventory = nil
+  self.inventoryManager = self.document:getManagerForType(InventoryManagerClass.TYPE)
 
   self:buildCustomPage()
   return self
@@ -53,7 +54,7 @@ builderTable:setOnTableElementPressedCallback(self:getOnBuilderPressed())
 self.builderTable = builderTable
 
 local inventoryTable = ObTableClass:new(self.monitor, 1,1, "Inventories", nil, nil, self.document)
-inventoryTable:setDataFetcher(self.document:getManagerForType(InventoryManagerClass.TYPE))
+inventoryTable:setDataFetcher(self.inventoryManager)
 inventoryTable:setDisplayKey(false)
 inventoryTable.title = nil
 inventoryTable:setRowHeight(6)
@@ -83,9 +84,14 @@ function BuilderPageClass:getOnBuilderPressed()
         end
         
         self:changeSelectedItem(true, builderOb)
-        if builderOb.associatedInventory then
-            self:changeSelectedItem(false, builderOb.associatedInventory)
+        local associatedInventoryName = builderOb:getAssociatedInventory()
+        local inventoryOb
+        if  associatedInventoryName then
+            inventoryOb = self.inventoryManager:getOb(associatedInventoryName)
         end
+        
+
+        self:changeSelectedItem(false, inventoryOb)
     end
 end
 
@@ -103,9 +109,9 @@ function BuilderPageClass:getOnInventoryPressed()
         self.document:startEdition()
         self:changeSelectedItem(false, inventoryOb)
         logger.logToFile(self.currentlySelectedBuilder)
-        self.currentlySelectedBuilder:setAssociatedInventory(self.currentlySelectedInventory)
-        self.builderTable.areButtonsDirty = true;
-        self.document:registerCurrentAreaAsDirty(self.builderTable)
+        self.currentlySelectedBuilder:setAssociatedInventory(self.currentlySelectedInventory:getUniqueKey())
+        self.builderTable.areButtonsDirty = true; --TODO table should recognize on of its ob was modified on its own!
+        self.document:registerCurrentAreaAsDirty(self.builderTable) --TODO ideally, we would only have to redraw that specific builder
         self.document:endEdition()
 
     end
@@ -146,16 +152,22 @@ function BuilderPageClass:changeSelectedItem(isForBuilder, newSelectedOb)
     else
         tableToConsider = self.inventoryTable
         selectedToConsider = self.currentlySelectedInventory
-    end   
+    end 
+    local newSelectedObKey
+    if newSelectedOb then
+        newSelectedObKey = newSelectedOb:getUniqueKey()
+    end  
 
     if not selectedToConsider or 
-        newSelectedOb:getUniqueKey() ~= selectedToConsider:getUniqueKey() then
+        newSelectedObKey ~= selectedToConsider:getUniqueKey() then
         self.document:startEdition()
         if selectedToConsider then
             -- we need to redraw old builder
             self.document:registerCurrentAreaAsDirty(tableToConsider:getButtonFromOb(selectedToConsider, false))
         end
-        self.document:registerCurrentAreaAsDirty(tableToConsider:getButtonFromOb(newSelectedOb, false))
+        if newSelectedOb then           
+            self.document:registerCurrentAreaAsDirty(tableToConsider:getButtonFromOb(newSelectedOb, false))
+        end
         if isForBuilder then
             self.currentlySelectedBuilder = newSelectedOb
         else

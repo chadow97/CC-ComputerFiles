@@ -19,12 +19,23 @@ function ManagerClass:getData()
     return self:getObs()
 end
 
-function ManagerClass:getObs(type)
+function ManagerClass:getObs()
     logger.log("getObs should be implemented")
+    return {}
 end
 
 function ManagerClass:clear()
     logger.log("clear should be implemented")
+end
+
+function ManagerClass:getOb(uniqueKey)
+    local obList = self:getObs()
+    for _,ob in pairs(obList) do
+        if ob:getUniqueKey() == uniqueKey then
+            return ob
+        end
+    end
+    return nil
 end
 
 

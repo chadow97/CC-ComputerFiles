@@ -46,6 +46,8 @@ function MeUtils.getCraftableItemNames()
 end
 
 function MeUtils.exportItem(itemName, count, containerName)
+    logger.logToFile("Exporting:")
+    logger.logToFile(containerName)
     if  not MePeripheral then
         return 0
     end
@@ -58,6 +60,8 @@ function MeUtils.exportItem(itemName, count, containerName)
         countToUse = 1
     end
     local exportTable = {name = itemName, count = countToUse}
+    logger.logToFile("Exporting:")
+    logger.logToFile(containerNameToUse)
     return MePeripheral.exportItemToPeripheral(exportTable, containerNameToUse)
 end
 

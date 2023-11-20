@@ -3,6 +3,8 @@ local logger                = require "UTIL.logger"
 local WorkOrderFetcherClass = require "MODEL.workOrderFetcherClass"
 local RessourcePageClass    = require "COLONYGUI.ressourcePageClass"
 local CustomPageClass       = require "GUI.customPageClass"
+local InventoryManagerClass = require "MODEL.inventoryManagerClass"
+local BuilderManagerClass   = require "MODEL.builderManagerClass"
 
 -- Define constants
 
@@ -17,13 +19,12 @@ setmetatable(WorkOrderPageClass, {__index = CustomPageClass})
 
 
 
-function WorkOrderPageClass:new(monitor, parentPage, colonyPeripheral, externalChest, document)
+function WorkOrderPageClass:new(monitor, parentPage, colonyPeripheral, document)
   self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "workOrderPage"), WorkOrderPageClass)
 
   self.ressourceFetcher = WorkOrderFetcherClass:new(colonyPeripheral)
   self.parentPage = parentPage
   self.colonyPeripheral = colonyPeripheral
-  self.externalChest = externalChest
   self:buildCustomPage()
   return self
 end
@@ -59,8 +60,21 @@ function WorkOrderPageClass:getOnWorkOrderPressed()
         if (isKey) then
             return
         end
+        -- get chest to consider!
+        local builderId = workOrder.builderID
+        local inventoryOb
+        if builderId then
+            logger.logToFile(builderId)
+            local inventoryManager = self.document:getManagerForType(InventoryManagerClass.TYPE)
+            local builderManager = self.document:getManagerForType(BuilderManagerClass.TYPE)
+            local builder = builderManager:getOb(builderId)
+            assert(builder, "Couldnt find builder associated with work order!")
+            local inventoryId = builder:getAssociatedInventory()
+            inventoryOb = inventoryManager:getOb(inventoryId)
+            assert(inventoryOb, "Couldnt find inventory associated with builder!")
+        end
         
-        local ressourcePage = RessourcePageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, workOrder.id, self.externalChest, self.document)
+        local ressourcePage = RessourcePageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, workOrder.id, inventoryOb, self.document)
         self.parentPage:addElement(ressourcePage)
     end
 end
