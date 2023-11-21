@@ -133,9 +133,16 @@ function ElementClass:callElementTouchedCallback()
     end
 end
 
+function ElementClass:handleRefreshEvent(eventName, ...)
+    -- nothing by default
+    return false
+end
+
 
 function ElementClass:handleEvent(eventName, ...)
-
+    if eventName == "refresh_data" then
+        return self:handleRefreshEvent(eventName, ...)
+    end
     if eventName == "monitor_touch" then
         return self:handleTouchEvent(eventName, ...)
     end

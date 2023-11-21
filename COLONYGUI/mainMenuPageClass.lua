@@ -50,6 +50,7 @@ function MainMenuPageClass:onBuildCustomPage()
   ColonyButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
   ColonyButton:setOnManualToggle(self:getOnColonyPressed())
   ColonyButton:setCenterText(true)
+  self:addElement(ColonyButton)
 
   yValueForEntry = yValueForEntry + 4
  
@@ -59,6 +60,17 @@ function MainMenuPageClass:onBuildCustomPage()
   WorkOrdersButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
   WorkOrdersButton:setOnManualToggle(self:getOnWorkOrdersPressed())
   WorkOrdersButton:setCenterText(true)
+  self:addElement(WorkOrdersButton)
+
+  yValueForEntry = yValueForEntry + 4
+ 
+  local RequestsButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Manage requests", self.document)
+  RequestsButton:forceWidthSize(parentPageSizeX - 2)
+  RequestsButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
+  RequestsButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+  RequestsButton:setOnManualToggle(self:getOnWorkOrdersPressed())
+  RequestsButton:setCenterText(true)
+  self:addElement(RequestsButton)
 
   yValueForEntry = yValueForEntry + 4
 
@@ -69,13 +81,10 @@ function MainMenuPageClass:onBuildCustomPage()
   WorkersButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
   WorkersButton:setOnManualToggle(self:getOnManageBuildersPressed())
   WorkersButton:setCenterText(true)
+  self:addElement(WorkersButton)
 
-  
   self:setBackColor(ELEMENT_BACK_COLOR)
 
-  self:addElement(ColonyButton)
-  self:addElement(WorkOrdersButton)
-  self:addElement(WorkersButton)
 end
 
 function MainMenuPageClass:getOnColonyPressed()
@@ -94,6 +103,12 @@ function MainMenuPageClass:getOnWorkOrdersPressed()
       self.parentPage:addElement(WorkOrderPage)
       self.document:endEdition()
   end
+end
+
+function MainMenuPageClass:getOnRequestsPressed()
+    return function()
+
+    end
 end
 
 function MainMenuPageClass:getOnManageBuildersPressed()

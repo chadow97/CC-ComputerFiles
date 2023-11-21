@@ -653,18 +653,6 @@ function TableClass:handleTouchEvent(eventName, side, xPos, yPos)
 
 end
 
-function TableClass:handleEvent(eventName, ...) 
-    if eventName == "refresh_data" then 
-        return self:handleRefreshDataEvent()
-    end
-
-    if eventName == "monitor_touch" then
-        return self:handleTouchEvent(eventName, ...)
-    end
-
-    return PageClass.handleEvent(self, eventName, ...)
-end
-
 function TableClass:setPos(x,y)
     PageClass.setPos(self, x,y)
     self.areButtonsDirty = true;
