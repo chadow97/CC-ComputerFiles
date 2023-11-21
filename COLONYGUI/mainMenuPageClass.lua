@@ -11,6 +11,7 @@ local BuilderPageClass      = require "COLONYGUI.builderPageClass"
 local InventoryManagerClass = require "MODEL.inventoryManagerClass"
 local CustomPageClass       = require "GUI.customPageClass"
 local ColonyPageClass       = require "COLONYGUI.colonyPageClass"
+local RequestPageClass      = require "COLONYGUI.requestPageClass"
 
 -- Define constants
 
@@ -68,7 +69,7 @@ function MainMenuPageClass:onBuildCustomPage()
   RequestsButton:forceWidthSize(parentPageSizeX - 2)
   RequestsButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
   RequestsButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
-  RequestsButton:setOnManualToggle(self:getOnWorkOrdersPressed())
+  RequestsButton:setOnManualToggle(self:getOnRequestsPressed())
   RequestsButton:setCenterText(true)
   self:addElement(RequestsButton)
 
@@ -107,7 +108,10 @@ end
 
 function MainMenuPageClass:getOnRequestsPressed()
     return function()
-
+        self.document:startEdition()
+        local WorkOrderPage = RequestPageClass:new(self.monitor, self.parentPage, self.document)
+        self.parentPage:addElement(WorkOrderPage)
+        self.document:endEdition()
     end
 end
 

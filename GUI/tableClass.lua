@@ -473,6 +473,12 @@ function TableClass:getKeyRowWidth()
     return math.floor((self:getKeyColomnWidth() - self.marginBetweenColumns)* self.keyRowProportion)
 end
 
+function TableClass:setKeyRowPropertion(proportion)
+    assert(proportion > 0)
+    assert(proportion <= 1)
+    self.keyRowProportion = proportion or 0.3
+end
+
 function TableClass:getValueRowWidth()
     if (not self.displayKey) then
         return self:getKeyColomnWidth()

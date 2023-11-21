@@ -78,6 +78,10 @@ function ColonyIntegratorPerUtils.getBuildings(per)
     return per.getBuildings()[1]
 end
 
+function ColonyIntegratorPerUtils.getRequests(per)
+    return per.getRequests()[1]
+end
+
 function ColonyIntegratorPerUtils.getWorkOrderById(per, workOrderId)
     local workOrders = ColonyIntegratorPerUtils.getWorkOrders(per)
     local requestedWorkOrder = nil
