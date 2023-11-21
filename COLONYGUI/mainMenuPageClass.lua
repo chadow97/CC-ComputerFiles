@@ -10,6 +10,7 @@ local WorkOrderPageClass    = require "COLONYGUI.workOrderPageClass"
 local BuilderPageClass      = require "COLONYGUI.builderPageClass"
 local InventoryManagerClass = require "MODEL.inventoryManagerClass"
 local CustomPageClass       = require "GUI.customPageClass"
+local ColonyPageClass       = require "COLONYGUI.colonyPageClass"
 
 -- Define constants
 
@@ -40,18 +41,31 @@ end
 function MainMenuPageClass:onBuildCustomPage()
   local parentPageSizeX, parentPageSizeY = self.parentPage:getSize()
   local parentPagePosX, parentPagePosY = self.parentPage:getPos()
+
+  local yValueForEntry = parentPagePosY + 1
+
+  local ColonyButton = ToggleableButtonClass:new(1, 1, "General colony information", self.document)
+  ColonyButton:forceWidthSize(parentPageSizeX - 2)
+  ColonyButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
+  ColonyButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+  ColonyButton:setOnManualToggle(self:getOnColonyPressed())
+  ColonyButton:setCenterText(true)
+
+  yValueForEntry = yValueForEntry + 4
  
   local WorkOrdersButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Manage work orders.", self.document)
   WorkOrdersButton:forceWidthSize(parentPageSizeX - 2)
-  WorkOrdersButton:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + 1)
+  WorkOrdersButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
   WorkOrdersButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
   WorkOrdersButton:setOnManualToggle(self:getOnWorkOrdersPressed())
   WorkOrdersButton:setCenterText(true)
 
+  yValueForEntry = yValueForEntry + 4
+
   local WorkersButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Manage builders and target inventories.", self.document)
   local x,y = self.monitor.getSize()
   WorkersButton:forceWidthSize(parentPageSizeX - 2)
-  WorkersButton:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + 5)
+  WorkersButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
   WorkersButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
   WorkersButton:setOnManualToggle(self:getOnManageBuildersPressed())
   WorkersButton:setCenterText(true)
@@ -59,14 +73,23 @@ function MainMenuPageClass:onBuildCustomPage()
   
   self:setBackColor(ELEMENT_BACK_COLOR)
 
+  self:addElement(ColonyButton)
   self:addElement(WorkOrdersButton)
   self:addElement(WorkersButton)
 end
 
+function MainMenuPageClass:getOnColonyPressed()
+    return function()
+        self.document:startEdition()
+        local ColonyPage = ColonyPageClass:new(self.monitor, self.parentPage, self.document)
+        self.parentPage:addElement(ColonyPage)
+        self.document:endEdition()
+    end
+  end
+
 function MainMenuPageClass:getOnWorkOrdersPressed()
   return function()
       self.document:startEdition()
-      local inventoryManager = self.document:getManagerForType(InventoryManagerClass.TYPE)  
       local WorkOrderPage = WorkOrderPageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, self.document)
       self.parentPage:addElement(WorkOrderPage)
       self.document:endEdition()

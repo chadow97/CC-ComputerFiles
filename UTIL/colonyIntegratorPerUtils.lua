@@ -150,6 +150,24 @@ function ColonyIntegratorPerUtils.getBuilderHutInfoFromWorkOrder(per, workOrder)
     return builderHutInfo
 end
 
+function ColonyIntegratorPerUtils.getColony(per)
+    local colony = {}
+    colony.id = per.getColonyID()[1]
+    colony.name = per.getColonyName()[1]
+    colony.style = per.getColonyStyle()[1]
+    colony.location = per.getColonyLocation()[1]
+    colony.happiness = per.getHappiness()[1]
+    colony.isActive = per.isActive()[1]
+    colony.isUnderAttack = per.isUnderAttack()[1]
+    colony.amountOfCitizens = per.amountOfCitizens()[1]
+    colony.maxOfCitizens = per.maxOfCitizens()[1]
+    colony.amountOfGraves = per.amountOfGraves()[1]
+    colony.amountOfConstructionSites = per.amountOfConstructionSites()[1]
+    logger.logGenericTableToFile(colony)
+    return colony
+
+end
+
 
 
 

@@ -2,6 +2,7 @@
 local DocumentClass = require("MODEL.documentClass")  -- Adjust the path if necessary
 local InventoryManagerClass = require("MODEL.inventoryManagerClass")
 local BuilderManagerClass = require("MODEL.builderManagerClass")
+local ColonyManagerClass  = require("MODEL.colonyManagerClass")
 
 local ColonyDocumentClass = {}
 ColonyDocumentClass.__index = ColonyDocumentClass
@@ -15,6 +16,7 @@ function ColonyDocumentClass:new(colonyPeripheral)
 
     self:registerManager(InventoryManagerClass:new())
     self:registerManager(BuilderManagerClass:new(colonyPeripheral, self))
+    self:registerManager(ColonyManagerClass:new(colonyPeripheral, self))
 
     return self
 end
