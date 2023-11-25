@@ -2,10 +2,6 @@
 local colIntUtil = require("UTIL.colonyIntegratorPerUtils")
 local logger = require("UTIL.logger")
 local RequestClass = require("MODEL.requestClass")
-local TableFileHandlerClass = require("UTIL.tableFileHandlerClass")
-local InventoryManagerClass = require("MODEL.inventoryManagerClass")
-
-local DEFAULT_FILE_PATH = "./DATA/associations.txt"
 
 local RequestManagerClass = {}
 
@@ -15,37 +11,19 @@ RequestManagerClass.__index = RequestManagerClass
 setmetatable(RequestManagerClass, { __index = ManagerClass })
 
 function RequestManagerClass:new(colonyPeripheral, document)
-    local o = setmetatable(ManagerClass:new(), RequestManagerClass)
+    local o = setmetatable(ManagerClass:new(document), RequestManagerClass)
     o.colonyPeripheral = colonyPeripheral
     o.type = RequestManagerClass.TYPE
     o.requests = {}
-    o.shouldRefresh = true
-    o.document = document
 
     return o
 end
 
-function RequestManagerClass:getData()
-
-    self.shouldRefresh = true
-    return ManagerClass.getData(self)
-end
-
-
-function RequestManagerClass:getObs()
-    if self.shouldRefresh then
-        self:refreshObjects()
-    end
+function RequestManagerClass:_getObsInternal()
     return self.requests
 end
 
-function RequestManagerClass:clear()
-    self.requests = {}
-    self.shouldRefresh = true
-end
-
-function RequestManagerClass:refreshObjects()
-    self.shouldRefresh = false
+function RequestManagerClass:_onRefreshObs()
     for index, requestData in ipairs(self:getRequests()) do
 
         local potentialOb = RequestClass:new(requestData, self)

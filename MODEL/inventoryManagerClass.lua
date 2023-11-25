@@ -12,12 +12,15 @@ setmetatable(InventoryManagerClass, { __index = ManagerClass })
 
 InventoryManagerClass.TYPE = "Inventory"
 -- Constructor for InventoryManagerClass
-function InventoryManagerClass:new()
-    self = setmetatable(ManagerClass:new(), InventoryManagerClass)
+function InventoryManagerClass:new(document)
+    self = setmetatable(ManagerClass:new(document), InventoryManagerClass)
     self.type = InventoryManagerClass.TYPE
     self.inventories = {}
-    self.shouldRefresh = true
     return self
+end
+
+function InventoryManagerClass:_getObsInternal()
+    return self.inventories
 end
 
 function InventoryManagerClass:getFirstInventory()
@@ -28,20 +31,8 @@ function InventoryManagerClass:getDefaultInventory()
     return self:getFirstInventory()
 end
 
-function InventoryManagerClass:getObs()
-    if self.shouldRefresh then
-        self:refreshObjects()
-    end
-    return self.inventories
-end
-
-function InventoryManagerClass:clear()
+function InventoryManagerClass:_onRefreshObs()
     self.inventories = {}
-    self.shouldRefresh = true
-end
-
-function InventoryManagerClass:refreshObjects()
-    self:clear()
     local chests = {peripheral.find(PerTypes.chest)}
     if not chests then
         chests = {}
@@ -58,8 +49,6 @@ function InventoryManagerClass:refreshObjects()
         local inventoryOb = InventoryClass:new(ChestWrapper:new(barrel))
         table.insert(self.inventories, inventoryOb)
     end
-    self.shouldRefresh = false
-
 end
 
 return InventoryManagerClass

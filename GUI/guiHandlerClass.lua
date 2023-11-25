@@ -1,16 +1,17 @@
 local logger = require "UTIL.logger"
+local DocumentClass = require "MODEL.documentClass"
 local GuiHandlerClass = {}
 
-function GuiHandlerClass:new(refreshDelay, mainPage, shouldStopFunc, document)
+function GuiHandlerClass:new(mainPage, shouldStopFunc, document)
     if not mainPage then
         error("Gui handler must have a page!")
     end
     local o = {
-      refreshDelay = refreshDelay or 1,
       mainPage = mainPage,
       shouldStopFunc = shouldStopFunc or function() return false end,
       onRefreshCallbacks = {},
-      document = document
+      document = document,
+      refreshDelay = document.config:get(DocumentClass.configs.refresh_delay)
     }
     setmetatable(o, self)
 
@@ -27,11 +28,6 @@ function GuiHandlerClass:onEditionEnded()
     elementToDraw:draw()
   end
   self.document:clean()
-end
-  
-
-function GuiHandlerClass:setRefreshDelay(rate)
-  self.refreshRate = rate
 end
 
 function GuiHandlerClass:setMainPage(page)

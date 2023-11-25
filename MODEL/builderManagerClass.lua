@@ -15,35 +15,18 @@ BuilderManagerClass.__index = BuilderManagerClass
 setmetatable(BuilderManagerClass, { __index = ManagerClass })
 
 function BuilderManagerClass:new(colonyPeripheral, document)
-    local o = setmetatable(ManagerClass:new(), BuilderManagerClass)
+    local o = setmetatable(ManagerClass:new(document), BuilderManagerClass)
     o.colonyPeripheral = colonyPeripheral
     o.type = BuilderManagerClass.TYPE
     o.builders = {}
-    o.shouldRefresh = true
     o.associations = nil
     o.tableFileHandler = TableFileHandlerClass:new(DEFAULT_FILE_PATH)
-    o.document = document
 
     return o
 end
 
-function BuilderManagerClass:getData()
-
-    self.shouldRefresh = true
-    return ManagerClass.getData(self)
-end
-
-
-function BuilderManagerClass:getObs()
-    if self.shouldRefresh then
-        self:refreshObjects()
-    end
+function BuilderManagerClass:_getObsInternal()
     return self.builders
-end
-
-function BuilderManagerClass:clear()
-    self.builders = {}
-    self.shouldRefresh = true
 end
 
 function BuilderManagerClass:onAssociationModified(builderOb)
@@ -54,8 +37,7 @@ function BuilderManagerClass:onAssociationModified(builderOb)
     self.tableFileHandler:write(self.associations)
 end
 
-function BuilderManagerClass:refreshObjects()
-    self.shouldRefresh = false
+function BuilderManagerClass:_onRefreshObs()
     if not self.associations then
         self:readAssociations()
     end

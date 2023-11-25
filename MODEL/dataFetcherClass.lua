@@ -9,7 +9,8 @@ function DataFetcherClass:new()
 end
 
 -- A method for DataFetcherClass
-function DataFetcherClass:getData()
+function DataFetcherClass:getObs()
+    error("Should be implemented!")
     return {}  -- Returning an empty list for now
 end
 

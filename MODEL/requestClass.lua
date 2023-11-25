@@ -2,7 +2,6 @@
 local ObClass = require("MODEL.obClass")  -- Adjust the path if necessary
 local logger  = require("UTIL.logger")
 
-
 local RequestClass = {}
 RequestClass.__index = RequestClass
 setmetatable(RequestClass, { __index = ObClass })
@@ -21,8 +20,21 @@ function RequestClass:new(requestData, manager)
     self.minCount = requestData.minCount
     self.target = requestData.target
     self.items = requestData.items
+    self.itemObs = {}
 
     return self
+end
+
+function RequestClass:setItems(itemObs)
+    self.itemObs = itemObs
+end
+
+function RequestClass:getItems()
+    local itemManager = self.manager.document:getManagerForType("REQUEST_ITEM")
+    -- make sure items are loaded!
+    itemManager:getObs()
+
+    return self.itemObs 
 end
 
 -- Overriding GetKeyDisplayString method

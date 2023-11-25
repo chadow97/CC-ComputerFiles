@@ -1,17 +1,29 @@
 local logger = require "UTIL.logger"
+local ConfigClass = require "MODEL.configClass"
 -- ObClass.lua
 DocumentClass = {}
 DocumentClass.__index = DocumentClass
 
+DocumentClass.configs = {refresh_delay ="refresh_delay"}
+
 -- Constructor for ObClass
-function DocumentClass:new()
-    local self = setmetatable({}, DocumentClass)
-    self.managers = {}
-    self.nEditionStarted = 0
-    self.editionListeners = {}
-    self.dirtyAreas = {}
-    self.completelyDirty = false
-    return self
+function DocumentClass:new(refreshDelay)
+    local o = setmetatable({}, DocumentClass)
+    o.managers = {}
+    o.nEditionStarted = 0
+    o.editionListeners = {}
+    o.dirtyAreas = {}
+    o.completelyDirty = false
+    o.refreshDelay = refreshDelay
+    o.config = ConfigClass:new()
+    
+    -- setup default configs
+    local defaultConfigs = {
+        [DocumentClass.configs.refresh_delay] = 10
+        }
+    o.config:setValues(defaultConfigs)
+
+    return o
 end
 
 function DocumentClass:getHandledObs()

@@ -16,26 +16,15 @@ ColonyManagerClass.__index = ColonyManagerClass
 setmetatable(ColonyManagerClass, { __index = ManagerClass })
 
 function ColonyManagerClass:new(colonyPeripheral, document)
-    local o = setmetatable(ManagerClass:new(), ColonyManagerClass)
+    local o = setmetatable(ManagerClass:new(document), ColonyManagerClass)
     o.colonyPeripheral = colonyPeripheral
     o.type = ColonyManagerClass.TYPE
     o.colony = nil
-    o.shouldRefresh = true
-    o.document = document
 
     return o
 end
 
-function ColonyManagerClass:getData()
-    self.shouldRefresh = true
-    return ManagerClass.getData(self)
-end
-
-
-function ColonyManagerClass:getObs()
-    if self.shouldRefresh then
-        self:refreshObjects()
-    end
+function ColonyManagerClass:_getObsInternal()
     return {self.colony}
 end
 
@@ -46,20 +35,15 @@ end
 
 function ColonyManagerClass:clear()
     self.colony = nil
-    self.shouldRefresh = true
+    ManagerClass.clear(self)
 end
 
-function ColonyManagerClass:refreshObjects()
-    self.shouldRefresh = false
-
+function ColonyManagerClass:_onRefreshObs()
     self.colony = ColonyClass:new(self:getColonyData())
-
 end
 
 
 function ColonyManagerClass:getColonyData()
-    local colonyData = {}
-
     local status, colonyData = pcall(colIntUtil.getColony, self.colonyPeripheral)
     if not status then
         colonyData = {}

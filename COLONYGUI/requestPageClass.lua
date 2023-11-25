@@ -6,6 +6,7 @@ local CustomPageClass       = require "GUI.customPageClass"
 local InventoryManagerClass = require "MODEL.inventoryManagerClass"
 local BuilderManagerClass   = require "MODEL.builderManagerClass"
 local RequestManagerClass   = require "MODEL.requestManagerClass"
+local RequestDetailsPageClass = require "COLONYGUI.requestDetailsPageClass"
 
 -- Define constants
 
@@ -21,7 +22,7 @@ setmetatable(RequestPageClass, {__index = CustomPageClass})
 
 
 function RequestPageClass:new(monitor, parentPage, document)
-  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "workOrderPage"), RequestPageClass)
+  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "requestPage"), RequestPageClass)
 
   self.parentPage = parentPage
   self.requestManager = self.document:getManagerForType(RequestManagerClass.TYPE)
@@ -47,10 +48,23 @@ function RequestPageClass:onBuildCustomPage()
     requestTable:setHasManualRefresh(true)
     requestTable:setSize(parentPageSizeX, parentPageSizeY)
     requestTable:setPos(parentPagePosX,parentPagePosY)
+    requestTable:setOnTableElementPressedCallback(self:getOnRequestPressed())
 
     self:setBackColor(ELEMENT_BACK_COLOR)
     self:addElement(requestTable)
 
+end
+
+function RequestPageClass:getOnRequestPressed()
+    return function(positionInTable, isKey, request)
+        -- todo send all when value is pressed
+        if (not isKey) then
+            return
+        end
+        
+        local ressourcePage = RequestDetailsPageClass:new(request:getUniqueKey(), self.monitor, self.parentPage, self.document)
+        self.parentPage:addElement(ressourcePage)
+    end
 end
 
 return RequestPageClass

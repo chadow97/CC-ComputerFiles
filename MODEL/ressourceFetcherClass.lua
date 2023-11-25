@@ -58,7 +58,7 @@ function RessourceFetcherClass:getRessourceRequirementsFromColony()
     return ressourceRequirementFromColony
 end
 
-function RessourceFetcherClass:getData()
+function RessourceFetcherClass:getObs()
     local ressourceObList = {}
 
     local ressourceRequirementFromColony = self:getRessourceRequirementsFromColony()

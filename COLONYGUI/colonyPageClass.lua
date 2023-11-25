@@ -60,7 +60,6 @@ function ColonyPageClass:updateLabelsText(colony)
 end
 
 function ColonyPageClass:handleRefreshEvent(...)
-    self.colonyMgr:clear()
     local colony = self.colonyMgr:getColony()
 
     self.document:startEdition()

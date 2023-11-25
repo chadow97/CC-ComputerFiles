@@ -18,7 +18,7 @@ function WorkOrderFetcherClass:new(colonyPeripheral)
     return self
 end
 
-function WorkOrderFetcherClass:getData()
+function WorkOrderFetcherClass:getObs()
     local workOrderObList = {}
     for _, workOrderData in ipairs(self:getWorkOrders()) do
         local builderHutData = colIntUtil.getBuilderHutInfoFromWorkOrder(self.colonyPeripheral, workOrderData)

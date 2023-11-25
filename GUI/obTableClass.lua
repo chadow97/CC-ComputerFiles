@@ -117,8 +117,7 @@ function ObTableClass:refreshData()
         return
     end
 
-    local NewObList = self.dataFetcher:getData()
-    logger.db(NewObList)
+    local NewObList = self.dataFetcher:getObs()
 
     -- nothing to do if table didn't change
     if (not NewObList or NewObList == self.obList) then

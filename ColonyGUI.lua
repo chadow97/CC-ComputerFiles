@@ -15,7 +15,6 @@ local ColonyDocumentClass= require("COLONYGUI.colonyDocumentClass")
 local BACKGROUND_COLOR = colors.yellow
 local ELEMENT_BACK_COLOR = colors.red
 
-local REFRESH_DELAY = 10
 local CHANNEL = 1
 
 -- Setup Monitor
@@ -60,7 +59,7 @@ local shouldStopGuiLoop =
     function()
         return not isRunning
     end
-local guiHandler = GuiHandlerClass:new(REFRESH_DELAY, rootPage, shouldStopGuiLoop, document)
+local guiHandler = GuiHandlerClass:new(rootPage, shouldStopGuiLoop, document)
 document:registerEverythingAsDirty()
 document:endEdition()
 guiHandler:loop()
