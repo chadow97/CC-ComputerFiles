@@ -1,17 +1,11 @@
 
-local RessourceFetcherClass = require "MODEL.ressourceFetcherClass"
-local ObTableClass          = require "GUI.obTableClass"
-local LogClass              = require "GUI.logClass"
 local ToggleableButtonClass = require "GUI.toggleableButtonClass"
-local RessourceClass        = require "MODEL.ressourceClass"
-local MeUtils               = require "UTIL.meUtils"
 local logger                = require "UTIL.logger"
-local WorkOrderPageClass    = require "COLONYGUI.workOrderPageClass"
-local BuilderPageClass      = require "COLONYGUI.builderPageClass"
-local InventoryManagerClass = require "MODEL.inventoryManagerClass"
+local WorkOrderPageClass    = require "COLONY.GUI.WorkOrderPageClass"
+local BuilderPageClass      = require "COLONY.GUI.BuilderPageClass"
 local CustomPageClass       = require "GUI.customPageClass"
-local ColonyPageClass       = require "COLONYGUI.colonyPageClass"
-local RequestPageClass      = require "COLONYGUI.requestPageClass"
+local ColonyPageClass       = require "COLONY.GUI.ColonyPageClass"
+local RequestPageClass      = require "COLONY.GUI.RequestPageClass"
 
 -- Define constants
 

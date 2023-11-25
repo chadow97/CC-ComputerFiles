@@ -7,9 +7,9 @@ local logger = require("UTIL.logger")
 local peripheralProxyClass = require("UTIL.peripheralProxy")
 local ChestWrapper = require("UTIL.chestWrapper")
 local GuiHandlerClass = require("GUI.guiHandlerClass")
-local MainMenuPageClass = require("COLONYGUI.mainMenuPageClass")
+local MainMenuPageClass = require("COLONY.GUI.MainMenuPageClass")
 local PageStackClass     = require("GUI.pageStackClass")
-local ColonyDocumentClass= require("COLONYGUI.colonyDocumentClass")
+local ColonyDocumentClass= require("COLONY.MODEL.ColonyDocumentClass")
 
 -- Define constants
 local BACKGROUND_COLOR = colors.yellow

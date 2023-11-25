@@ -1,12 +1,8 @@
 local ObTableClass          = require "GUI.obTableClass"
 local logger                = require "UTIL.logger"
-local WorkOrderFetcherClass = require "MODEL.workOrderFetcherClass"
-local RessourcePageClass    = require "COLONYGUI.ressourcePageClass"
+
 local CustomPageClass       = require "GUI.customPageClass"
-local InventoryManagerClass = require "MODEL.inventoryManagerClass"
-local BuilderManagerClass   = require "MODEL.builderManagerClass"
 local RequestManagerClass   = require "MODEL.requestManagerClass"
-local RequestItemManagerClass = require "MODEL.requestItemManagerClass"
 local RequestItemsFetcher     = require "MODEL.requestItemsFetcher"
 local LabelClass              = require "GUI.labelClass"
 
