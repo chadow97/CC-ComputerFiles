@@ -5,6 +5,7 @@ local BuilderManagerClass = require("COLONY.MODEL.BuilderManagerClass")
 local ColonyManagerClass  = require("COLONY.MODEL.ColonyManagerClass")
 local RequestManagerClass = require("COLONY.MODEL.RequestManagerClass")
 local RequestItemManagerClass = require("COLONY.MODEL.RequestItemManagerClass")
+local MeItemManagerClass      = require("COLONY.MODEL.MeItemManagerClass")
 
 local ColonyDocumentClass = {}
 ColonyDocumentClass.__index = ColonyDocumentClass
@@ -21,7 +22,7 @@ function ColonyDocumentClass:new(colonyPeripheral)
     self:registerManager(ColonyManagerClass:new(colonyPeripheral, self))
     self:registerManager(RequestManagerClass:new(colonyPeripheral, self))
     self:registerManager(RequestItemManagerClass:new(colonyPeripheral, self))
-
+    self:registerManager(MeItemManagerClass:new(self))
 
 
     return self

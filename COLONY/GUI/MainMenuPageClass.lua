@@ -7,6 +7,7 @@ local CustomPageClass       = require "GUI.CustomPageClass"
 local ColonyPageClass       = require "COLONY.GUI.ColonyPageClass"
 local RequestPageClass      = require "COLONY.GUI.RequestPageClass"
 local LabelClass            = require "GUI.LabelClass"
+local MeInfoPageClass       = require "COLONY.GUI.MeInfoPageClass"
 
 -- Define constants
 
@@ -59,7 +60,7 @@ function MainMenuPageClass:onBuildCustomPage()
 
   yValueForEntry = yValueForEntry + 4
  
-  local WorkOrdersButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Manage work orders.", self.document)
+  local WorkOrdersButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Manage work orders", self.document)
   WorkOrdersButton:forceWidthSize(parentPageSizeX - 2)
   WorkOrdersButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
   WorkOrdersButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
@@ -79,14 +80,23 @@ function MainMenuPageClass:onBuildCustomPage()
 
   yValueForEntry = yValueForEntry + 4
 
-  local WorkersButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Manage builders and target inventories.", self.document)
-  local x,y = self.monitor.getSize()
+  local WorkersButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Manage builders and target inventories", self.document)
   WorkersButton:forceWidthSize(parentPageSizeX - 2)
   WorkersButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
   WorkersButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
   WorkersButton:setOnManualToggle(self:getOnManageBuildersPressed())
   WorkersButton:setCenterText(true)
   self:addElement(WorkersButton)
+
+  yValueForEntry = yValueForEntry + 4
+
+  local MeInfoButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Me system information", self.document)
+  MeInfoButton:forceWidthSize(parentPageSizeX - 2)
+  MeInfoButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
+  MeInfoButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+  MeInfoButton:setOnManualToggle(self:getOnMeInfoPressed())
+  MeInfoButton:setCenterText(true)
+  self:addElement(MeInfoButton)
 
   self:setBackColor(ELEMENT_BACK_COLOR)
 
@@ -127,6 +137,15 @@ function MainMenuPageClass:getOnManageBuildersPressed()
     self.document:endEdition()
   end
 end
+
+function MainMenuPageClass:getOnMeInfoPressed()
+    return function()
+      self.document:startEdition()
+      local meInfoPage = MeInfoPageClass:new(self.monitor, self.parentPage, self.document)
+      self.parentPage:addElement(meInfoPage)
+      self.document:endEdition()
+    end
+  end
 
 function MainMenuPageClass:getLogoAsString()
     return 
