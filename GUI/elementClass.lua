@@ -1,6 +1,6 @@
 local logger = require("UTIL.logger")
 local IdGenerator = require("UTIL.IdGenerator")
-local AreaClass = require("UTIL.areaClass")
+local AreaClass = require("UTIL.AreaClass")
 -- Define the ButtonClass table
 
 local ElementClass = {}

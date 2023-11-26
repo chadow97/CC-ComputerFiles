@@ -1,5 +1,5 @@
 local logger = require "UTIL.logger"
-local DocumentClass = require("MODEL.documentClass")
+local DocumentClass = require("MODEL.DocumentClass")
 -- ObClass.lua
 ManagerClass = {}
 ManagerClass.__index = ManagerClass

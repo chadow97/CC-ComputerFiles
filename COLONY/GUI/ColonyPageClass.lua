@@ -1,6 +1,6 @@
-local CustomPageClass       = require "GUI.customPageClass"
-local ColonyManagerClass    = require "MODEL.colonyManagerClass"
-local LabelClass            = require "GUI.labelClass"
+local CustomPageClass       = require "GUI.CustomPageClass"
+local ColonyManagerClass    = require "MODEL.ColonyManagerClass"
+local LabelClass            = require "GUI.LabelClass"
 local stringUtils           = require "UTIL.stringUtils"
 
 -- Define constants

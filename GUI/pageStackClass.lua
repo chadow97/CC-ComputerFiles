@@ -1,6 +1,6 @@
 local logger = require "UTIL.logger"
-local ToggleableButtonClass = require("GUI.toggleableButtonClass")
-local PageClass             = require("GUI.pageClass")
+local ToggleableButtonClass = require("GUI.ToggleableButtonClass")
+local PageClass             = require("GUI.PageClass")
 local stringUtils           = require("UTIL.stringUtils")
 -- define the PageStackClass
 
@@ -72,7 +72,7 @@ function PageStackClass:changeExitButtonStyle(...)
   self.exitButton:changeStyle(...)
 end
 
--- adding a page in a pageStackClass puts it on top of the stack
+-- adding a page in a PageStackClass puts it on top of the stack
 function PageStackClass:addElement(page)
   self:pushPage(page)
 end

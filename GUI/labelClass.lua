@@ -1,5 +1,5 @@
 local logger = require("UTIL.logger")
-local ButtonClass = require("GUI.buttonClass")
+local ButtonClass = require("GUI.ButtonClass")
 local stringUtils = require("UTIL.stringUtils")
 
 -- Define the LabelClass class

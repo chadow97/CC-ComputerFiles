@@ -1,5 +1,5 @@
 local logger = require("UTIL.logger")
-local ButtonClass = require("GUI.buttonClass")
+local ButtonClass = require("GUI.ButtonClass")
 local stringUtils = require('UTIL.stringUtils')
 
 local DefaultToggledTextColor = colors.white
@@ -52,7 +52,7 @@ function ToggleableButtonClass:new(...)
   instance.toggledTimer = nil
   instance.untoggleTime = DefaultUntoggleTime
 
-  -- By default, the untoggledStyle is determined from buttonClass current colors
+  -- By default, the untoggledStyle is determined from ButtonClass current colors
   instance.untoggledTextColor = instance.textColor
   instance.untoggledBackColor = instance.backColor
 

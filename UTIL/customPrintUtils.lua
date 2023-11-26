@@ -6,7 +6,7 @@ local maxTableRows = nil
 local function getDepthPrefix(_depth)
     local prefix = ""
     for i= 0,_depth - 1 do
-        prefix = prefix .. "x" 
+        prefix = prefix .. " " 
     end
     return prefix
 end
@@ -30,19 +30,20 @@ local function getElementString(_element, _depthLeft, _currentDepth)
     local result = ""
     if typ == "table" then
         if hasReachedEnd then
-            result = "cannot print table because maximum depth is reached"
+            result = "{table that is too deep}"
         else 
             -- GET STRING FOR TABLE
-            result = result .. "Table : \n"
+            result = result .."\n" .. depthPrefix .. "{\n"
             local index = 0
             for key, value in pairs(_element) do
-                result = result .. "----------------------------- \n"
+
                 result = result .. depthPrefix .. (getElementString(key, _depthLeft, _currentDepth) .. ": " .. getElementString(value, _depthLeft, _currentDepth) .. "\n")
                 index = index + 1
                 if maxTableRows ~= nil and index >= maxTableRows then
                     break
                 end
             end
+            result = result .. depthPrefix .. "}\n"
             -- END OF STRING FOR TABLE
         end
 
@@ -63,6 +64,9 @@ end
 end
 
 function CustomPrintUtils.getAnythingString(_anything, _maxDepth)
+    if not _maxDepth then
+        _maxDepth = 3
+    end
     return(getElementString(_anything, _maxDepth))
 end
 

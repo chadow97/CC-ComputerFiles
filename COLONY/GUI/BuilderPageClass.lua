@@ -1,10 +1,10 @@
-local ObTableClass          = require "GUI.obTableClass"
+local ObTableClass          = require "GUI.ObTableClass"
 local logger                = require "UTIL.logger"
-local BuilderManagerClass   = require "MODEL.builderManagerClass"
-local InventoryManagerClass = require "MODEL.inventoryManagerClass"
-local CustomPageClass       = require "GUI.customPageClass"
-local ToggleableButtonClass = require "GUI.toggleableButtonClass"
-local ElementClass          = require "GUI.elementClass"
+local BuilderManagerClass   = require "MODEL.BuilderManagerClass"
+local InventoryManagerClass = require "MODEL.InventoryManagerClass"
+local CustomPageClass       = require "GUI.CustomPageClass"
+local ToggleableButtonClass = require "GUI.ToggleableButtonClass"
+local ElementClass          = require "GUI.ElementClass"
 
 -- Define constants
 

@@ -1,5 +1,5 @@
 local logger = require "UTIL.logger"
-local ConfigClass = require "MODEL.configClass"
+local ConfigClass = require "MODEL.ConfigClass"
 -- ObClass.lua
 DocumentClass = {}
 DocumentClass.__index = DocumentClass

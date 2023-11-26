@@ -1,7 +1,7 @@
 -- WorkOrderFetcher.lua
 local colIntUtil = require("UTIL.colonyIntegratorPerUtils")
 local logger = require("UTIL.logger")
-local RequestClass = require("MODEL.requestClass")
+local RequestClass = require("MODEL.RequestClass")
 
 local RequestManagerClass = {}
 

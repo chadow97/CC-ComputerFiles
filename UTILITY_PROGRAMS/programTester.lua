@@ -1,9 +1,9 @@
-local ButtonClass = require("GUI.buttonClass")
-local ToggleableButtonClass = require("GUI.toggleableButtonClass")
-local PageClass = require("GUI.pageClass")
+local ButtonClass = require("GUI.ButtonClass")
+local ToggleableButtonClass = require("GUI.ToggleableButtonClass")
+local PageClass = require("GUI.PageClass")
 local MonUtils = require("UTIL.monUtils")
 local logger = require("UTIL.logger")
-local DocumentClass = require("MODEL.documentClass")
+local DocumentClass = require("MODEL.DocumentClass")
 
 --Setup autocomplete
 local completion = require "cc.shell.completion"

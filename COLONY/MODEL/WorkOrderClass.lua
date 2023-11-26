@@ -1,5 +1,5 @@
 -- WorkOrderClass.lua
-local ObClass = require("MODEL.obClass")  -- Adjust the path if necessary
+local ObClass = require("MODEL.ObClass")  -- Adjust the path if necessary
 
 
 local WorkOrderClass = {}

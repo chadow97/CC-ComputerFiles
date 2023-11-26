@@ -1,9 +1,9 @@
-local ToggleableButtonClass = require("GUI.toggleableButtonClass")
+local ToggleableButtonClass = require("GUI.ToggleableButtonClass")
 local CustomPaintUtils = require("UTIL.customPaintUtils")
 local logger = require("UTIL.logger")
-local PageStackClass = require("GUI.pageStackClass")
-local PageClass      = require("GUI.pageClass")
-local LabelClass     = require("GUI.labelClass")
+local PageStackClass = require("GUI.PageStackClass")
+local PageClass      = require("GUI.PageClass")
+local LabelClass     = require("GUI.LabelClass")
 local stringUtils    = require("UTIL.stringUtils")
 
 local DEFAULT_X_SIZE = 20

@@ -3,8 +3,8 @@ local colIntUtil = require("UTIL.colonyIntegratorPerUtils")
 local logger = require("UTIL.logger")
 local BuilderClass = require("MODEL.builderClass")
 local TableFileHandlerClass = require("UTIL.tableFileHandlerClass")
-local InventoryManagerClass = require("MODEL.inventoryManagerClass")
-local ColonyClass           = require("MODEL.colonyClass")
+local InventoryManagerClass = require("MODEL.InventoryManagerClass")
+local ColonyClass           = require("MODEL.ColonyClass")
 
 local DEFAULT_FILE_PATH = "./DATA/associations.txt"
 

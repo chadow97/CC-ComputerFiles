@@ -64,8 +64,18 @@ function logger.log(text, logLevel)
     end
 end
 
-function logger.logGenericTableToFile(object, logLevel)
-    logger.logToFile(CustomPrintUtils.getAnythingString(object), logLevel)
+function logger.logGenericTableToFile(object, maxDepth, logLevel)
+    if not logger.canLog(logLevel) then
+        return
+    end
+    if not logger.fileName then
+        logger.fileName = "logger.log" 
+     end
+    local text = CustomPrintUtils.getAnythingString(object, maxDepth)
+    local path = getFilePath()
+    local file = fs.open(path, "a")
+    file.write(text)
+    file.close()
 end
 
 function logger.canLog(logLevel)

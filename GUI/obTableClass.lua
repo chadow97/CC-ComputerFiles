@@ -1,7 +1,7 @@
 -- ObTableClass.lua
-local TableClass = require("GUI.tableClass")  -- Adjust the path if necessary
+local TableClass = require("GUI.TableClass")  -- Adjust the path if necessary
 local logger     = require("UTIL.logger")
-local PageStackClass = require("GUI.pageStackClass")
+local PageStackClass = require("GUI.PageStackClass")
 local stringUtils    = require("UTIL.stringUtils")
 
 local ObTableClass = {}
@@ -14,7 +14,7 @@ function ObTableClass:new(  monitor, x, y, title, sizeX, sizeY, document )
     self = setmetatable(TableClass:new(  monitor, x, y, title, sizeX, sizeY, document ), ObTableClass)
     self.obList = {}
     self.dataFetcher = nil
-    self.type = "obClassTable"
+    self.type = "ObClassTable"
 
     return self
 end
@@ -133,7 +133,7 @@ function ObTableClass:refreshData()
 end
 
 function ObTableClass:processTableElement(elementButton, key, value, position)
-    -- overwritten because we do not want default table element behavior from tableClass
+    -- overwritten because we do not want default table element behavior from TableClass
     self:setupOnManualToggle(elementButton,key, false, position, value )
 
 end

@@ -1,6 +1,6 @@
 local logger = require("UTIL.logger")
 local CustomPaintUtils = require("UTIL.customPaintUtils")
-local ElementClass     = require("GUI.elementClass")
+local ElementClass     = require("GUI.ElementClass")
 local stringUtils      = require("UTIL.stringUtils")
 
 local PageClass = {}

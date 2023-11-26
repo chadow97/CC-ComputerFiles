@@ -1,14 +1,14 @@
-
+-- add absolute paths to package to allow programs to use libraries from anywhere!
+package.path = package.path .. ";/?;/?.lua"
 -- Import required modules
-local ButtonClass = require("GUI.buttonClass")
-local PageClass = require("GUI.pageClass")
+local ButtonClass = require("GUI.ButtonClass")
+local PageClass = require("GUI.PageClass")
 local MonUtils = require("UTIL.monUtils")
 local logger = require("UTIL.logger")
 local peripheralProxyClass = require("UTIL.peripheralProxy")
-local ChestWrapper = require("UTIL.chestWrapper")
-local GuiHandlerClass = require("GUI.guiHandlerClass")
+local GuiHandlerClass = require("GUI.GuiHandlerClass")
 local MainMenuPageClass = require("COLONY.GUI.MainMenuPageClass")
-local PageStackClass     = require("GUI.pageStackClass")
+local PageStackClass     = require("GUI.PageStackClass")
 local ColonyDocumentClass= require("COLONY.MODEL.ColonyDocumentClass")
 
 -- Define constants

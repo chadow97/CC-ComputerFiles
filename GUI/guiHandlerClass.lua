@@ -1,5 +1,5 @@
 local logger = require "UTIL.logger"
-local DocumentClass = require "MODEL.documentClass"
+local DocumentClass = require "MODEL.DocumentClass"
 local GuiHandlerClass = {}
 
 function GuiHandlerClass:new(mainPage, shouldStopFunc, document)

@@ -1,10 +1,10 @@
 -- WorkOrderClass.lua
-local DocumentClass = require("MODEL.documentClass")  -- Adjust the path if necessary
-local InventoryManagerClass = require("MODEL.inventoryManagerClass")
-local BuilderManagerClass = require("MODEL.builderManagerClass")
-local ColonyManagerClass  = require("MODEL.colonyManagerClass")
-local RequestManagerClass = require("MODEL.requestManagerClass")
-local RequestItemManagerClass = require("MODEL.requestItemManagerClass")
+local DocumentClass = require("MODEL.DocumentClass")  -- Adjust the path if necessary
+local InventoryManagerClass = require("MODEL.InventoryManagerClass")
+local BuilderManagerClass = require("MODEL.BuilderManagerClass")
+local ColonyManagerClass  = require("MODEL.ColonyManagerClass")
+local RequestManagerClass = require("MODEL.RequestManagerClass")
+local RequestItemManagerClass = require("MODEL.RequestItemManagerClass")
 
 local ColonyDocumentClass = {}
 ColonyDocumentClass.__index = ColonyDocumentClass

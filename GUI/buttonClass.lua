@@ -1,7 +1,7 @@
 local logger = require("UTIL.logger")
 local CustomPaintUtils = require("UTIL.customPaintUtils")
 local stringUtils = require('UTIL.stringUtils')
-local ElementClass= require('GUI.elementClass')
+local ElementClass= require('GUI.ElementClass')
 
 local DEFAULT_BACK_COLOR = colors.lightGray
 local DEFAULT_TEXT_COLOR = colors.black
