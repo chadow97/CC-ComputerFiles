@@ -3,6 +3,7 @@ local colIntUtil = require("UTIL.colonyIntegratorPerUtils")
 local logger = require("UTIL.logger")
 local MeSystemClass         = require("COLONY.MODEL.MeSystemClass")
 local meUtils               = require("UTIL.meUtils")
+local ManagerClass = require("MODEL.ManagerClass")
 
 local MeSystemManagerClass = {}
 
@@ -15,7 +16,6 @@ function MeSystemManagerClass:new(document)
     local o = setmetatable(ManagerClass:new(document), MeSystemManagerClass)
     o.type = MeSystemManagerClass.TYPE
     o.meSystem = nil
-
     return o
 end
 

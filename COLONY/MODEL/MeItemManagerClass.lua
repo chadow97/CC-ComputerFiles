@@ -2,6 +2,7 @@
 local logger = require("UTIL.logger")
 local MeUtils= require("UTIL.meUtils")
 local MeItemClass = require("COLONY.MODEL.MeItemClass")
+local ManagerClass = require("MODEL.ManagerClass")
 
 local MeItemManagerClass = {}
 
@@ -32,6 +33,11 @@ function MeItemManagerClass:getObs()
         table.insert(obs,ob)
     end
     return obs
+end
+
+function MeItemManagerClass:getItemMap()
+self:_refreshIfNeeded()
+return self.itemByIdMap
 end
 
 function MeItemManagerClass:_getObsInternal()

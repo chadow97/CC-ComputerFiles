@@ -6,12 +6,12 @@ ManagerClass.__index = ManagerClass
 
 -- Constructor for ObClass
 function ManagerClass:new(document)
-    local self = setmetatable({}, ManagerClass)
-    self.type = nil
-    self.document = document
-    self.refreshDelay = document.config:get(DocumentClass.configs.refresh_delay)
-    self.lastRefreshTime = nil
-    return self
+    local o = setmetatable({}, ManagerClass)
+    o.type = nil
+    o.document = document
+    o.refreshDelay = document.config:get(DocumentClass.configs.refresh_delay)
+    o.lastRefreshTime = nil
+    return o
 end
 
 function ManagerClass:_getObsInternal()

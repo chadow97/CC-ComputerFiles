@@ -7,6 +7,7 @@ local RequestManagerClass = require("COLONY.MODEL.RequestManagerClass")
 local RequestItemManagerClass = require("COLONY.MODEL.RequestItemManagerClass")
 local MeItemManagerClass      = require("COLONY.MODEL.MeItemManagerClass")
 local MeSystemManagerClass    = require("COLONY.MODEL.MeSystemManagerClass")
+local logger                  = require("UTIL.logger")
 
 
 local ColonyDocumentClass = {}

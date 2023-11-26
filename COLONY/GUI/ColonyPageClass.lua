@@ -33,7 +33,11 @@ function ColonyPageClass:onBuildCustomPage()
     local parentPageSizeX, parentPageSizeY = self.parentPage:getSize()
     local parentPagePosX, parentPagePosY = self.parentPage:getPos()
     --  x, y, text, document
-  
+    self.titleLabel = LabelClass:new(nil, nil, "" , self.document)
+    self.titleLabel:forceWidthSize(parentPageSizeX - 2)
+    self.titleLabel:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + 1)
+    self.titleLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.titleLabel:setCenterText(true)
 
     self.descLabel = LabelClass:new(nil, nil, "", self.document)
     self.descLabel:forceWidthSize(parentPageSizeX - 2)

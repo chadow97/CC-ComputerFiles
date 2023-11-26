@@ -3,6 +3,7 @@ local DataFetcherClass = require("MODEL.DataFetcherClass")
 local logger = require("UTIL.logger")
 local MeUtils= require("UTIL.meUtils")
 local RessourceClass = require("COLONY.MODEL.RessourceClass")
+local MeItemManagerClass   = require("COLONY.MODEL.MeItemManagerClass")
 
 
 
@@ -12,13 +13,15 @@ local RessourceFetcherClass = {}
 RessourceFetcherClass.__index = RessourceFetcherClass
 setmetatable(RessourceFetcherClass, { __index = DataFetcherClass })
 
-function RessourceFetcherClass:new(colonyPeripheral, workOrderId, externalChest)
+function RessourceFetcherClass:new(colonyPeripheral, workOrderId, externalChest, document)
 
     self = setmetatable(DataFetcherClass:new(), RessourceFetcherClass)
     self.colonyPeripheral = colonyPeripheral
     self.workOrderId = workOrderId
     self.externalChest = externalChest
     self.ressourceList = nil
+    self.document = document
+    self.meItemManager = document:getManagerForType(MeItemManagerClass.TYPE)
     return self
 end
 
@@ -60,7 +63,7 @@ function RessourceFetcherClass:getObs()
     local ressourceObList = {}
 
     local ressourceRequirementFromColony = self:getRessourceRequirementsFromColony()
-    local meDataPerItemMap = self:getMeDataPerItemMap()
+    local meDataPerItemMap = self.meItemManager:getItemMap()
     local externalInventoryItemMap = self:getExternalInventoryItems()
 
     for _, ressourceRequirement in pairs(ressourceRequirementFromColony) do

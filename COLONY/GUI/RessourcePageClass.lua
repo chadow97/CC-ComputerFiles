@@ -29,7 +29,7 @@ setmetatable(RessourcePageClass, {__index = CustomPageClass})
 function RessourcePageClass:new(monitor, parentPage, colonyPeripheral, workOrderId, inventoryOb, document)
   self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "ressourcePage"), RessourcePageClass)
 
-  self.ressourceFetcher = RessourceFetcherClass:new(colonyPeripheral, workOrderId, inventoryOb)
+  self.ressourceFetcher = RessourceFetcherClass:new(colonyPeripheral, workOrderId, inventoryOb, document)
   self.isSendingAll = false;
   self.inventoryOb = inventoryOb
   self.logElement = nil
