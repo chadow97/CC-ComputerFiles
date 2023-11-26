@@ -115,7 +115,7 @@ function ElementClass:draw()
 end
 
 function ElementClass:internalDraw()
-    logger.log("Called not implemented draw!")
+    error("Called not implemented draw!")
 end
 
 function ElementClass:handleTouchEvent(eventName, side, xPos, yPos)
@@ -151,7 +151,7 @@ function ElementClass:handleEvent(eventName, ...)
 end
 
 function ElementClass:getArea()
-    logger.log("Called unimplemented getArea")
+    error("Called unimplemented getArea")
 end
 
 function ElementClass:getAreaAsObject()

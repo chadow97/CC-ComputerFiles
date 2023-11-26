@@ -167,7 +167,6 @@ function ColonyIntegratorPerUtils.getColony(per)
     colony.maxOfCitizens = per.maxOfCitizens()[1]
     colony.amountOfGraves = per.amountOfGraves()[1]
     colony.amountOfConstructionSites = per.amountOfConstructionSites()[1]
-    logger.logGenericTableToFile(colony)
     return colony
 
 end

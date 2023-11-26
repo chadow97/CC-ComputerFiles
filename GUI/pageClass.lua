@@ -91,7 +91,7 @@ function PageClass:removeElement(elementToFind)
         table.remove(self.elements, elementPosition )
         self:setElementDirty()
     else
-        logger.log("asked to remove unknown element from page")
+        error("asked to remove unknown element from page")
     end
 end
 

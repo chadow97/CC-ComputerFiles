@@ -31,8 +31,6 @@ setmetatable(RessourcePageClass, {__index = CustomPageClass})
 
 function RessourcePageClass:new(monitor, parentPage, colonyPeripheral, workOrderId, inventoryOb, document)
   self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "ressourcePage"), RessourcePageClass)
-  logger.logToFile("Using inventory:")
-  logger.logToFile(inventoryOb)
 
   self.ressourceFetcher = RessourceFetcherClass:new(colonyPeripheral, workOrderId, inventoryOb)
   self.isSendingAll = false;

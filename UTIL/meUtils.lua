@@ -46,8 +46,7 @@ function MeUtils.getCraftableItemNames()
 end
 
 function MeUtils.exportItem(itemName, count, containerName)
-    logger.logToFile("Exporting:")
-    logger.logToFile(containerName)
+
     if  not MePeripheral then
         return 0
     end
@@ -81,7 +80,7 @@ end
 
 function MeUtils.getAllFreeCpus()
     if not MePeripheral then
-        logger.log("Missing Me Peripheral")
+        error("Missing Me Peripheral")
         return
     end
     local cpus = MePeripheral.getCraftingCPUs()
@@ -107,7 +106,7 @@ end
 
 function MeUtils.craftItem(itemName, count)
     if not MePeripheral then
-        logger.log("Missing Me Peripheral")
+        error("Missing Me Peripheral")
         return
     end
     local countToUse = count or 1

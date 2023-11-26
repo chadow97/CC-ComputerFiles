@@ -24,7 +24,7 @@ function InventoryWrapper:new(peripheralNameTypeOrPer)
     end
     -- Check if the peripheral is a chest
     if instance.type ~= PerTypes.chest and instance.type ~= PerTypes.barrel then
-      logger.log("Invalid peripheral type!", logger.LOGGING_LEVEL.WARNING)
+      error("Invalid peripheral type!", logger.LOGGING_LEVEL.WARNING)
       return nil
     end
     setmetatable(instance, InventoryWrapper)

@@ -102,12 +102,10 @@ function BuilderPageClass:getOnInventoryPressed()
         end
 
         if not self.currentlySelectedBuilder then
-            logger.logToFile("No selected builder!")
             return
         end
         self.document:startEdition()
         self:changeSelectedItem(false, inventoryOb)
-        logger.logToFile(self.currentlySelectedBuilder)
         self.currentlySelectedBuilder:setAssociatedInventory(self.currentlySelectedInventory:getUniqueKey())
         self.builderTable.areButtonsDirty = true; --TODO table should recognize on of its ob was modified on its own!
         self.document:registerCurrentAreaAsDirty(self.builderTable) --TODO ideally, we would only have to redraw that specific builder

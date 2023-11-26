@@ -93,7 +93,7 @@ end
 function PageStackClass:popPage()
   
   if #self.pageStack == 0 then
-    logger.log("No pages inserted!!")
+    error("No pages inserted!!")
     return
   end
   if (#self.pageStack == 1) then

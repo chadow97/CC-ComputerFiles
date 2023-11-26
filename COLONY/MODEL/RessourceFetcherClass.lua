@@ -88,7 +88,7 @@ end
 
 function RessourceFetcherClass:getAllRessourcesWithoutRefreshing()
     if not self.ressourceList then
-        logger.log("Trying to get uninitialized ressource list!")
+        error("Trying to get uninitialized ressource list!")
     end
     return self.ressourceList
 end

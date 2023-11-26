@@ -15,7 +15,6 @@ function PeripheralProxy:new(channel, peripheralName, side)
 
     local oppenedSide = side or "back"
     rednet.open(oppenedSide)
-    logger.log("Openned rednet on side:" .. oppenedSide)
 
     return instance
 end

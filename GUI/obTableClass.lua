@@ -95,12 +95,12 @@ end
 -- Getter/setter for the internal table
 function ObTableClass:setInternalTable(internalData)
     self.internalData = nil
-    logger.log("setInternalTable was called but is not implemented!")
+    error("setInternalTable was called but is not implemented!")
 end
 
 function ObTableClass:getInternalTable()
 
-    logger.log("getInternalTable was called but is not implemented!")
+    error("getInternalTable was called but is not implemented!")
     return nil
 end
 
@@ -113,7 +113,7 @@ function ObTableClass:refreshData()
 
     -- refresh is not setup
     if not self.dataFetcher then
-        logger.log("No fetcher, ob list will always be empty!")
+        error("No fetcher, ob list will always be empty!")
         return
     end
 

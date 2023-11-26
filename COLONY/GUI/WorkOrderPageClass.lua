@@ -64,7 +64,6 @@ function WorkOrderPageClass:getOnWorkOrderPressed()
         local builderId = workOrder.builderID
         local inventoryOb
         if builderId then
-            logger.logToFile(builderId)
             local inventoryManager = self.document:getManagerForType(InventoryManagerClass.TYPE)
             local builderManager = self.document:getManagerForType(BuilderManagerClass.TYPE)
             local builder = builderManager:getOb(builderId)

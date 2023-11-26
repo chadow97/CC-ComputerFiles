@@ -4,15 +4,13 @@ TableFileHandlerClass.__index = TableFileHandlerClass
 
 -- Serialization of table
 local function serialize(tbl)
-    logger.logToFile("serializing!")
-    logger.logGenericTableToFile(tbl)
+
     local serialized = "{"
     for k, v in pairs(tbl) do
         serialized = serialized .. "[" .. string.format("%q", k) .. "]=" 
         if type(v) == "table" then
             serialized = serialized .. serialize(v)
         else
-            logger.logToFile(v)
             serialized = serialized .. string.format("%q", v)
         end
         serialized = serialized .. ","

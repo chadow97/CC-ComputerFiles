@@ -26,7 +26,7 @@ function LabelClass:__tostring()
 end
 
 function LabelClass:setOnElementTouched(...)
-    logger.log("Called set on Element touched on label element!!")
+    error("Called set on Element touched on label element!!")
 end
 
 function LabelClass:handleTouchEvent(eventName, side, xPos, yPos)   
