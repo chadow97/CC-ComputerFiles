@@ -2,8 +2,8 @@ local ObTableClass          = require "GUI.ObTableClass"
 local logger                = require "UTIL.logger"
 
 local CustomPageClass       = require "GUI.CustomPageClass"
-local RequestManagerClass   = require "MODEL.RequestManagerClass"
-local RequestItemsFetcher     = require "MODEL.requestItemsFetcherClass"
+local RequestManagerClass   = require "COLONY.MODEL.RequestManagerClass"
+local RequestItemsFetcher     = require "COLONY.MODEL.requestItemsFetcherClass"
 local LabelClass              = require "GUI.LabelClass"
 
 -- Define constants

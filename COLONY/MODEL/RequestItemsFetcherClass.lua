@@ -1,6 +1,6 @@
 -- WorkOrderFetcher.lua
 local DataFetcherClass = require("MODEL.DataFetcherClass") 
-local RequestItemManagerClass = require("MODEL.RequestItemManagerClass")
+local RequestItemManagerClass = require("COLONY.MODEL.RequestItemManagerClass")
 
 
 

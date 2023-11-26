@@ -2,13 +2,10 @@ local RessourceFetcherClass = require "MODEL.RessourceFetcherClass"
 local ObTableClass          = require "GUI.ObTableClass"
 local LogClass              = require "GUI.LogClass"
 local ToggleableButtonClass = require "GUI.ToggleableButtonClass"
-local RessourceClass        = require "MODEL.RessourceClass"
+local RessourceClass        = require "COLONY.MODEL.RessourceClass"
 local MeUtils               = require "UTIL.meUtils"
 local logger                = require "UTIL.logger"
 local CustomPageClass       = require "GUI.CustomPageClass"
-local InventoryManagerClass = require "MODEL.InventoryManagerClass"
-local BuilderManagerClass   = require "MODEL.BuilderManagerClass"
-local stringUtils           = require "UTIL.stringUtils"
 
 -- Define constants
 

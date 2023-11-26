@@ -1,9 +1,9 @@
 -- WorkOrderFetcher.lua
 local colIntUtil = require("UTIL.colonyIntegratorPerUtils")
 local logger = require("UTIL.logger")
-local BuilderClass = require("MODEL.builderClass")
+local BuilderClass = require("COLONY.MODEL.builderClass")
 local TableFileHandlerClass = require("UTIL.tableFileHandlerClass")
-local InventoryManagerClass = require("MODEL.InventoryManagerClass")
+local InventoryManagerClass = require("COLONY.MODEL.InventoryManagerClass")
 
 local DEFAULT_FILE_PATH = "./DATA/associations.txt"
 

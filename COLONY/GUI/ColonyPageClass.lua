@@ -1,5 +1,5 @@
 local CustomPageClass       = require "GUI.CustomPageClass"
-local ColonyManagerClass    = require "MODEL.ColonyManagerClass"
+local ColonyManagerClass    = require "COLONY.MODEL.ColonyManagerClass"
 local LabelClass            = require "GUI.LabelClass"
 local stringUtils           = require "UTIL.stringUtils"
 
