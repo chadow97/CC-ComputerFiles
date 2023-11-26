@@ -114,6 +114,25 @@ function MeUtils.craftItem(itemName, count)
     return MePeripheral.craftItem(itemTable)
 end
 
+function MeUtils.getMeData()
+    local meData = {}
+    if not MePeripheral then
+        error("Missing Me Peripheral")
+        return meData
+    end
+    meData.availableItemStorage = MePeripheral.getAvailableItemStorage()
+    meData.usedItemStorage = MePeripheral.getUsedItemStorage()
+    meData.totalItemStorage = MePeripheral.getTotalItemStorage()
+    meData.cells = MePeripheral.listCells()
+    meData.craftingCpus = MePeripheral.getCraftingCPUs()
+    meData.energyStorage = MePeripheral.getEnergyStorage()
+    meData.maxEnergyStorage = MePeripheral.getMaxEnergyStorage()
+    meData.energyUsage = MePeripheral.getEnergyUsage()
+
+    return meData
+
+end
+
 
 
 
