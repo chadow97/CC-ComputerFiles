@@ -6,6 +6,7 @@ local BuilderPageClass      = require "COLONY.GUI.BuilderPageClass"
 local CustomPageClass       = require "GUI.CustomPageClass"
 local ColonyPageClass       = require "COLONY.GUI.ColonyPageClass"
 local RequestPageClass      = require "COLONY.GUI.RequestPageClass"
+local LabelClass            = require "GUI.LabelClass"
 
 -- Define constants
 
@@ -36,8 +37,17 @@ end
 function MainMenuPageClass:onBuildCustomPage()
   local parentPageSizeX, parentPageSizeY = self.parentPage:getSize()
   local parentPagePosX, parentPagePosY = self.parentPage:getPos()
-
+  
   local yValueForEntry = parentPagePosY + 1
+
+  local ColonyLogoLabel = LabelClass:new(1,1, self:getLogoAsString(), self.document)
+  ColonyLogoLabel:setUpperCornerPos(parentPagePosX + (parentPageSizeX - 33)/2, yValueForEntry)
+  ColonyLogoLabel:forceWidthSize(33)
+  ColonyLogoLabel:forceHeightSize(14)
+  ColonyLogoLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+  self:addElement(ColonyLogoLabel)
+
+  local yValueForEntry = parentPagePosY + 16
 
   local ColonyButton = ToggleableButtonClass:new(1, 1, "General colony information", self.document)
   ColonyButton:forceWidthSize(parentPageSizeX - 2)
@@ -116,6 +126,26 @@ function MainMenuPageClass:getOnManageBuildersPressed()
     self.parentPage:addElement(BuilderPage)
     self.document:endEdition()
   end
+end
+
+function MainMenuPageClass:getLogoAsString()
+    return 
+[[
+    ~        ==================
+       _T    I Colony Manager I
+^^    // \   ==================
+      ][O]    ^^      ,-~ ~
+   /''-I_I         _II____
+__/_  /   \       / ''   /'\_,_
+  | II--'''' \,  :--..,_/,.-\ 
+; '/__\,.--';|   |[] .-.| O |
+:' |  | []  -|   ''--:.;[,.''
+'  |[]|,.--'' '',   ''-,.    
+* ASCII by Steven Maddison
+* from https://www.asciiart.eu/
+]] 
+
+
 end
 
 
