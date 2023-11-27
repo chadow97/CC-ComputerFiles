@@ -1,7 +1,6 @@
 local PageClass = require "GUI.PageClass"
 local ObTableClass          = require "GUI.ObTableClass"
 local logger                = require "UTIL.logger"
-local InventoryManagerClass = require "MODEL.InventoryManagerClass"
 local stringUtils           = require "UTIL.stringUtils"
 
 -- Define constants
