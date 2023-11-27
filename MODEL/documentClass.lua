@@ -7,15 +7,15 @@ DocumentClass.__index = DocumentClass
 DocumentClass.configs = {refresh_delay ="refresh_delay"}
 
 -- Constructor for ObClass
-function DocumentClass:new(refreshDelay)
+function DocumentClass:new(config)
     local o = setmetatable({}, DocumentClass)
     o.managers = {}
     o.nEditionStarted = 0
     o.editionListeners = {}
     o.dirtyAreas = {}
     o.completelyDirty = false
-    o.refreshDelay = refreshDelay
-    o.config = ConfigClass:new()
+
+    o.config = config or ConfigClass:new()
     
     -- setup default configs
     local defaultConfigs = {

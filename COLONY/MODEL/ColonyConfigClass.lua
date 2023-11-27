@@ -1,0 +1,46 @@
+local ConfigClass = require("MODEL.ConfigClass") 
+local InventoryManagerClass = require("COLONY.MODEL.InventoryManagerClass")
+local BuilderManagerClass = require("COLONY.MODEL.BuilderManagerClass")
+local ColonyManagerClass  = require("COLONY.MODEL.ColonyManagerClass")
+local RequestManagerClass = require("COLONY.MODEL.RequestManagerClass")
+local RequestItemManagerClass = require("COLONY.MODEL.RequestItemManagerClass")
+local MeItemManagerClass      = require("COLONY.MODEL.MeItemManagerClass")
+local MeSystemManagerClass    = require("COLONY.MODEL.MeSystemManagerClass")
+local logger                  = require("UTIL.logger")
+
+
+local ColonyConfigClass = {}
+ColonyConfigClass.__index = ColonyConfigClass
+setmetatable(ColonyConfigClass, { __index = ConfigClass })
+
+
+ColonyConfigClass.configs = 
+    {
+    data_dir_path ="data_path",
+    association_filename = "association_filename",
+    request_inventory_filename = "request_inventory_filename"
+    }
+
+-- Constructor for WorkOrderClass
+function ColonyConfigClass:new()
+
+    local o = setmetatable(ConfigClass:new(), ColonyConfigClass)
+    -- set config variables for colony
+    o:set(ColonyConfigClass.configs.data_dir_path, "./DATA/")
+    o:set(ColonyConfigClass.configs.association_filename, "associations.txt")
+    o:set(ColonyConfigClass.configs.request_inventory_filename, "request_inventory.txt")
+
+    return o
+end
+
+function ColonyConfigClass:getAssociationsPath()
+    return fs.combine(self:get(ColonyConfigClass.configs.data_dir_path),
+                      self:get(ColonyConfigClass.configs.association_filename))
+end
+
+function ColonyConfigClass:getRequestInventoryPath()
+    return fs.combine(self:get(ColonyConfigClass.configs.data_dir_path),
+                      self:get(ColonyConfigClass.configs.request_inventory_filename))
+end
+
+return ColonyConfigClass

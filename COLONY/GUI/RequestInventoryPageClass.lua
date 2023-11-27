@@ -14,9 +14,6 @@ local ELEMENT_BACK_COLOR = colors.red
 local INNER_ELEMENT_BACK_COLOR = colors.lime
 local TEXT_COLOR = colors.yellow
 
-local DEFAULT_FILE_PATH = "./DATA/inventoryForRequests.txt"
-
-
 local RequestInventoryPageClass = {}
 RequestInventoryPageClass.__index = RequestInventoryPageClass
 setmetatable(RequestInventoryPageClass, {__index = CustomPageClass})
@@ -24,16 +21,16 @@ setmetatable(RequestInventoryPageClass, {__index = CustomPageClass})
 
 
 function RequestInventoryPageClass:new(monitor, parentPage, document)
-  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "requestPage"), RequestInventoryPageClass)
+  local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "requestPage"), RequestInventoryPageClass)
 
-  self.parentPage = parentPage
-  self.tableFileHandler = TableFileHandlerClass:new(DEFAULT_FILE_PATH)
-  self.inventoryManager = self.document:getManagerForType(InventoryManagerClass.TYPE)
-  self.selectedInventory = nil
-  self.inventoryTable = nil
+  o.parentPage = parentPage
+  o.tableFileHandler = TableFileHandlerClass:new(o.document.config:getRequestInventoryPath())
+  o.inventoryManager = o.document:getManagerForType(InventoryManagerClass.TYPE)
+  o.selectedInventory = nil
+  o.inventoryTable = nil
   
-  self:buildCustomPage()
-  return self
+  o:buildCustomPage()
+  return o
 end
 
 function RequestInventoryPageClass:__tostring() 

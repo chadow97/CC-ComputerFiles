@@ -1,8 +1,5 @@
 local ConfigClass = {}
 
-ConfigClass.__index = ConfigClass
-setmetatable(ConfigClass, { __index = ConfigClass })
-
 function ConfigClass:new()
     local o = setmetatable({}, ConfigClass)
     o.configs = {}

@@ -23,15 +23,16 @@ setmetatable(RequestPageClass, {__index = CustomPageClass})
 
 
 function RequestPageClass:new(monitor, parentPage, document)
-  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "requestInventoryPage"), RequestPageClass)
+  local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "requestInventoryPage"), RequestPageClass)
 
-  self.parentPage = parentPage
-  self.tableFileHandler = TableFileHandlerClass:new(DEFAULT_FILE_PATH)
-  self.requestManager = self.document:getManagerForType(RequestManagerClass.TYPE)
-  self.targetInventoryButton = nil
+  o.parentPage = parentPage
+  o.tableFileHandler = TableFileHandlerClass:new(o.document.config:getRequestInventoryPath())
+  o.requestManager = o.document:getManagerForType(RequestManagerClass.TYPE)
+  o.targetInventoryButton = nil
+
   
-  self:buildCustomPage()
-  return self
+  o:buildCustomPage()
+  return o
 end
 
 function RequestPageClass:__tostring() 

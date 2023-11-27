@@ -5,8 +5,6 @@ local BuilderClass = require("COLONY.MODEL.builderClass")
 local TableFileHandlerClass = require("UTIL.tableFileHandlerClass")
 local InventoryManagerClass = require("COLONY.MODEL.InventoryManagerClass")
 
-local DEFAULT_FILE_PATH = "./DATA/associations.txt"
-
 local BuilderManagerClass = {}
 
 BuilderManagerClass.TYPE = "BUILDER"
@@ -20,7 +18,7 @@ function BuilderManagerClass:new(colonyPeripheral, document)
     o.type = BuilderManagerClass.TYPE
     o.builders = {}
     o.associations = nil
-    o.tableFileHandler = TableFileHandlerClass:new(DEFAULT_FILE_PATH)
+    o.tableFileHandler = TableFileHandlerClass:new(o.document.config:getAssociationsPath())
 
     return o
 end
