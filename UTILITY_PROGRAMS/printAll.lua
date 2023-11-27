@@ -1,7 +1,7 @@
 -- Function to check if a file should be ignored based on its extension or directory
 local function shouldIgnoreFile(filePath)
-    local ignoredExtensions = { ".output", ".log" }
-    local ignoredDirectories = { ".vscode", ".git", "rom" }
+    local ignoredExtensions = { ".output", ".log", ".code-workspace" }
+    local ignoredDirectories = { ".vscode", ".git", "rom", "DATA", "COLONY" }
 
     for _, extension in ipairs(ignoredExtensions) do
         if filePath:sub(-#extension) == extension then
@@ -38,7 +38,8 @@ end
 
 -- Function to append a file's content to the output file
 local function appendFileContent(inputPath, outputPath, filePath)
-    local inputFile = fs.open("./" .. fs.combine(inputPath, filePath), "r")
+
+    local inputFile = fs.open(filePath, "r")
     if not inputFile then
         print("Error opening file: " .. filePath)
         return
@@ -66,9 +67,12 @@ local function processDirectory(directoryPath, outputPath, relativePath, firstFi
         local filePath = fs.combine(directoryPath, fileName)
 
         if fs.isDir(filePath) then
-            print("Processing directory: " .. filePath)
+            
             if not shouldIgnoreFile(filePath) then
+                print("Processing directory: " .. filePath)
                 processDirectory(filePath, outputPath, fs.combine(relativePath, fileName) .. "/", true)
+            else
+                print("Ignoring directory: " .. filePath)
             end
         else
             if not shouldIgnoreFile(filePath) then
@@ -90,8 +94,8 @@ end
 
 
 -- Set the root directory to the current directory and output file name
-local rootDirectoryPath = shell.dir() -- Current directory
-local outputPath = ".output/combined_output.output" -- Output file name
+local rootDirectoryPath = "/" -- Current directory
+local outputPath = "/output/combined_output.output" -- Output file name
 
 -- Make sure the output file is empty
 local outputFile = fs.open(outputPath, "w")
