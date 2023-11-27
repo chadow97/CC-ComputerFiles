@@ -594,7 +594,7 @@ function TableClass:setOnAskForNewData(func)
     self.onAskForNewData = func
 end
 
-function TableClass:handleRefreshDataEvent()
+function TableClass:handleRefreshEvent()
     self:refreshData()
 end
 

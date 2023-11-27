@@ -20,7 +20,7 @@ setmetatable(MeInfoPageClass, {__index = CustomPageClass})
 
 
 function MeInfoPageClass:new(monitor, parentPage, document)
-  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "requestPage"), MeInfoPageClass)
+  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "MeInfo"), MeInfoPageClass)
 
   self.parentPage = parentPage
   self.meItemsManager = self.document:getManagerForType(MeItemManagerClass.TYPE)
@@ -94,7 +94,7 @@ function MeInfoPageClass:handleRefreshEvent(...)
     self.document:startEdition()
     self.descLabel:setText(self:getDescriptionForMeSystem(meSystem))
     self.document:registerCurrentAreaAsDirty(self.descLabel)
-    local handled = CustomPageClass.handleRefreshEvent(...)
+    local handled = CustomPageClass.handleRefreshEvent( self, ...)
     self.document:endEdition()
 
     return handled
