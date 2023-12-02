@@ -1,11 +1,15 @@
 local ObTableClass          = require "GUI.ObTableClass"
 local logger                = require "UTIL.logger"
 local ButtonClass           = require "GUI.ButtonClass"
+local RequestItemClass      = require "COLONY.MODEL.RequestItemClass"
+local MeUtils               = require "UTIL.meUtils"
+local InventoryManagerClass = require "COLONY.MODEL.InventoryManagerClass"
 
 local CustomPageClass       = require "GUI.CustomPageClass"
 local RequestManagerClass   = require "COLONY.MODEL.RequestManagerClass"
 local RequestItemsFetcher     = require "COLONY.MODEL.requestItemsFetcherClass"
 local LabelClass              = require "GUI.LabelClass"
+local RequestInventoryHandlerClass = require "COLONY.MODEL.RequestInventoryHandlerClass"
 
 -- Define constants
 
@@ -26,6 +30,9 @@ function RequestDetailsPageClass:new(requestId, monitor, parentPage, document)
   self.parentPage = parentPage
   self.requestLabel = nil
   self.requestManager = self.document:getManagerForType(RequestManagerClass.TYPE)
+  self.requestInventoryHandler = RequestInventoryHandlerClass:new(self.document)
+  self.inventoryKey = self.requestInventoryHandler:getRequestInventoryKey()
+
   self:buildCustomPage()
   return self
 end
@@ -46,7 +53,6 @@ function RequestDetailsPageClass:onBuildCustomPage()
     local request = self.requestManager:getOb(self.requestId)
     self:updateRequestText(request)
     self.requestLabel:setCenterText(true)
-
     self:addElement(self.requestLabel)
 
     local requestDetailsTable = ObTableClass:new(self.monitor, 1,1, "Requests Details", nil, nil, self.document)
@@ -57,12 +63,20 @@ function RequestDetailsPageClass:onBuildCustomPage()
     requestDetailsTable:setRowHeight(7)
     requestDetailsTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
     requestDetailsTable:setHasManualRefresh(true)
-    requestDetailsTable:setSize(parentPageSizeX, parentPageSizeY - 11)
+    requestDetailsTable:setSize(parentPageSizeX, parentPageSizeY - 11 - 4)
     requestDetailsTable:setPos(parentPagePosX,parentPagePosY + 11)
+    requestDetailsTable:setOnTableElementPressedCallback(self:getOnRequestItemPressed())
     requestDetailsTable:setTableElementsProperties({[ButtonClass.properties.should_center]= true}, false, true)
-
-    self:setBackColor(ELEMENT_BACK_COLOR)
     self:addElement(requestDetailsTable)
+
+    local InventoryLabel = LabelClass:new(nil, nil, self:getInventoryButtonText() , self.document)
+    InventoryLabel:forceWidthSize(parentPageSizeX - 2)
+    InventoryLabel:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + parentPageSizeY - 4)
+    InventoryLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    InventoryLabel:setCenterText(true)
+    self:addElement(InventoryLabel)
+    
+    self:setBackColor(ELEMENT_BACK_COLOR)
 
 end
 
@@ -80,6 +94,31 @@ end
 
 function RequestDetailsPageClass:updateRequestText(request)
     self.requestLabel:setText(request:GetKeyDisplayString())
+end
+
+function RequestDetailsPageClass:getInventoryButtonText()
+
+    local currentInventoryKey = self.inventoryKey
+    if not currentInventoryKey then
+        return "No target inventory!"
+    end
+
+    return "Target inventory: " .. currentInventoryKey
+end
+
+function RequestDetailsPageClass:getOnRequestItemPressed()
+    return function (positionInTable, isKey, requestItem)
+        if  isKey then
+            return
+        end
+        local action = requestItem:getActionToDo()
+        if action == RequestItemClass.ACTIONS.SENDTOEXTERNAL then
+            logger.logToFile(requestItem:getUniqueKey() .. requestItem:getAmountToSendFromMe() ..  self.inventoryKey)
+            MeUtils.exportItem(requestItem:getUniqueKey(), requestItem:getAmountToSendFromMe(),  self.inventoryKey)
+        elseif action == RequestItemClass.ACTIONS.CRAFT then
+            MeUtils.craftItem(requestItem:getUniqueKey(), requestItem:getAmountMissingWithMe())
+        end
+            end
 end
 
 return RequestDetailsPageClass

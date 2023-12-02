@@ -58,8 +58,8 @@ function RequestItemClass:isMissingAnyWithMe()
     return self:getAmountMissingWithMe() > 0
 end
 
-function RequestItemClass:getAmountToSendToMe()
-    return math.min(self:getAmountMissingWithMe(), self.meItemInfoOb.amount)
+function RequestItemClass:getAmountToSendFromMe()
+    return math.min(self:getAmountMissingForRequest(), self.meItemInfoOb.amount)
 end
 
 function RequestItemClass:getRequestKey()
@@ -126,7 +126,7 @@ function RequestItemClass:getActionUserString()
     elseif action == self.ACTIONS.SENDTOEXTERNAL then
         return "Missing some items!\nPress here to send\nfrom ME!"
     elseif action == self.ACTIONS.NOTHING then
-        return "All required items provided.\nNothing to do!"
+        return "All required items\nprovided.\nNothing to do!"
     elseif action == self.ACTIONS.CANNOT_COMPLETE then
         return "Missing some items!\nMissing in me and\ncannot craft!"
     end
