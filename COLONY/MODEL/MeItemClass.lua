@@ -22,6 +22,20 @@ function MeItemClass:new(meItemData)
     return o
 end
 
+function MeItemClass:createMissingItem(name)
+    local uniqueKey = name
+    local o = setmetatable(ObClass:new(uniqueKey), MeItemClass)
+
+    o.tags = {}
+    o.name = name
+    o.amount = 0
+    o.fingerprint = nil
+    o.isCraftable = false
+    o.nbt = nil
+    o.displayName = nil
+    return o
+end
+
 -- Overriding GetKeyDisplayString method
 function MeItemClass:GetKeyDisplayString()
     return string.format(

@@ -25,6 +25,14 @@ function MeItemManagerClass:getOb(uniqueKey)
 
 end
 
+function MeItemManagerClass:getObEvenIfMissing(uniqueKey)
+    local ob = self:getOb(uniqueKey)
+    if ob then
+        return ob
+    end
+    return MeItemClass:createMissingItem(uniqueKey)
+end
+
 function MeItemManagerClass:getObs()
     -- override get obs because we want to return a vector and not a map
     self:_refreshIfNeeded()

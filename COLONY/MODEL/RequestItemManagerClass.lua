@@ -3,6 +3,8 @@ local colIntUtil = require("UTIL.colonyIntegratorPerUtils")
 local logger = require("UTIL.logger")
 local RequestManagerClass = require("COLONY.MODEL.RequestManagerClass")
 local RequestItemClass    = require("COLONY.MODEL.RequestItemClass")
+local MeItemManagerClass  = require("COLONY.MODEL.MeItemManagerClass")
+local InventoryManagerClass = require("COLONY.MODEL.InventoryManagerClass")
 
 local RequestItemManagerClass = {}
 
@@ -16,6 +18,8 @@ function RequestItemManagerClass:new(colonyPeripheral, document)
     o.colonyPeripheral = colonyPeripheral
     o.type = RequestItemManagerClass.TYPE
     o.requestManager = document:getManagerForType(RequestManagerClass.TYPE)
+    o.meItemManager = document:getManagerForType(MeItemManagerClass.TYPE)
+    o.inventoryManager = document:getManagerForType(InventoryManagerClass.TYPE)
     o.requestItems = {}
 
     return o
@@ -33,10 +37,14 @@ end
 
 function RequestItemManagerClass:_onRefreshObs()
     local requestObs = self.requestManager:getObs()
+    local requestInventory = self.inventoryManager:getRequestInventory()
     for _, requestOb in ipairs(requestObs) do
         local itemsForRequest = {}
         for _, requestItemData in ipairs(requestOb.items) do
-            local potentialOb = RequestItemClass:new(requestItemData, requestOb, self)
+            local meItemInfo = self.meItemManager:getObEvenIfMissing(requestItemData.name)
+            assert(meItemInfo, "didnt return object!")
+            local amountInExternalInventory = requestInventory:getItemAmount(requestItemData.name)
+            local potentialOb = RequestItemClass:new(requestItemData, meItemInfo, amountInExternalInventory, requestOb, self)
 
             local currentOb = self:getOb(potentialOb:getUniqueKey())
             if not currentOb then

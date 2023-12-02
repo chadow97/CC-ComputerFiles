@@ -1,4 +1,7 @@
+local logger = require "UTIL.logger"
+
 local ConfigClass = {}
+ConfigClass.__index = ConfigClass
 
 function ConfigClass:new()
     local o = setmetatable({}, ConfigClass)

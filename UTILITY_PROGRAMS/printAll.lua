@@ -1,7 +1,7 @@
 -- Function to check if a file should be ignored based on its extension or directory
 local function shouldIgnoreFile(filePath)
     local ignoredExtensions = { ".output", ".log", ".code-workspace" }
-    local ignoredDirectories = { ".vscode", ".git", "rom", "DATA", "COLONY" }
+    local ignoredDirectories = { ".vscode", ".git", "rom", "DATA"}
 
     for _, extension in ipairs(ignoredExtensions) do
         if filePath:sub(-#extension) == extension then

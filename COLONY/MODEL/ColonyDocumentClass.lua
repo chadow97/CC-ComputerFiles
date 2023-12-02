@@ -25,10 +25,10 @@ function ColonyDocumentClass:new(colonyPeripheral)
     o:registerManager(InventoryManagerClass:new(o))
     o:registerManager(BuilderManagerClass:new(colonyPeripheral, o))
     o:registerManager(ColonyManagerClass:new(colonyPeripheral, o))
-    o:registerManager(RequestManagerClass:new(colonyPeripheral, o))
-    o:registerManager(RequestItemManagerClass:new(colonyPeripheral, o))
     o:registerManager(MeSystemManagerClass:new(o))
     o:registerManager(MeItemManagerClass:new(o))
+    o:registerManager(RequestManagerClass:new(colonyPeripheral, o))
+    o:registerManager(RequestItemManagerClass:new(colonyPeripheral, o))
 
     return o
 end

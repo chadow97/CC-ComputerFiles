@@ -1,5 +1,7 @@
+-- add absolute paths to package to allow programs to use libraries from anywhere!
+package.path = package.path .. ";/?;/?.lua"
+
 local ButtonClass = require("GUI.ButtonClass")
-local ToggleableButtonClass = require("GUI.ToggleableButtonClass")
 local PageClass = require("GUI.PageClass")
 local MonUtils = require("UTIL.monUtils")
 local logger = require("UTIL.logger")
@@ -14,9 +16,7 @@ local complete = completion.build(
 shell.setCompletionFunction("programTester.lua", complete)
 
 
-logger.init(term.current())
-logger.deactiveate()
-
+logger.init(term.current(),"programTester.log", true)
 
 local args = {...}
 
@@ -28,12 +28,6 @@ if programName == nil then
 end
 
 local programArgs = args
--- remove program name
-
--- base monitor to log too.
-
-
-
 
 local monitor = peripheral.find("monitor")
 local keepTesting = true

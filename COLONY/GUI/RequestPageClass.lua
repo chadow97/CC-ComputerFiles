@@ -4,7 +4,7 @@ local CustomPageClass       = require "GUI.CustomPageClass"
 local RequestManagerClass   = require "COLONY.MODEL.RequestManagerClass"
 local RequestDetailsPageClass = require "COLONY.GUI.RequestDetailsPageClass"
 local ToggleableButtonClass   = require "GUI.ToggleableButtonClass"
-local TableFileHandlerClass = require "UTIL.tableFileHandlerClass"
+local RequestInventoryHandlerClass = require "COLONY.MODEL.RequestInventoryHandlerClass"
 local RequestInventoryPageClass = require "COLONY.GUI.RequestInventoryPageClass"
 
 -- Define constants
@@ -26,7 +26,7 @@ function RequestPageClass:new(monitor, parentPage, document)
   local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "requestInventoryPage"), RequestPageClass)
 
   o.parentPage = parentPage
-  o.tableFileHandler = TableFileHandlerClass:new(o.document.config:getRequestInventoryPath())
+  o.requestInventoryHandler = RequestInventoryHandlerClass:new(document)
   o.requestManager = o.document:getManagerForType(RequestManagerClass.TYPE)
   o.targetInventoryButton = nil
 
@@ -95,7 +95,7 @@ end
 
 function RequestPageClass:getInventoryButtonText()
 
-    local currentInventoryKey = self.tableFileHandler:read()[1]
+    local currentInventoryKey = self.requestInventoryHandler:getRequestInventoryKey()
     if not currentInventoryKey then
         return "No target inventory!"  .. " (Press to select a new one)"
     end

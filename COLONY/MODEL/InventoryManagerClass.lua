@@ -13,10 +13,11 @@ setmetatable(InventoryManagerClass, { __index = ManagerClass })
 InventoryManagerClass.TYPE = "Inventory"
 -- Constructor for InventoryManagerClass
 function InventoryManagerClass:new(document)
-    self = setmetatable(ManagerClass:new(document), InventoryManagerClass)
-    self.type = InventoryManagerClass.TYPE
-    self.inventories = {}
-    return self
+    local o = setmetatable(ManagerClass:new(document), InventoryManagerClass)
+    o.type = InventoryManagerClass.TYPE
+    o.inventories = {}
+    o.requestInventoryHandler = TableFileHandlerClass:new(document.config:getRequestInventoryPath())
+    return o
 end
 
 function InventoryManagerClass:_getObsInternal()
@@ -29,6 +30,18 @@ end
 
 function InventoryManagerClass:getDefaultInventory()
     return self:getFirstInventory()
+end
+
+function InventoryManagerClass:getRequestInventory()
+    local currentInventoryKey = self.requestInventoryHandler:read()[1]
+    if not currentInventoryKey then
+        error("No inventory to consider for request!")
+    end
+    local inventoryOb = self:getOb(currentInventoryKey)
+    if not inventoryOb then
+        error("Couldnt find inventory for requests")
+    end
+    return inventoryOb
 end
 
 function InventoryManagerClass:_onRefreshObs()

@@ -36,6 +36,15 @@ function InventoryClass:getAllItems()
     return self.InventoryWrapper:getAllItems()
 end
 
+function InventoryClass:getItemAmount(uniqueKey)
+    local itemMap = self.InventoryWrapper:getAllItems()
+    local amount = itemMap[uniqueKey]
+    if not amount then
+        amount = 0
+    end
+    return amount
+end
+
 
 
 return InventoryClass

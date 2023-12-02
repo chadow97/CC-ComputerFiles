@@ -4,7 +4,7 @@ local CustomPageClass       = require "GUI.CustomPageClass"
 local RequestManagerClass   = require "COLONY.MODEL.RequestManagerClass"
 local RequestDetailsPageClass = require "COLONY.GUI.RequestDetailsPageClass"
 local ToggleableButtonClass   = require "GUI.ToggleableButtonClass"
-local TableFileHandlerClass = require "UTIL.tableFileHandlerClass"
+local RequestInventoryHandlerClass = require "COLONY.MODEL.RequestInventoryHandlerClass"
 local InventoryManagerClass = require "COLONY.MODEL.InventoryManagerClass"
 local ElementClass          = require "GUI.elementClass"
 
@@ -24,7 +24,7 @@ function RequestInventoryPageClass:new(monitor, parentPage, document)
   local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "requestPage"), RequestInventoryPageClass)
 
   o.parentPage = parentPage
-  o.tableFileHandler = TableFileHandlerClass:new(o.document.config:getRequestInventoryPath())
+  o.requestInventoryHandler = RequestInventoryHandlerClass:new(o.document)
   o.inventoryManager = o.document:getManagerForType(InventoryManagerClass.TYPE)
   o.selectedInventory = nil
   o.inventoryTable = nil
@@ -54,7 +54,7 @@ function RequestInventoryPageClass:onBuildCustomPage()
     self.inventoryTable:setTableElementsProperties({[ToggleableButtonClass.properties.automatic_untoggle]= false,
     [ElementClass.properties.on_draw_function] = self:getOnDrawTableElement()})
     
-    local currentInventoryKey = self.tableFileHandler:read()[1]
+    local currentInventoryKey = self.requestInventoryHandler:getRequestInventoryKey()
     local currentInventory = self.inventoryManager:getOb(currentInventoryKey)
     self:changeSelectedItem(currentInventory, false)
 
@@ -68,7 +68,7 @@ function RequestInventoryPageClass:getOnTargetInventoryPressed()
         if (isKey) then
             return
         end
-        self.tableFileHandler:write({inventory:getUniqueKey()})
+        self.requestInventoryHandler:setRequestInventoryKey(inventory:getUniqueKey())
         self:changeSelectedItem(inventory, true)
         self.parentPage:popPage()
     end
