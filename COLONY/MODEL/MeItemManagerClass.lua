@@ -53,6 +53,7 @@ function MeItemManagerClass:_getObsInternal()
 end
 
 function MeItemManagerClass:_onRefreshObs()
+    local processedItemsIDs = {}
     for _, meItemData in ipairs(self:getMeItems()) do
 
         local potentialOb = MeItemClass:new(meItemData)
@@ -63,8 +64,15 @@ function MeItemManagerClass:_onRefreshObs()
         else
             currentOb:copyFrom(potentialOb)
         end
-
+        processedItemsIDs[potentialOb:getUniqueKey()] = true
     end
+
+    for key, _ in pairs(self.itemByIdMap) do
+        if not processedItemsIDs[key] then
+            self.itemByIdMap[key] = nil
+        end
+    end
+
     
 end
 

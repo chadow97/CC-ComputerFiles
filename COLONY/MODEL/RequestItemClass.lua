@@ -16,7 +16,8 @@ RequestItemClass.RESSOURCE_STATUSES = {
 RequestItemClass.ACTIONS = {
         CRAFT = 1,
         SENDTOEXTERNAL = 2,
-        NOTHING = 3
+        NOTHING = 3,
+        CANNOT_COMPLETE = 4
     }
 
 -- Constructor for WorkOrderClass
@@ -46,7 +47,7 @@ function RequestItemClass:getAmountMissingForRequest()
 end
 
 function RequestItemClass:isMissingAnyToCompleteRequest()
-    return self:getAmountMissingForRequest() >= 0
+    return self:getAmountMissingForRequest() > 0
 end
 
 function RequestItemClass:getAmountMissingWithMe()
@@ -54,7 +55,7 @@ function RequestItemClass:getAmountMissingWithMe()
 end
 
 function RequestItemClass:isMissingAnyWithMe()
-    return self:getAmountMissingWithMe() >= 0
+    return self:getAmountMissingWithMe() > 0
 end
 
 function RequestItemClass:getAmountToSendToMe()
@@ -68,7 +69,7 @@ end
 function RequestItemClass:getStatus()
     if not self:isMissingAnyToCompleteRequest() then
         return RequestItemClass.RESSOURCE_STATUSES.all_in_external_inv
-    elseif self:isMissingAnyWithMe() then
+    elseif not self:isMissingAnyWithMe() then
         return RequestItemClass.RESSOURCE_STATUSES.all_in_me_or_ex
     elseif self.meItemInfoOb.isCraftable then
         return RequestItemClass.RESSOURCE_STATUSES.craftable
@@ -86,8 +87,10 @@ function RequestItemClass:getActionToDo()
         return RequestItemClass.ACTIONS.SENDTOEXTERNAL
     elseif status == RequestItemClass.RESSOURCE_STATUSES.craftable then
         return RequestItemClass.ACTIONS.CRAFT
+    elseif status == RequestItemClass.RESSOURCE_STATUSES.missing_not_craftable then
+        return RequestItemClass.ACTIONS.CANNOT_COMPLETE
     else
-        return RequestItemClass.ACTIONS.NOTHING
+        error("Invalid status!")
     end
     
 end
@@ -115,10 +118,43 @@ end
 function RequestItemClass:GetDisplayString()
     return string.format(
 [[
-ACTION TO DO: 
-%s 
+%s
 ]],
-self:getActionToDo())
+self:getActionUserString())
+end
+
+function RequestItemClass:getActionUserString()
+    local action = self:getActionToDo()
+    if action == self.ACTIONS.CRAFT then
+        return "Missing some items! \nPress here to craft."
+    elseif action == self.ACTIONS.SENDTOEXTERNAL then
+        return "Missing some items! \nPress here to send from ME!"
+    elseif action == self.ACTIONS.NOTHING then
+        return "All required items provided.\n Nothing to do!"
+    elseif action == self.ACTIONS.CANNOT_COMPLETE then
+        return "Missing some items! \n Missing in me and cannot craft!"
+    end
+
+end
+
+function RequestItemClass:getObStyle()
+    -- return elementBackColor, elementTextColor
+    local elementBackColor = colors.purple
+    local status = self:getStatus()
+    local elementTextColor = colors.white
+    if status == RequestItemClass.RESSOURCE_STATUSES.all_in_external_inv then
+        elementTextColor = colors.green
+    elseif status == RequestItemClass.RESSOURCE_STATUSES.all_in_me_or_ex then
+        elementTextColor = colors.yellow
+    elseif status == RequestItemClass.RESSOURCE_STATUSES.missing_not_craftable then
+        elementTextColor = colors.red
+    elseif status == RequestItemClass.RESSOURCE_STATUSES.craftable then
+        elementTextColor = colors.orange
+    else
+        error("Invalid status!")
+    end
+
+    return elementBackColor, elementTextColor
 end
 
 
