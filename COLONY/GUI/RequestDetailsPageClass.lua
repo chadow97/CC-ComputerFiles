@@ -1,5 +1,6 @@
 local ObTableClass          = require "GUI.ObTableClass"
 local logger                = require "UTIL.logger"
+local ButtonClass           = require "GUI.ButtonClass"
 
 local CustomPageClass       = require "GUI.CustomPageClass"
 local RequestManagerClass   = require "COLONY.MODEL.RequestManagerClass"
@@ -53,11 +54,12 @@ function RequestDetailsPageClass:onBuildCustomPage()
     requestDetailsTable:setDataFetcher(requestItemFetcher)
     requestDetailsTable:setDisplayKey(true)
     requestDetailsTable:setKeyRowPropertion(0.8)
-    requestDetailsTable:setRowHeight(10)
+    requestDetailsTable:setRowHeight(7)
     requestDetailsTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
     requestDetailsTable:setHasManualRefresh(true)
     requestDetailsTable:setSize(parentPageSizeX, parentPageSizeY - 11)
     requestDetailsTable:setPos(parentPagePosX,parentPagePosY + 11)
+    requestDetailsTable:setTableElementsProperties({[ButtonClass.properties.should_center]= true}, false, true)
 
     self:setBackColor(ELEMENT_BACK_COLOR)
     self:addElement(requestDetailsTable)

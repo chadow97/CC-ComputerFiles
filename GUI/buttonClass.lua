@@ -12,6 +12,8 @@ local ButtonClass = {}
 ButtonClass.__index = ButtonClass
 setmetatable(ButtonClass, { __index = ElementClass })
 
+ButtonClass.properties = { should_center = "should_center"}
+
 -- Define a constructor for the ButtonClass
 function ButtonClass:new(xPos, yPos, text, document)
   local instance = setmetatable(ElementClass:new(xPos, yPos, document), ButtonClass)
@@ -42,6 +44,15 @@ function ButtonClass:getChildElements()
     return {}
 end
 
+function ButtonClass:setProperties(properties)
+    for propertyKey, propertyValue in pairs(properties) do
+        if propertyKey == ButtonClass.properties.should_center then
+            self:setCenterText(propertyValue)
+        end
+    end
+    ElementClass.setProperties(self,properties)
+end
+
 function ButtonClass:setLimit(startLimitX, startLimitY, endLimitX, endLimitY)
     self.limitArea = { startX = startLimitX, startY = startLimitY, endX = endLimitX, endY = endLimitY}
 end
@@ -53,7 +64,7 @@ end
 -- Define a draw method for the ButtonClass
 function ButtonClass:internalDraw()
   local startLimitX, startLimitY, endLimitX, endLimitY = self:getLimitValues()
-  local startX, startY, endX, endY = self:getArea(false)
+  local startX, startY, endX, endY, sizeX, sizeY = self:getArea(false)
 
   local startXToDraw = startX
   local startYtoDraw = startY
@@ -99,18 +110,19 @@ function ButtonClass:internalDraw()
 
   local currentLine = self.y
 
-  for _, line in ipairs(self:getTextLines()) do
+  local textLines = self:getTextLines()
+  if self.shouldCenterText then
+    textLines = stringUtils.CenterLinesInRectangle(textLines, sizeX - (self.margin*2), sizeY - (self.margin*2) )
+  end
+
+  for _, line in ipairs(textLines) do
     if currentLine > endYToWrite then
         break
     end
 
     self.monitor.setCursorPos(self.x, currentLine)
     local textToWrite = string.sub(line, indexToStart, indexToEnd)
-    if self.shouldCenterText then
-        local lettersToWrite = #line
-        local spacesToAdd = math.max(0,math.floor((maxTextSize - lettersToWrite + 1)/2))
-        textToWrite = string.rep(" ", spacesToAdd) .. textToWrite 
-    end
+
     self.monitor.write(textToWrite)
     currentLine = currentLine + 1
   end

@@ -120,7 +120,41 @@ function stringUtils.Truncate(str, maxLength)
   end
 end
 
+function stringUtils.CenterLinesInRectangle(lines, width, height)
+    local centeredLines = {}
 
+    -- Function to center a single line
+    local function centerLine(line)
+        local padding = width - #line
+        local leftPadding = math.floor(padding / 2)
+        local rightPadding = padding - leftPadding
+        return string.rep(" ", leftPadding) .. line .. string.rep(" ", rightPadding)
+    end
+
+    -- Center each line horizontally
+    for _, line in ipairs(lines) do
+        table.insert(centeredLines, centerLine(line))
+    end
+
+    -- Center vertically
+    local totalLines = #centeredLines
+    local topPadding = math.floor((height - totalLines) / 2)
+    local bottomPadding = height - totalLines - topPadding
+
+    for i = 1, topPadding do
+        table.insert(centeredLines, 1, string.rep(" ", width))  -- Add spaces at the beginning
+    end
+
+    for i = 1, bottomPadding do
+        table.insert(centeredLines, string.rep(" ", width))  -- Add spaces at the end
+    end
+
+    return centeredLines
+end
+
+function stringUtils.CenterTextInRectangle(text, width, height)
+    return stringUtils.CenterLinesInRectangle(stringUtils.splitLines(text), width, height)
+end
 
 -- Return the stringUtils module
 return stringUtils

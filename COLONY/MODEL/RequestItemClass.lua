@@ -116,23 +116,19 @@ end
 
 -- Overriding GetDisplayString method
 function RequestItemClass:GetDisplayString()
-    return string.format(
-[[
-%s
-]],
-self:getActionUserString())
+    return self:getActionUserString()
 end
 
 function RequestItemClass:getActionUserString()
     local action = self:getActionToDo()
     if action == self.ACTIONS.CRAFT then
-        return "Missing some items! \nPress here to craft."
+        return "Missing some items!\nPress here to craft."
     elseif action == self.ACTIONS.SENDTOEXTERNAL then
-        return "Missing some items! \nPress here to send from ME!"
+        return "Missing some items!\nPress here to send\nfrom ME!"
     elseif action == self.ACTIONS.NOTHING then
-        return "All required items provided.\n Nothing to do!"
+        return "All required items provided.\nNothing to do!"
     elseif action == self.ACTIONS.CANNOT_COMPLETE then
-        return "Missing some items! \n Missing in me and cannot craft!"
+        return "Missing some items!\nMissing in me and\ncannot craft!"
     end
 
 end

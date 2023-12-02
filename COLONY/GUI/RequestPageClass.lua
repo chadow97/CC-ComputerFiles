@@ -6,6 +6,7 @@ local RequestDetailsPageClass = require "COLONY.GUI.RequestDetailsPageClass"
 local ToggleableButtonClass   = require "GUI.ToggleableButtonClass"
 local RequestInventoryHandlerClass = require "COLONY.MODEL.RequestInventoryHandlerClass"
 local RequestInventoryPageClass = require "COLONY.GUI.RequestInventoryPageClass"
+local ButtonClass               = require "GUI.ButtonClass"
 
 -- Define constants
 
@@ -55,6 +56,7 @@ function RequestPageClass:onBuildCustomPage()
     requestTable:setSize(parentPageSizeX, parentPageSizeY - 4)
     requestTable:setPos(parentPagePosX,parentPagePosY)
     requestTable:setOnTableElementPressedCallback(self:getOnRequestPressed())
+    requestTable:setTableElementsProperties({[ButtonClass.properties.should_center]= true}, false, true)
     
     self:setBackColor(ELEMENT_BACK_COLOR)
     self:addElement(requestTable)

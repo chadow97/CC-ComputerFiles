@@ -62,17 +62,7 @@ end
 
 -- Overriding GetDisplayString method
 function RequestClass:GetDisplayString()
-    return --hack to center inside button..
-[[
-
-
-
-           SEND 
-           ALL!
-
-
-
-]]
+    return "SEND\nALL!"
 end
 
 

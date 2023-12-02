@@ -53,7 +53,8 @@ function TableClass:new( monitor, x, y, title, sizeX, sizeY, document)
     self.onAskForNewDataCallback = nil
     self.onPostRefreshDataCallback = nil
     self.type = "table"
-    self.tableElementProperties = {}
+    self.valueElementProperties = {}
+    self.keyElementProperties = {}
 
     -- sets default scroll amount
     self:setScrollAmount()
@@ -70,8 +71,19 @@ function TableClass:__tostring()
    
 end
 
-function TableClass:setTableElementsProperties(properties)
-    self.tableElementProperties = properties or {}
+function TableClass:setTableElementsProperties(properties, shouldApplyToKeys, shouldApplyToValues)
+    if shouldApplyToKeys == nil then
+        shouldApplyToKeys = true
+    end
+    if shouldApplyToValues == nil then
+        shouldApplyToValues = true
+    end
+    if shouldApplyToKeys then
+        self.keyElementProperties = properties or {}       
+    end
+    if shouldApplyToValues then
+        self.valueElementProperties = properties or {}
+    end
 end
 
 function TableClass:changeStyle(backColor, elementBackColor, textColor)
@@ -400,7 +412,7 @@ function TableClass:createTableElementsForRow(key, value, position)
         keyElement:forceWidthSize(self:getKeyRowWidth())
         keyElement:forceHeightSize(self:getRowHeight())
         keyElement:setLimit(self:getAreaForElements())
-        keyElement:setProperties(self.tableElementProperties)
+        keyElement:setProperties(self.keyElementProperties)
         self:addElement(keyElement)
         self:setOnTableElementPressedCallbackForElement(keyElement, key, true, position, key)
         self:setupOnDrawButton(keyElement, key, true, position, key)
@@ -419,7 +431,7 @@ function TableClass:createTableElementsForRow(key, value, position)
     valueElement:forceWidthSize(self:getValueRowWidth())
     valueElement:forceHeightSize(self:getRowHeight())
     valueElement:setLimit(self:getAreaForElements())
-    valueElement:setProperties(self.tableElementProperties)
+    valueElement:setProperties(self.valueElementProperties)
     self:setOnTableElementPressedCallbackForElement( valueElement, key, false, position, value)
     self:setupOnDrawButton(valueElement,key, false, position, value)
 
