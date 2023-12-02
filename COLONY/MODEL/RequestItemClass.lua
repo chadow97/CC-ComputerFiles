@@ -137,9 +137,12 @@ function RequestItemClass:getActionUserString()
 
 end
 
-function RequestItemClass:getObStyle()
+function RequestItemClass:getObStyle(isKey, position)
     -- return elementBackColor, elementTextColor
-    local elementBackColor = colors.purple
+    if isKey then
+        return nil, nil
+    end
+    local elementBackColor = nil
     local status = self:getStatus()
     local elementTextColor = colors.white
     if status == RequestItemClass.RESSOURCE_STATUSES.all_in_external_inv then

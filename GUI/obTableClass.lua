@@ -87,9 +87,9 @@ function ObTableClass:getStringToDisplayForElement(data, isKey, position)
     end
 end
 
-function ObTableClass:getButtonStyleAccordingToData(isKey, position)
+function ObTableClass:getTableElementStyleAccordingToData(isKey, position)
     -- return elementBackColor, elementTextColor
-    return self.obList[position]:getObStyle()
+    return self.obList[position]:getObStyle(isKey, position)
 end
 
 -- Getter/setter for the internal table
