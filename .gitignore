@@ -3,3 +3,4 @@ rawterm.lua
 .vscode/launch.json
 COLONYGUI/ColonyGUI.code-workspace
 DATA/
+shortcut.lua
