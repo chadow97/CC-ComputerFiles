@@ -109,10 +109,6 @@ end
 
 function DocumentClass:getSmallestElementToDraw(element, dirtyArea)
     local childToDraw = nil
-    if not element:getChildElements() then
-        logger.callStackToFile()
-        logger.logObToFile("Ob returned no childs!!!" .. tostring(element))
-    end
     for _, child in ipairs(element:getChildElements()) do
 
         if child:getAreaAsObject():contains(dirtyArea) and 

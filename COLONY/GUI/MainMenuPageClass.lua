@@ -8,6 +8,7 @@ local ColonyPageClass       = require "COLONY.GUI.ColonyPageClass"
 local RequestPageClass      = require "COLONY.GUI.RequestPageClass"
 local LabelClass            = require "GUI.LabelClass"
 local MeInfoPageClass       = require "COLONY.GUI.MeInfoPageClass"
+local PeripheralPageClass   = require "COLONY.GUI.PeripheralPageClass"
 
 -- Define constants
 
@@ -21,11 +22,8 @@ local MainMenuPageClass = {}
 MainMenuPageClass.__index = MainMenuPageClass
 setmetatable(MainMenuPageClass, {__index = CustomPageClass})
 
-function MainMenuPageClass:new(monitor, parentPage, colonyPeripheral, document)
+function MainMenuPageClass:new(monitor, parentPage, document)
   self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "MainMenu"), MainMenuPageClass)
-
-  self.colonyPeripheral = colonyPeripheral
-
   self:buildCustomPage()
 
   return self
@@ -98,6 +96,16 @@ function MainMenuPageClass:onBuildCustomPage()
   MeInfoButton:setCenterText(true)
   self:addElement(MeInfoButton)
 
+  yValueForEntry = yValueForEntry + 4
+
+  local PeriperalButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Connected Periperals", self.document)
+  PeriperalButton:forceWidthSize(parentPageSizeX - 2)
+  PeriperalButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
+  PeriperalButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+  PeriperalButton:setOnManualToggle(self:getOnPeripheralsPressed())
+  PeriperalButton:setCenterText(true)
+  self:addElement(PeriperalButton)
+
   self:setBackColor(ELEMENT_BACK_COLOR)
 
 end
@@ -114,7 +122,7 @@ function MainMenuPageClass:getOnColonyPressed()
 function MainMenuPageClass:getOnWorkOrdersPressed()
   return function()
       self.document:startEdition()
-      local WorkOrderPage = WorkOrderPageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, self.document)
+      local WorkOrderPage = WorkOrderPageClass:new(self.monitor, self.parentPage, self.document)
       self.parentPage:addElement(WorkOrderPage)
       self.document:endEdition()
   end
@@ -143,6 +151,15 @@ function MainMenuPageClass:getOnMeInfoPressed()
       self.document:startEdition()
       local meInfoPage = MeInfoPageClass:new(self.monitor, self.parentPage, self.document)
       self.parentPage:addElement(meInfoPage)
+      self.document:endEdition()
+    end
+  end
+
+  function MainMenuPageClass:getOnPeripheralsPressed()
+    return function()
+      self.document:startEdition()
+      local perPage = PeripheralPageClass:new(self.monitor, self.parentPage, self.document)
+      self.parentPage:addElement(perPage)
       self.document:endEdition()
     end
   end

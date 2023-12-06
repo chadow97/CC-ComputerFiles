@@ -1,1 +1,1 @@
-{[1]="minecraft:barrel_0",[2]="minecraft:barrel_3",}
+{[1]="minecraft:barrel_3",[2]="minecraft:barrel_3",}

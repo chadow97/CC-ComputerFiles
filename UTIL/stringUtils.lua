@@ -61,6 +61,7 @@ function stringUtils.Format(str, ...)
             local key = placeholder:match("%((.-)%)")
             if key then
                 if tbl and tbl[key] == nil then
+                    print(key)
                     error("Key not found in table: " .. key)
                 end
                 return tbl[key] or placeholder

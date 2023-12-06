@@ -9,6 +9,7 @@ local MeItemManagerClass      = require("COLONY.MODEL.MeItemManagerClass")
 local MeSystemManagerClass    = require("COLONY.MODEL.MeSystemManagerClass")
 local ColonyConfigClass = require("COLONY.MODEL.ColonyConfigClass")
 local logger                  = require("UTIL.logger")
+local PeripheralManagerClass  = require("COLONY.MODEL.PeripheralManagerClass")
 
 
 local ColonyDocumentClass = {}
@@ -16,13 +17,18 @@ ColonyDocumentClass.__index = ColonyDocumentClass
 setmetatable(ColonyDocumentClass, { __index = DocumentClass })
 
 -- Constructor for WorkOrderClass
-function ColonyDocumentClass:new(colonyPeripheral)
+function ColonyDocumentClass:new()
 
     local colonyConfig = ColonyConfigClass:new()
     local o = setmetatable(DocumentClass:new(colonyConfig), ColonyDocumentClass)
 
     -- register managers used in colony
     o:registerManager(InventoryManagerClass:new(o))
+
+    local peripheralManager = PeripheralManagerClass:new(o)
+    o:registerManager(peripheralManager)
+    local colonyPeripheral = peripheralManager:getMainColonyPeripheral()
+
     o:registerManager(BuilderManagerClass:new(colonyPeripheral, o))
     o:registerManager(ColonyManagerClass:new(colonyPeripheral, o))
     o:registerManager(MeSystemManagerClass:new(o))

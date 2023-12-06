@@ -42,7 +42,7 @@ end
 function RessourceFetcherClass:getExternalInventoryItems()
     local externalInventoryItemMap = {}
     if not self.externalChest then
-        logger.log("No external chest found!")
+        logger.log("No external chest found!", logger.LOGGING_LEVEL.ERROR)
     else
         externalInventoryItemMap = self.externalChest:getAllItems()
     end
@@ -51,10 +51,10 @@ end
 
 function RessourceFetcherClass:getRessourceRequirementsFromColony()
 
-    local ressourceRequirementFromColony = self.colonyPeripheral:getWorkOrderResources(self.workOrderId)[1]
+    local ressourceRequirementFromColony = self.colonyPeripheral:getWorkOrderResources(self.workOrderId)
     if not ressourceRequirementFromColony then
         ressourceRequirementFromColony = {}
-        logger.log("Colony Peripheral did not answer!")
+        logger.log("Colony Peripheral did not answer!", logger.LOGGING_LEVEL.ERROR)
     end
     return ressourceRequirementFromColony
 end

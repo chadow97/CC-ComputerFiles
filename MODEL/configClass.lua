@@ -10,6 +10,7 @@ function ConfigClass:new()
 end
 
 function ConfigClass:set(configKey, configValue)
+    assert(configKey, "no keys to set!")
     self.configs[configKey] = configValue
 end
 

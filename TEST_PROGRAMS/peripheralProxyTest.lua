@@ -1,8 +1,9 @@
-
+package.path = package.path .. ";/?;/?.lua"
 local logger = require("UTIL.logger")
 logger.init(term.current())
 
 local peripheralProxyClass = require("UTIL.peripheralProxy")
+local ConnectionClass = require("UTIL.RemoteConnectionClass")
 local channel = 1
 
 
@@ -14,8 +15,10 @@ local functionArgs = args
 table.remove(functionArgs,1)
 table.remove(functionArgs,1)
 
+local connection = ConnectionClass:new(channel, "right")
 
-local per = peripheralProxyClass:new(channel, peripheralType )
+
+local per = peripheralProxyClass:new(connection, peripheralType )
 
 
 logger.logToFile(per:callMethod(methodName,table.unpack(functionArgs)), logger.LOGGING_LEVEL.INFO)

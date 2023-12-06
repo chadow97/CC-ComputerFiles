@@ -59,8 +59,7 @@ function MeUtils.exportItem(itemName, count, containerName)
         countToUse = 1
     end
     local exportTable = {name = itemName, count = countToUse}
-    logger.logToFile("Exporting:")
-    logger.logToFile(containerNameToUse)
+
     return MePeripheral.exportItemToPeripheral(exportTable, containerNameToUse)
 end
 
@@ -96,7 +95,7 @@ end
 
 function MeUtils.isItemBeingCrafted(itemName)
     if not MePeripheral then
-        logger.log("Missing Me Peripheral")
+        logger.log("Missing Me Peripheral", logger.LOGGING_LEVEL.ERROR)
         return
     end
     local itemTable = {name = itemName}

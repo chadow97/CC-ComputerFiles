@@ -22,13 +22,13 @@ function ColonyIntegratorPerUtils.getWorkOrders(per)
     end
   end
   
-  return workOrders[1]
+  return workOrders
 
 
 end
 
 function ColonyIntegratorPerUtils.getFirstWorkOrderId(per)
-    local AllWorkOrders = per.getWorkOrders()[1]
+    local AllWorkOrders = per.getWorkOrders()
 
     local FirstWorkOrderId = nil
     for _, workOrder in ipairs(AllWorkOrders) do
@@ -54,7 +54,7 @@ function ColonyIntegratorPerUtils.getFirstWorkOrderResources(per)
         return ColonyIntegratorPerUtils.FailedGetWorkOrder
     end
 
-    return FirstWorkOrder[1]
+    return FirstWorkOrder
   
   end
 
@@ -64,7 +64,7 @@ function ColonyIntegratorPerUtils.getMissingRessourcesFromWorkOrder(per, workOrd
         return ColonyIntegratorPerUtils.FailedGetWorkOrder
     end
     local missingRessources = {}
-    for _,ressource in ipairs(WorkOrderRessources[1]) do
+    for _,ressource in ipairs(WorkOrderRessources) do
         if ressource.status ~= "NOT_NEEDED" then
             ressource.missing = ressource.needed - ressource.available - ressource.delivering
             table.insert(missingRessources,ressource)
@@ -75,11 +75,11 @@ function ColonyIntegratorPerUtils.getMissingRessourcesFromWorkOrder(per, workOrd
 end
 
 function ColonyIntegratorPerUtils.getBuildings(per)
-    return per.getBuildings()[1]
+    return per.getBuildings()
 end
 
 function ColonyIntegratorPerUtils.getRequests(per)
-    return per.getRequests()[1]
+    return per.getRequests()
 end
 
 function ColonyIntegratorPerUtils.getWorkOrderById(per, workOrderId)
@@ -91,7 +91,7 @@ function ColonyIntegratorPerUtils.getWorkOrderById(per, workOrderId)
         end
     end
     if not requestedWorkOrder then
-        logger.log("Couldn't find WorkOrder by ID!")
+        logger.log("Couldn't find WorkOrder by ID!", logger.LOGGING_LEVEL.ERROR)
     end
     return requestedWorkOrder
 end
@@ -137,7 +137,7 @@ function ColonyIntegratorPerUtils.getCitizensByType(per, type)
 end
 
 function ColonyIntegratorPerUtils.getCitizens(per)
-    return per.getCitizens()[1]
+    return per.getCitizens()
 end
 
 function ColonyIntegratorPerUtils.getBuilderHutInfoFromWorkOrder(per, workOrder)
@@ -149,33 +149,27 @@ function ColonyIntegratorPerUtils.getBuilderHutInfoFromWorkOrder(per, workOrder)
 
     builderHutInfo = ColonyIntegratorPerUtils.getBuildingByPosition(per, builderHutPosition)
     if not builderHutInfo then
-        logger.log("No builder hut found!")
+        logger.log("No builder hut found!", logger.LOGGING_LEVEL.ERROR)
     end
     return builderHutInfo
 end
 
 function ColonyIntegratorPerUtils.getColony(per)
     local colony = {}
-    colony.id = per.getColonyID()[1]
-    colony.name = per.getColonyName()[1]
-    colony.style = per.getColonyStyle()[1]
-    colony.location = per.getColonyLocation()[1]
-    colony.happiness = per.getHappiness()[1]
-    colony.isActive = per.isActive()[1]
-    colony.isUnderAttack = per.isUnderAttack()[1]
-    colony.amountOfCitizens = per.amountOfCitizens()[1]
-    colony.maxOfCitizens = per.maxOfCitizens()[1]
-    colony.amountOfGraves = per.amountOfGraves()[1]
-    colony.amountOfConstructionSites = per.amountOfConstructionSites()[1]
+    colony.id = per.getColonyID()
+    colony.name = per.getColonyName()
+    colony.style = per.getColonyStyle()
+    colony.location = per.getColonyLocation()
+    colony.happiness = per.getHappiness()
+    colony.isActive = per.isActive()
+    colony.isUnderAttack = per.isUnderAttack()
+    colony.amountOfCitizens = per.amountOfCitizens()
+    colony.maxOfCitizens = per.maxOfCitizens()
+    colony.amountOfGraves = per.amountOfGraves()
+    colony.amountOfConstructionSites = per.amountOfConstructionSites()
     return colony
 
 end
-
-
-
-
-
-
 
 return ColonyIntegratorPerUtils  -- return the module table at the end of the file
 

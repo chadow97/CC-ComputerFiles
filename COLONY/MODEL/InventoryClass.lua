@@ -1,20 +1,22 @@
 -- InventoryClass.lua
 local ObClass = require("MODEL.ObClass")  -- Adjust the path if necessary
 local stringUtils = require("UTIL.stringUtils")
+local PeripheralClass = require("COLONY.MODEL.PeripheralClass")
+local logger          = require("UTIL.logger")
 
 
 local InventoryClass = {}
 InventoryClass.__index = InventoryClass
-setmetatable(InventoryClass, { __index = ObClass })
+setmetatable(InventoryClass, { __index = PeripheralClass })
 
 -- Constructor for InventoryClass
 function InventoryClass:new(inventoryWrapper)
     local uniqueKey = inventoryWrapper:getName()
-    self = setmetatable(ObClass:new(uniqueKey), InventoryClass)
-    self.name = uniqueKey
-    self.InventoryWrapper = inventoryWrapper
+    local o = setmetatable(PeripheralClass:new(inventoryWrapper.per), InventoryClass)
+    o.name = uniqueKey
+    o.InventoryWrapper = inventoryWrapper
 
-    return self
+    return o
 end
 
 function InventoryClass:__tostring()
@@ -43,6 +45,18 @@ function InventoryClass:getItemAmount(uniqueKey)
         amount = 0
     end
     return amount
+end
+
+function InventoryClass:__index(key)
+    if InventoryClass[key] then
+        return InventoryClass[key]
+    elseif PeripheralClass[key] then
+        return PeripheralClass[key]
+    elseif ObClass[key] then
+        return ObClass[key]
+    else
+        return self.inventoryWrapper.per[key]
+    end
 end
 
 

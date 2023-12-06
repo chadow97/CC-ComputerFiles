@@ -15,8 +15,6 @@ local ColonyDocumentClass= require("COLONY.MODEL.ColonyDocumentClass")
 local BACKGROUND_COLOR = colors.yellow
 local ELEMENT_BACK_COLOR = colors.red
 
-local CHANNEL = 1
-
 -- Setup Monitor
 local monitor = peripheral.find("monitor")
 MonUtils.resetMonitor(monitor)
@@ -25,11 +23,8 @@ local monitorX, monitorY = monitor.getSize()
 -- Initialize logger for debug
 logger.init(term.current(), "ColonyGUI.log", true)
 
--- Setup proxy to mineColonies
-local colonyPeripheral = peripheralProxyClass:new(CHANNEL, "colonyIntegrator","right")
-
 -- Create document, allows to retrieve data.
-local document = ColonyDocumentClass:new(colonyPeripheral)
+local document = ColonyDocumentClass:new()
 document:startEdition()
 -- Setup exit program button
 local isRunning = true
@@ -46,7 +41,7 @@ exitButton:setMargin(0)
 local pageStack = PageStackClass:new(monitor, document)
 pageStack:setSize(monitorX - 2,monitorY - 2)
 pageStack:setPosition(2,2)
-local mainMenuPage = MainMenuPageClass:new(monitor, pageStack, colonyPeripheral, document)
+local mainMenuPage = MainMenuPageClass:new(monitor, pageStack, document)
 pageStack:pushPage(mainMenuPage)
 pageStack:changeExitButtonStyle(nil, ELEMENT_BACK_COLOR)
 

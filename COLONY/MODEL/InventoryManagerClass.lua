@@ -9,6 +9,7 @@ local ChestWrapper   = require("UTIL.InventoryWrapperClass")
 local InventoryManagerClass = {}
 InventoryManagerClass.__index = InventoryManagerClass
 setmetatable(InventoryManagerClass, { __index = ManagerClass })
+InventoryManagerClass.HANDLED_TYPES = {PerTypes.chest, PerTypes.barrel}
 
 InventoryManagerClass.TYPE = "Inventory"
 -- Constructor for InventoryManagerClass
@@ -18,6 +19,15 @@ function InventoryManagerClass:new(document)
     o.inventories = {}
     o.requestInventoryHandler = TableFileHandlerClass:new(document.config:getRequestInventoryPath())
     return o
+end
+
+function InventoryManagerClass.isTypeHandled(type)
+    for _, handledType in ipairs(InventoryManagerClass.HANDLED_TYPES) do
+        if handledType == type then
+            return true
+        end
+    end
+    return false
 end
 
 function InventoryManagerClass:_getObsInternal()

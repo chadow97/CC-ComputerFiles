@@ -5,6 +5,7 @@ local RessourcePageClass    = require "COLONY.GUI.RessourcePageClass"
 local CustomPageClass       = require "GUI.CustomPageClass"
 local InventoryManagerClass = require "COLONY.MODEL.InventoryManagerClass"
 local BuilderManagerClass   = require "COLONY.MODEL.BuilderManagerClass"
+local PeripheralManagerClass= require "COLONY.MODEL.PeripheralManagerClass"
 
 -- Define constants
 
@@ -19,12 +20,13 @@ setmetatable(WorkOrderPageClass, {__index = CustomPageClass})
 
 
 
-function WorkOrderPageClass:new(monitor, parentPage, colonyPeripheral, document)
+function WorkOrderPageClass:new(monitor, parentPage, document)
   self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "workOrderPage"), WorkOrderPageClass)
+  local peripheralManager = document:getManagerForType(PeripheralManagerClass.TYPE)
+  local colonyPeripheral = peripheralManager:getMainColonyPeripheral()
 
   self.ressourceFetcher = WorkOrderFetcherClass:new(colonyPeripheral)
   self.parentPage = parentPage
-  self.colonyPeripheral = colonyPeripheral
   self:buildCustomPage()
   return self
 end
@@ -73,7 +75,7 @@ function WorkOrderPageClass:getOnWorkOrderPressed()
             assert(inventoryOb, "Couldnt find inventory associated with builder!")
         end
         
-        local ressourcePage = RessourcePageClass:new(self.monitor, self.parentPage, self.colonyPeripheral, workOrder.id, inventoryOb, self.document)
+        local ressourcePage = RessourcePageClass:new(self.monitor, self.parentPage, workOrder.id, inventoryOb, self.document)
         self.parentPage:addElement(ressourcePage)
     end
 end

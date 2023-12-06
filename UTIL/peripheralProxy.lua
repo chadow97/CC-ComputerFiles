@@ -6,27 +6,24 @@ local PeripheralProxy = {}
 PeripheralProxy.__index = PeripheralProxy
 
 -- Constructor function for creating new instances of the class
-function PeripheralProxy:new(channel, peripheralName, side)
+function PeripheralProxy:new(connection, peripheralName)
     local instance = {}
     setmetatable(instance, PeripheralProxy)
 
-    instance.channel = channel
+    instance.connection = connection
+    assert(connection, "No connection!")
     instance.peripheralName = peripheralName
-
-    local oppenedSide = side or "back"
-    rednet.open(oppenedSide)
 
     return instance
 end
 
 -- Method for retrieving the names of all available methods on the peripheral
 function PeripheralProxy:getMethods()
-    rednet.send(self.channel, {peripheralName = self.peripheralName, method = "getMethods"})
-    local _, response = rednet.receive(nil, 5)
-    if response then
-        return response
+    local success, responseOrError = self.connection:sendAndReceive({peripheralName = self.peripheralName, method = "getMethods"})
+    if success then
+        return responseOrError
     else
-        print("No response!!!")
+        print(responseOrError.error)
     end
 end
 
@@ -45,35 +42,29 @@ function PeripheralProxy:callMethodInternal(methodName, info, ...)
     if not methodName then
         return "Missing method name!"
     end
-    rednet.send(self.channel, {peripheralName = self.peripheralName, method = methodName, args = {...}})
-    local _, response = rednet.receive(nil, 5)
-    -- check for errors
-    if not response then
-        return "No response from: " .. self.channel
+    local success, responseOrError = self.connection:sendAndReceive({peripheralName = self.peripheralName, method = methodName, args = {...}})
+    if success then
+        return responseOrError
     end
-    if response.error then
-        if response.error == "unknown_method" then
-            if not info then
-                return "Unknown method: " .. methodName
-            else
-                return "Unknown method (" .. methodName ..") called in file " .. info.source .." on line " .. info.currentline .. "!"
-            end
-        elseif response.error == "missing_param" then
-            return "Missing some parameter"    
-
-        elseif response.error == "unfound_peripheral" then
-            return "Could not not find peripheral: " .. self.peripheralName
-
-        elseif response.error == "failed_method_call" then
-            return "Method call failed with error:" .. response.errorDesc
+    local error = responseOrError.error
+    if error == "unknown_method" then
+        if not info then
+            return "Unknown method: " .. methodName
         else
-            return "Unhandled Error: " .. response.error
+            return "Unknown method (" .. methodName ..") called in file " .. info.source .." on line " .. info.currentline .. "!"
         end
+    elseif error == "missing_param" then
+        return "Missing some parameter"    
+
+    elseif error == "unfound_peripheral" then
+        return "Could not not find peripheral: " .. self.peripheralName
+
+    elseif error == "failed_method_call" then
+        return "Method call failed with error:" .. responseOrError.errorDesc
+    else
+        return "Unhandled Error: " .. error
     end
 
-    if response then
-        return (response)
-    end
 end
 
 function PeripheralProxy:__index(key)

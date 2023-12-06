@@ -22,12 +22,15 @@ local function handleGetMethods(peripheralName, senderID)
     logger.log("Response:")
     logger.log(methods)
 
-    rednet.send(senderID, methods)
+    rednet.send(senderID, {response = methods})
 end
 
 -- Method for handling method call requests
 local function handleCallMethod(peripheralName, methodName, senderID, args)
-    local peripheralObj = peripheral.find(peripheralName)
+    local peripheralObj = peripheral.wrap(peripheralName)
+    if not peripheralObj then
+        peripheralObj = peripheral.find(peripheralName)       
+    end
     local message = {error = "unhandled_error"}
     if not peripheralObj then
         message = {error = "unfound_peripheral"}
@@ -45,7 +48,7 @@ local function handleCallMethod(peripheralName, methodName, senderID, args)
         -- call method
         local success, result = pcall(peripheralObj[methodName], table.unpack(serializedArgs))
         if success then
-            message = {result}
+            message = {response = result}
         else 
             message = {error = "failed_method_call", errorDesc = result}    
         end
@@ -54,6 +57,25 @@ local function handleCallMethod(peripheralName, methodName, senderID, args)
     logger.log("Response:")
     logger.log(message)
     rednet.send(senderID, message)
+end
+
+local function handleHostComputerCall(program, senderID, code)
+    local func, err = load(program)
+    local message = {error = "unhandled_error"}
+    if not func then
+        message = {error = "invalid code!"}
+    else
+        local success, result = pcall(func)
+        if success then
+            message = {response = result}
+        else
+            message = {error ="failed_program_call", errorDesc = result}
+        end
+    end
+    logger.log("Response:")
+    logger.log(message)
+    rednet.send(senderID, message)
+
 end
 
 local messageCount = 0
@@ -69,12 +91,15 @@ while true do
         local peripheralName = message.peripheralName
         local methodName = message.method
         local args = message.args
-        
 
-        if methodName == "getMethods" then
-            handleGetMethods(peripheralName,senderID)
+        if peripheralName == "host_computer" then
+            handleHostComputerCall(methodName, senderID)
         else
-            handleCallMethod(peripheralName, methodName, senderID, args)
+            if methodName == "getMethods" then
+                handleGetMethods(peripheralName,senderID)
+            else
+                handleCallMethod(peripheralName, methodName, senderID, args)
+            end
         end
     else
         rednet.send(senderID, {error = "missing_param"})

@@ -6,6 +6,7 @@ local RessourceClass        = require "COLONY.MODEL.RessourceClass"
 local MeUtils               = require "UTIL.meUtils"
 local logger                = require "UTIL.logger"
 local CustomPageClass       = require "GUI.CustomPageClass"
+local PeripheralManagerClass= require "COLONY.MODEL.PeripheralManagerClass"
 
 -- Define constants
 
@@ -26,8 +27,11 @@ setmetatable(RessourcePageClass, {__index = CustomPageClass})
 
 
 
-function RessourcePageClass:new(monitor, parentPage, colonyPeripheral, workOrderId, inventoryOb, document)
+function RessourcePageClass:new(monitor, parentPage, workOrderId, inventoryOb, document)
   self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "ressourcePage"), RessourcePageClass)
+
+  local peripheralManager = document:getManagerForType(PeripheralManagerClass.TYPE)
+  local colonyPeripheral = peripheralManager:getMainColonyPeripheral()
 
   self.ressourceFetcher = RessourceFetcherClass:new(colonyPeripheral, workOrderId, inventoryOb, document)
   self.isSendingAll = false;

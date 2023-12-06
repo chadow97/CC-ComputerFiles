@@ -113,7 +113,6 @@ function RequestDetailsPageClass:getOnRequestItemPressed()
         end
         local action = requestItem:getActionToDo()
         if action == RequestItemClass.ACTIONS.SENDTOEXTERNAL then
-            logger.logToFile(requestItem:getUniqueKey() .. requestItem:getAmountToSendFromMe() ..  self.inventoryKey)
             MeUtils.exportItem(requestItem:getUniqueKey(), requestItem:getAmountToSendFromMe(),  self.inventoryKey)
         elseif action == RequestItemClass.ACTIONS.CRAFT then
             MeUtils.craftItem(requestItem:getUniqueKey(), requestItem:getAmountMissingWithMe())

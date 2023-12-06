@@ -24,6 +24,15 @@ function PerUtils.getPerNamesAndTypes()
     return peripherals
 end
 
+function PerUtils.getAllPeripherals()  
+    local results = {}
+    for _, name in ipairs(peripheral.getNames()) do
+        local wrapped = peripheral.wrap(name)
+        table.insert(results, wrapped)
+    end
+    return results
+end
+
 function PerUtils.getPerFromName(peripheral_name)
     local peripheral_object = peripheral.wrap(peripheral_name)
     if peripheral_object == nil then

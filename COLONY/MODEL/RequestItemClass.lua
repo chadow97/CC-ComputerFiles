@@ -34,9 +34,6 @@ function RequestItemClass:new(requestItemData, meItemInfo, amountInExternalInven
     self.count = requestItemData.count
     self.meItemInfoOb = meItemInfo
     self.amountInExternalInventory = amountInExternalInventory
-    if not meItemInfo then
-        logger.callStackToFile()
-    end
 
 
     return self
