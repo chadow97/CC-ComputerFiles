@@ -1,10 +1,10 @@
 -- WorkOrderFetcher.lua
-local colIntUtil = require("UTIL.colonyIntegratorPerUtils")
 local logger = require("UTIL.logger")
 local RequestManagerClass = require("COLONY.MODEL.RequestManagerClass")
 local RequestItemClass    = require("COLONY.MODEL.RequestItemClass")
 local MeItemManagerClass  = require("COLONY.MODEL.MeItemManagerClass")
 local InventoryManagerClass = require("COLONY.MODEL.InventoryManagerClass")
+local PeripheralManagerClass= require("COLONY.MODEL.PeripheralManagerClass")
 
 local RequestItemManagerClass = {}
 
@@ -13,9 +13,9 @@ RequestItemManagerClass.TYPE = "REQUEST_ITEM"
 RequestItemManagerClass.__index = RequestItemManagerClass
 setmetatable(RequestItemManagerClass, { __index = ManagerClass })
 
-function RequestItemManagerClass:new(colonyPeripheral, document)
+function RequestItemManagerClass:new(document)
     local o = setmetatable(ManagerClass:new(document), RequestItemManagerClass)
-    o.colonyPeripheral = colonyPeripheral
+    o.colonyPeripheral = document:getManagerForType(PeripheralManagerClass.TYPE):getMainColonyPeripheral()
     o.type = RequestItemManagerClass.TYPE
     o.requestManager = document:getManagerForType(RequestManagerClass.TYPE)
     o.meItemManager = document:getManagerForType(MeItemManagerClass.TYPE)

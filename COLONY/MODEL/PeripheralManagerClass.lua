@@ -1,9 +1,6 @@
 -- PeripheralManagerClass.lua
 local ManagerClass = require("MODEL.ManagerClass")  -- Adjust the path if necessary
-local PerTypes     = require("UTIL.perTypes")
-local InventoryClass = require("COLONY.MODEL.InventoryClass")
 local logger         = require("UTIL.logger")
-local ChestWrapper   = require("UTIL.InventoryWrapperClass")
 local perUtils       = require("UTIL.perUtils")
 local PeripheralClass= require("COLONY.MODEL.PeripheralClass")
 local InventoryManagerClass = require("COLONY.MODEL.InventoryManagerClass")

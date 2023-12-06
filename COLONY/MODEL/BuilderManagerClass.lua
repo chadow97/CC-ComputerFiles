@@ -4,6 +4,7 @@ local logger = require("UTIL.logger")
 local BuilderClass = require("COLONY.MODEL.builderClass")
 local TableFileHandlerClass = require("UTIL.tableFileHandlerClass")
 local InventoryManagerClass = require("COLONY.MODEL.InventoryManagerClass")
+local PeripheralManagerClass= require("COLONY.MODEL.PeripheralManagerClass")
 
 local BuilderManagerClass = {}
 
@@ -12,9 +13,9 @@ BuilderManagerClass.TYPE = "BUILDER"
 BuilderManagerClass.__index = BuilderManagerClass
 setmetatable(BuilderManagerClass, { __index = ManagerClass })
 
-function BuilderManagerClass:new(colonyPeripheral, document)
+function BuilderManagerClass:new(document)
     local o = setmetatable(ManagerClass:new(document), BuilderManagerClass)
-    o.colonyPeripheral = colonyPeripheral
+    o.colonyPeripheral = document:getManagerForType(PeripheralManagerClass.TYPE):getMainColonyPeripheral()
     o.type = BuilderManagerClass.TYPE
     o.builders = {}
     o.associations = nil

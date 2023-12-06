@@ -24,17 +24,16 @@ function ColonyDocumentClass:new()
 
     -- register managers used in colony
     o:registerManager(InventoryManagerClass:new(o))
+    -- make sure to initialize peripherals after inventory as it uses the mgr
+    o:registerManager(PeripheralManagerClass:new(o))
 
-    local peripheralManager = PeripheralManagerClass:new(o)
-    o:registerManager(peripheralManager)
-    local colonyPeripheral = peripheralManager:getMainColonyPeripheral()
-
-    o:registerManager(BuilderManagerClass:new(colonyPeripheral, o))
-    o:registerManager(ColonyManagerClass:new(colonyPeripheral, o))
     o:registerManager(MeSystemManagerClass:new(o))
     o:registerManager(MeItemManagerClass:new(o))
-    o:registerManager(RequestManagerClass:new(colonyPeripheral, o))
-    o:registerManager(RequestItemManagerClass:new(colonyPeripheral, o))
+
+    o:registerManager(ColonyManagerClass:new(o))
+    o:registerManager(BuilderManagerClass:new(o))
+    o:registerManager(RequestManagerClass:new( o))
+    o:registerManager(RequestItemManagerClass:new(o))
 
     return o
 end

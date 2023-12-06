@@ -2,6 +2,7 @@
 local colIntUtil = require("UTIL.colonyIntegratorPerUtils")
 local logger = require("UTIL.logger")
 local RequestClass = require("COLONY.MODEL.RequestClass")
+local PeripheralManagerClass = require("COLONY.MODEL.PeripheralManagerClass")
 
 local RequestManagerClass = {}
 
@@ -10,9 +11,9 @@ RequestManagerClass.TYPE = "REQUEST"
 RequestManagerClass.__index = RequestManagerClass
 setmetatable(RequestManagerClass, { __index = ManagerClass })
 
-function RequestManagerClass:new(colonyPeripheral, document)
+function RequestManagerClass:new(document)
     local o = setmetatable(ManagerClass:new(document), RequestManagerClass)
-    o.colonyPeripheral = colonyPeripheral
+    o.colonyPeripheral = document:getManagerForType(PeripheralManagerClass.TYPE):getMainColonyPeripheral()
     o.type = RequestManagerClass.TYPE
     o.requests = {}
 

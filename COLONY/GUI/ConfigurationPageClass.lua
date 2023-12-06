@@ -37,23 +37,26 @@ end
 
 function ConfigurationPageClass:onBuildCustomPage()
     --Remote connection: 
-    --Using wireless peripheral on side: side (press to change)
-    --Channel (Press to change)
+    --# of available wireless peripherals: 
+    --Using wireless peripheral: name 
+    --Channel: x (press to change)
     --Status: status
 
-    --Remote colony connection status: status
+    --Colony connection:
+    --# of avaible colonies:
+    --Using peripheral: name
+    --IsRemote: false
 
     --Me system connection: status
-
     --#External inventories: x 
     --(Press to view inventories)
 
-    --Automatic refresh rate:10
+    --Automatic refresh rate:10 (press to change)
 
     --style:
     --Primary: (color 1)
     --Secondary: (color 2)
-    --Third: (color 2)
+    --Third: (color 3)
 
 end
 

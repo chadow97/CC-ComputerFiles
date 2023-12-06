@@ -1,10 +1,8 @@
 -- WorkOrderFetcher.lua
 local colIntUtil = require("UTIL.colonyIntegratorPerUtils")
 local logger = require("UTIL.logger")
-local BuilderClass = require("COLONY.MODEL.builderClass")
-local TableFileHandlerClass = require("UTIL.tableFileHandlerClass")
-local InventoryManagerClass = require("COLONY.MODEL.InventoryManagerClass")
 local ColonyClass           = require("COLONY.MODEL.ColonyClass")
+local PeripheralManagerClass= require("COLONY.MODEL.PeripheralManagerClass")
 
 local DEFAULT_FILE_PATH = "./DATA/associations.txt"
 
@@ -15,9 +13,9 @@ ColonyManagerClass.TYPE = "COLONY"
 ColonyManagerClass.__index = ColonyManagerClass
 setmetatable(ColonyManagerClass, { __index = ManagerClass })
 
-function ColonyManagerClass:new(colonyPeripheral, document)
+function ColonyManagerClass:new(document)
     local o = setmetatable(ManagerClass:new(document), ColonyManagerClass)
-    o.colonyPeripheral = colonyPeripheral
+    o.colonyPeripheral = document:getManagerForType(PeripheralManagerClass.TYPE):getMainColonyPeripheral()
     o.type = ColonyManagerClass.TYPE
     o.colony = nil
 

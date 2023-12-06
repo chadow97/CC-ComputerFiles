@@ -38,19 +38,17 @@ function ColonyPageClass:onBuildCustomPage()
     self.titleLabel:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + 1)
     self.titleLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
     self.titleLabel:setCenterText(true)
+    self:addElement(self.titleLabel)
 
     self.descLabel = LabelClass:new(nil, nil, "", self.document)
     self.descLabel:forceWidthSize(parentPageSizeX - 2)
     self.descLabel:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + 5)
     self.descLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self:addElement(self.descLabel)
 
-    self:updateLabelsText(colony)
-    
+    self:updateLabelsText(colony)  
 
     self:setBackColor(ELEMENT_BACK_COLOR)
-
-    self:addElement(self.titleLabel)
-    self:addElement(self.descLabel)
 
 end
 
