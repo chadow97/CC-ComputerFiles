@@ -41,17 +41,22 @@ function PeripheralManagerClass:getObs()
     return allPeripherals
 end
 
-function PeripheralManagerClass:getPeripherals(type, localOnly)
+function PeripheralManagerClass:isRemoteConnectionValid()
+    return self.remoteComputer:testConnection()
+end
+
+function PeripheralManagerClass:getPeripherals(type, localOnly, filterfunc)
     local peripheralObs = self:getObs()
     local remotePer = {}
     local localPer = {}
     for _, perOb in ipairs(peripheralObs) do
         if type == nil or perOb.type == type then
-            logger.log(perOb)
-            if perOb.isDistant then
-                table.insert(remotePer, perOb)
-            else 
-                table.insert(localPer, perOb)
+            if filterfunc == nil or filterfunc(perOb) then
+                if perOb.isDistant then
+                    table.insert(remotePer, perOb)
+                else 
+                    table.insert(localPer, perOb)
+                end
             end
         end
     end
@@ -71,13 +76,21 @@ function PeripheralManagerClass:getPeripherals(type, localOnly)
 end
 
 function PeripheralManagerClass:getMainColonyPeripheral()
-    -- no preference for now
-    local possibleChoices = self:getPeripherals(perTypes.colony_integrator)
+   return self:getMainPeripheral(perTypes.colony_integrator)
+end
+
+function PeripheralManagerClass:getLocalWirelessPeripherals()
+    local filterfunc = function (per) return per:isWirelessModem()end
+    return self:getPeripherals(perTypes.wired_modem, true, filterfunc)
+end
+
+function PeripheralManagerClass:getMainPeripheral(type, localOnly, filterFunc)
+    local possibleChoices = self:getPeripherals(type, localOnly, filterFunc)
     if #possibleChoices > 1 then
-        logger.log("Multiple colony integrators! Chose at random", logger.LOGGING_LEVEL.WARNING)
+        logger.log(string.format("Can't choose principal peripheral of type %s! Chose at random.",type), logger.LOGGING_LEVEL.WARNING)
     end
     if #possibleChoices < 1 then
-        logger.log("Couldnt find any colony peripheral!", logger.LOGGING_LEVEL.ERROR)
+        logger.log(string.format("Couldnt find any peripheral of type %s!", type), logger.LOGGING_LEVEL.WARNING)
         return nil
     else
         return possibleChoices[1]
@@ -100,11 +113,16 @@ function PeripheralManagerClass:_getObsInternal()
     return self.peripherals
 end
 
+function PeripheralManagerClass:forceCompleteRefresh()
+    self.wasInitialised = false
+end
+
 function PeripheralManagerClass:_onRefreshObs()
     if self.wasInitialised then
         return
     end
     self.wasInitialised = true
+    self.peripherals = {}
     local peripherals = perUtils.getAllPeripherals()
     for _, per in ipairs(peripherals) do
         if not InventoryManagerClass.isTypeHandled(peripheral.getType(per)) then
@@ -117,6 +135,7 @@ function PeripheralManagerClass:_onRefreshObs()
     local wirelessModemObs = PeripheralManagerClass.getPeripheralObsForType(self.peripherals, perTypes.wired_modem, true)
     if #wirelessModemObs == 0 then
         logger.logToFile("No wireless modem found!", logger.LOGGING_LEVEL.WARNING)
+        return
     end
     self.wirelessModemToUse = wirelessModemObs[1]
     if #wirelessModemObs > 1 then
@@ -124,11 +143,26 @@ function PeripheralManagerClass:_onRefreshObs()
     end
 
     local proxyPerChannel = self.document.config:get(ColonyConfigClass.configs.proxy_peripherals_channel)
-
-    self.connection = RemoteConnectionClass:new(proxyPerChannel, self.wirelessModemToUse.name)
+    local wirelessModemName = nil
+    if self.wirelessModemToUse then
+        wirelessModemName = self.wirelessModemToUse.name
+    end
+    if self.connection then
+        if not self.connection:isTo(wirelessModemName, proxyPerChannel) then
+            self.connection:close()
+            self.connection = nil
+        end
+    end
+    if not self.connection then
+        self.connection = RemoteConnectionClass:new(proxyPerChannel, self.wirelessModemToUse.name)
+    end 
     self.remoteComputer = RemoteComputerClass:new(self.connection)
 
     local remotePeripheralNames = self.remoteComputer:getPeripherals()
+    if not remotePeripheralNames then
+        -- remote connection did not answer
+        return
+    end
     for _,perName in ipairs(remotePeripheralNames) do
         local type = self.remoteComputer:getType(perName)
         local perProxy = peripheralProxy:new(self.connection, perName)

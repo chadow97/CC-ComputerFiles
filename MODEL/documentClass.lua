@@ -21,7 +21,7 @@ function DocumentClass:new(config)
     local defaultConfigs = {
         [DocumentClass.configs.refresh_delay] = 10
         }
-    o.config:setValues(defaultConfigs)
+    o.config:setDefaults(defaultConfigs)
 
     return o
 end

@@ -19,9 +19,11 @@ function RemoteComputerClass:runCode(code)
     if success then
         return responseOrError
     end
-
-    error(responseOrError.error)
     return nil
+end
+
+function RemoteComputerClass:testConnection()
+    return self:runCode("return true")
 end
 
 function RemoteComputerClass:getPeripherals()

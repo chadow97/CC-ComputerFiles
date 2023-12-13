@@ -90,7 +90,7 @@ function PageStackClass:pushPage(page)
 end
 
 -- pop the top page from the stack
-function PageStackClass:popPage()
+function PageStackClass:popPage(dataToPass)
   
   if #self.pageStack == 0 then
     error("No pages inserted!!")
@@ -102,7 +102,7 @@ function PageStackClass:popPage()
   self.document:startEdition()
   table.remove(self.pageStack)
 
-  self:getTopPage():onResumeAfterContextLost()
+  self:getTopPage():onResumeAfterContextLost(dataToPass)
   self.document:registerCurrentAreaAsDirty(self)
   self.document:endEdition()
 
@@ -133,7 +133,6 @@ end
 
 -- handle an event
 function PageStackClass:handleEvent(...)
-
     if self.exitButton:handleEvent(...) then
         return true
     end

@@ -9,6 +9,7 @@ local RequestPageClass      = require "COLONY.GUI.RequestPageClass"
 local LabelClass            = require "GUI.LabelClass"
 local MeInfoPageClass       = require "COLONY.GUI.MeInfoPageClass"
 local PeripheralPageClass   = require "COLONY.GUI.PeripheralPageClass"
+local ConfigurationPageClass= require "COLONY.GUI.ConfigurationPageClass"
 
 -- Define constants
 
@@ -106,6 +107,16 @@ function MainMenuPageClass:onBuildCustomPage()
   PeriperalButton:setCenterText(true)
   self:addElement(PeriperalButton)
 
+  yValueForEntry = yValueForEntry + 4
+
+  local ConfigButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Configuration", self.document)
+  ConfigButton:forceWidthSize(parentPageSizeX - 2)
+  ConfigButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
+  ConfigButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+  ConfigButton:setOnManualToggle(self:getOnConfigPressed())
+  ConfigButton:setCenterText(true)
+  self:addElement(ConfigButton)
+
   self:setBackColor(ELEMENT_BACK_COLOR)
 
 end
@@ -155,11 +166,19 @@ function MainMenuPageClass:getOnMeInfoPressed()
     end
   end
 
-  function MainMenuPageClass:getOnPeripheralsPressed()
+function MainMenuPageClass:getOnPeripheralsPressed()
     return function()
       self.document:startEdition()
       local perPage = PeripheralPageClass:new(self.monitor, self.parentPage, self.document)
       self.parentPage:addElement(perPage)
+      self.document:endEdition()
+    end
+  end
+
+function MainMenuPageClass:getOnConfigPressed()
+    return function()
+      self.document:startEdition()
+      self.parentPage:addElement(ConfigurationPageClass:new(self.monitor, self.parentPage, self.document))
       self.document:endEdition()
     end
   end

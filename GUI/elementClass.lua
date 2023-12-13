@@ -17,15 +17,14 @@ ElementClass.properties = { on_draw_function = "on_draw_function"}
 -- Define a constructor for the ButtonClass
 function ElementClass:new(xPos, yPos, document)
   local instance = setmetatable({}, ElementClass)
-  if not document then
-    assert(false, "Document is nil!")
-  end
+  assert(document, "Document is nil!")
   instance.x = xPos or 1
   instance.y = yPos or 1
   instance.monitor = nil
   instance.parentPage = nil
   instance.onElementTouchedCallback = nil
   instance.onDrawCallback = nil
+  instance.onRefreshCallback = nil
   instance.id = IdGenerator.generateId()
   instance:setParentDirty()
   instance.blockDraw = false
@@ -133,8 +132,14 @@ function ElementClass:callElementTouchedCallback()
     end
 end
 
+function ElementClass:setOnRefreshCallback(func)
+    self.onRefreshCallback = func
+end
+
 function ElementClass:handleRefreshEvent(eventName, ...)
-    -- nothing by default
+    if self.onRefreshCallback then
+        self.onRefreshCallback(self)
+    end
     return false
 end
 

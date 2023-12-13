@@ -20,21 +20,20 @@ function ColonyConfigClass:new()
 
     local o = setmetatable(ConfigClass:new(), ColonyConfigClass)
     -- set config variables for colony
-    o:set(ColonyConfigClass.configs.data_dir_path, "./DATA/")
-    o:set(ColonyConfigClass.configs.association_filename, "associations.txt")
-    o:set(ColonyConfigClass.configs.request_inventory_filename, "request_inventory.txt")
-    o:set(ColonyConfigClass.configs.proxy_peripherals_channel, 1)
+    o:setDefault(ColonyConfigClass.configs.association_filename, "associations.txt")
+    o:setDefault(ColonyConfigClass.configs.request_inventory_filename, "request_inventory.txt")
+    o:setDefault(ColonyConfigClass.configs.proxy_peripherals_channel, 1)
 
     return o
 end
 
 function ColonyConfigClass:getAssociationsPath()
-    return fs.combine(self:get(ColonyConfigClass.configs.data_dir_path),
+    return fs.combine(self:get(ConfigClass.configs.data_dir_path),
                       self:get(ColonyConfigClass.configs.association_filename))
 end
 
 function ColonyConfigClass:getRequestInventoryPath()
-    return fs.combine(self:get(ColonyConfigClass.configs.data_dir_path),
+    return fs.combine(self:get(ConfigClass.configs.data_dir_path),
                       self:get(ColonyConfigClass.configs.request_inventory_filename))
 end
 

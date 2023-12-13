@@ -19,6 +19,20 @@ function RemoteConnectionClass:new(channel, modemName)
     return instance
 end
 
+function RemoteConnectionClass:isTo(name, channel)
+    if name ~= self.modemName then
+        return false
+    end
+    if channel ~= self.channel then
+        return false
+    end
+    return true
+end
+
+function RemoteConnectionClass:isOpenned()
+    return RemoteConnectionClass.connections[self.modemName][self.channel] ~= nil
+end
+
 function RemoteConnectionClass:close()
     local channels = RemoteConnectionClass.connections[self.modemName]
     if (not channels[self.channel]) then
@@ -26,7 +40,9 @@ function RemoteConnectionClass:close()
     end
     channels[self.channel] = nil
     if (#channels <= 0) then
-        rednet.close(self.modemName)
+        if rednet.isOpen(self.modemName) then
+            rednet.close(self.modemName)
+        end
     end
 end
 

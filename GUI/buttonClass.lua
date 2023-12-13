@@ -133,9 +133,9 @@ function ButtonClass:handleEvent(eventName, ...)
 
     if eventName == "monitor_touch" then
         return self:handleTouchEvent(eventName, ...)
+    else
+        return ElementClass.handleEvent(self, eventName, ...)
     end
-
-    return false
 end
 
 -- Define a getArea method for the ButtonClass
