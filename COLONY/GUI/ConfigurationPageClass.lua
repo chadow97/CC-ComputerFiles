@@ -6,7 +6,9 @@ local PageClass             = require "GUI.pageClass"
 local ToggleableButtonClass = require "GUI.ToggleableButtonClass"
 local PeripheralManagerClass= require "COLONY.MODEL.PeripheralManagerClass"
 local ColonyConfigClass = require("COLONY.MODEL.ColonyConfigClass")
+local ColonyManagerClass = require("COLONY.MODEL.ColonyManagerClass")
 local NumberSelectionPageClass = require("GUI.NumberSelectionPageClass")
+local perTypes                 = require("UTIL.perTypes")
 
 
 -- Define constants
@@ -24,6 +26,7 @@ setmetatable(ConfigurationPageClass, {__index = CustomPageClass})
 function ConfigurationPageClass:new(monitor, parentPage, document)
   self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "Configuration"), ConfigurationPageClass)
   self.peripheralManager = document:getManagerForType(PeripheralManagerClass.TYPE)
+  self.colonyManager = document:getManagerForType(ColonyManagerClass.TYPE)
 
 
   self:buildCustomPage()
@@ -69,7 +72,7 @@ function ConfigurationPageClass:onBuildCustomPage()
 
     yValueForEntry = yValueForEntry + 3
 
-    self.channelButton = ToggleableButtonClass:new(nil, nil, "ww", self.document)
+    self.channelButton = ToggleableButtonClass:new(nil, nil, "", self.document)
     self.channelButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
     self.channelButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
     self.channelButton:setMargin(0)
@@ -78,11 +81,18 @@ function ConfigurationPageClass:onBuildCustomPage()
 
     self.remoteConnectionPage:addElement(self.channelButton)
 
+    yValueForEntry = yValueForEntry + 5
 
     --Colony connection:
     --# of avaible colonies:
     --Using peripheral: name
     --IsRemote: false
+    self.colonyLabel = LabelClass:new(nil, nil, "" , self.document)
+    self.colonyLabel:forceWidthSize(parentPageSizeX - 2)
+    self.colonyLabel:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
+    self.colonyLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.colonyLabel:setText(self:getColonyDetails())
+    self:addElement(self.colonyLabel)
 
     --Me system connection: status
     --#External inventories: x 
@@ -142,6 +152,41 @@ status
         )
 end
 
+function ConfigurationPageClass:getColonyDetails()
+    local colonyPers = self.peripheralManager:getPeripherals(perTypes.colony_integrator)
+    local nAvail = 0
+    local name = "Unknown name"
+    local id = "No colony peripheral"
+    local status = "Error"
+
+    if colonyPers then
+        nAvail = #colonyPers
+        if nAvail >= 1 then
+            local mainColonyPer = self.colonyManager:getColony()
+            name = mainColonyPer.name
+            id = colonyPers[1]:getUniqueKey()
+            if not mainColonyPer then
+                status = "No colony peripherals"
+            elseif mainColonyPer.isActive then
+                status = "Valid!"
+            end
+        end
+    end
+    
+    return string.format(
+[[
+Colony information: 
+# of colony peripherals: %s
+Using : %s
+Colony name: %s
+Status: %s
+]],
+nAvail,
+id,
+name,
+status)
+end
+
 function ConfigurationPageClass:getChannelDisplay()
     local channel = self.document.config:get(ColonyConfigClass.configs.proxy_peripherals_channel)
     return string.format("Channel: %s (Press to change!)", channel)
@@ -162,7 +207,6 @@ function ConfigurationPageClass:onResumeAfterContextLost(newChannel)
     self.document:registerCurrentAreaAsDirty(self.remoteConnectionPage)
     CustomPageClass.onResumeAfterContextLost(self)
     self.document:endEdition()
-
 end
 
 return ConfigurationPageClass
