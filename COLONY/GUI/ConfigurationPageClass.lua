@@ -44,7 +44,7 @@ function ConfigurationPageClass:onBuildCustomPage()
     local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 
     local yValueForEntry = parentPagePosY + 1
-    --Title
+
     self.titleLabel = LabelClass:new(nil, nil, "Configuration" , self.document)
     self.titleLabel:forceWidthSize(parentPageSizeX - 2)
     self.titleLabel:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
@@ -83,16 +83,21 @@ function ConfigurationPageClass:onBuildCustomPage()
 
     yValueForEntry = yValueForEntry + 5
 
-    --Colony connection:
-    --# of avaible colonies:
-    --Using peripheral: name
-    --IsRemote: false
     self.colonyLabel = LabelClass:new(nil, nil, "" , self.document)
     self.colonyLabel:forceWidthSize(parentPageSizeX - 2)
     self.colonyLabel:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
     self.colonyLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
     self.colonyLabel:setText(self:getColonyDetails())
     self:addElement(self.colonyLabel)
+
+    yValueForEntry = yValueForEntry + 8
+
+    self.meLabel = LabelClass:new(nil, nil, "" , self.document)
+    self.meLabel:forceWidthSize(parentPageSizeX - 2)
+    self.meLabel:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
+    self.meLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.meLabel:setText(self:getMeDetails())
+    self:addElement(self.meLabel)
 
     --Me system connection: status
     --#External inventories: x 
@@ -185,6 +190,29 @@ nAvail,
 id,
 name,
 status)
+end
+
+function ConfigurationPageClass:getMeDetails()
+    local MePers = self.peripheralManager:getPeripherals(perTypes.me_bridge)
+    local nAvail = 0
+    local name = "Unknown name"
+
+    if MePers then
+        nAvail = #MePers
+        if nAvail >= 1 then
+            local mainMePer = MePers[1]
+            name = mainMePer.name
+        end
+    end
+    
+    return string.format(
+[[
+Me system information: 
+# of Me peripherals: %s
+Using : %s
+]],
+nAvail,
+name)
 end
 
 function ConfigurationPageClass:getChannelDisplay()
