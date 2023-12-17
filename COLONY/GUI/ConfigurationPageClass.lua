@@ -99,9 +99,15 @@ function ConfigurationPageClass:onBuildCustomPage()
     self.meLabel:setText(self:getMeDetails())
     self:addElement(self.meLabel)
 
-    --Me system connection: status
-    --#External inventories: x 
-    --(Press to view inventories)
+    yValueForEntry = yValueForEntry + 6
+
+    self.refreshRateButton = ToggleableButtonClass:new(nil, nil,"", self.document)
+    self.refreshRateButton:forceWidthSize(parentPageSizeX - 2)
+    self.refreshRateButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
+    self.refreshRateButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.refreshRateButton:setText(self:getRefreshRateDisplay())
+    self.refreshRateButton:setOnManualToggle(self:getOnRefreshRateButtonPressed())
+    self:addElement(self.refreshRateButton)
 
     --Automatic refresh rate:10 (press to change)
 
@@ -222,19 +228,46 @@ end
 
 function ConfigurationPageClass:getOnChannelButtonPressed()
     return function()
-        self.parentPage:addElement(NumberSelectionPageClass:new(self.monitor,self.parentPage, self.document, "New channel:", 0, rednet.MAX_ID_CHANNELS))
+        local page = NumberSelectionPageClass:new(self.monitor,self.parentPage, self.document, "New channel:", 0, rednet.MAX_ID_CHANNELS)
+        self.parentPage:pushPage(page, self:getOnChannedlModified())
     end
 end
 
-function ConfigurationPageClass:onResumeAfterContextLost(newChannel)
-    self.document:startEdition()
-    self.peripheralManager:forceCompleteRefresh()
-    self.document.config:set(ColonyConfigClass.configs.proxy_peripherals_channel, newChannel)
-    self.connectionLabel:setText(self:getConnectionDetails())
-    self.channelButton:setText(self:getChannelDisplay())
-    self.document:registerCurrentAreaAsDirty(self.remoteConnectionPage)
-    CustomPageClass.onResumeAfterContextLost(self)
-    self.document:endEdition()
+function ConfigurationPageClass:getOnRefreshRateButtonPressed()
+    return function()
+        local page = NumberSelectionPageClass:new(self.monitor,self.parentPage, self.document, "New refresh delay:", 0, 9999999)
+        self.parentPage:pushPage(page, self:getOnRefreshRateModified())
+    end
+end
+
+function ConfigurationPageClass:getRefreshRateDisplay()
+        local refreshDelay = self.document.config:get(DocumentClass.configs.refresh_delay)
+        return string.format("Automatic refresh delay:%s seconds (press to change)", refreshDelay)
+end
+
+function ConfigurationPageClass:getOnChannedlModified()
+    return function(newChannel)
+        logger.logToFile(newChannel)
+        self.document:startEdition()
+        self.peripheralManager:forceCompleteRefresh()
+        self.document.config:set(ColonyConfigClass.configs.proxy_peripherals_channel, newChannel)
+        self.connectionLabel:setText(self:getConnectionDetails())
+        self.channelButton:setText(self:getChannelDisplay())
+        self.document:registerCurrentAreaAsDirty(self.remoteConnectionPage)
+        self.document:endEdition()
+    end
+end
+
+function ConfigurationPageClass:getOnRefreshRateModified()
+    return function(refreshRate)
+        self.document:startEdition()
+
+        self.document.config:set(DocumentClass.configs.refresh_delay, refreshRate)
+        self.refreshRateButton:setText(self:getRefreshRateDisplay())
+        self.document:registerCurrentAreaAsDirty(self.refreshRateButton)
+
+        self.document:endEdition()
+    end
 end
 
 return ConfigurationPageClass

@@ -13,6 +13,7 @@ setmetatable(PageStackClass, { __index = PageClass })
 function PageStackClass:new(monitor, document)
   self = setmetatable(PageClass:new(monitor, 1,1, document), PageStackClass)
   self.pageStack = {}
+  self.functionsToCallOnExitMap = {}
 
   self.exitButton = ToggleableButtonClass:new(1,1, "X", self.document)
   self:updateButtonPosition()
@@ -78,7 +79,7 @@ function PageStackClass:addElement(page)
 end
 
 -- push a page onto the stack
-function PageStackClass:pushPage(page)
+function PageStackClass:pushPage(page, functionToCallOnExit)
   self.document:startEdition()
   table.insert(self.pageStack, page)
   page:setMonitor(self.monitor)
@@ -86,6 +87,7 @@ function PageStackClass:pushPage(page)
   page:setSize(self:getSize())
   page:setPos(self.x, self.y)
   self.document:registerCurrentAreaAsDirty(self)
+  self.functionsToCallOnExitMap[page.id] = functionToCallOnExit
   self.document:endEdition()
 end
 
@@ -100,9 +102,14 @@ function PageStackClass:popPage(dataToPass)
     return
   end
   self.document:startEdition()
-  table.remove(self.pageStack)
+  local removedPage = table.remove(self.pageStack)
+  local functionForRemovedPage = self.functionsToCallOnExitMap[removedPage.id]
+  self.functionsToCallOnExitMap[removedPage.id] = nil
+  if  functionForRemovedPage then
+    functionForRemovedPage(dataToPass)
+  end
 
-  self:getTopPage():onResumeAfterContextLost(dataToPass)
+  self:getTopPage():onResumeAfterContextLost()
   self.document:registerCurrentAreaAsDirty(self)
   self.document:endEdition()
 
