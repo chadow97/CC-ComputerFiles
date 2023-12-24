@@ -12,7 +12,10 @@ ColonyConfigClass.configs =
     data_dir_path ="data_path",
     association_filename = "association_filename",
     request_inventory_filename = "request_inventory_filename",
-    proxy_peripherals_channel = "proxy_peripherals_channel"
+    proxy_peripherals_channel = "proxy_peripherals_channel",
+    primary_style = "primary_style",
+    secondary_style = "secondary_style",
+    tertiary_style = "tertiary_style"
     }
 
 -- Constructor for WorkOrderClass
@@ -23,6 +26,9 @@ function ColonyConfigClass:new()
     o:setDefault(ColonyConfigClass.configs.association_filename, "associations.txt")
     o:setDefault(ColonyConfigClass.configs.request_inventory_filename, "request_inventory.txt")
     o:setDefault(ColonyConfigClass.configs.proxy_peripherals_channel, 1)
+    o:setDefault(ColonyConfigClass.configs.primary_style, colors.gray)
+    o:setDefault(ColonyConfigClass.configs.secondary_style, colors.green)
+    o:setDefault(ColonyConfigClass.configs.tertiary_style, colors.yellow)
 
     return o
 end

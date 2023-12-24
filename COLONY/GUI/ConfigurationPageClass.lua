@@ -9,6 +9,7 @@ local ColonyConfigClass = require("COLONY.MODEL.ColonyConfigClass")
 local ColonyManagerClass = require("COLONY.MODEL.ColonyManagerClass")
 local NumberSelectionPageClass = require("GUI.NumberSelectionPageClass")
 local perTypes                 = require("UTIL.perTypes")
+local ColorSelectionPageClass  = require("GUI.ColorSelectionPageClass")
 
 
 -- Define constants
@@ -109,8 +110,33 @@ function ConfigurationPageClass:onBuildCustomPage()
     self.refreshRateButton:setOnManualToggle(self:getOnRefreshRateButtonPressed())
     self:addElement(self.refreshRateButton)
 
-    --Automatic refresh rate:10 (press to change)
+    yValueForEntry = yValueForEntry + 4
 
+    self.stylePage = PageClass:new(self.monitor,nil, nil, self.document)
+    self.stylePage:setSize(parentPageSizeX-2, 6)
+    self.stylePage:setPos(parentPagePosX + 1, yValueForEntry)
+    self.stylePage:setBackColor(INNER_ELEMENT_BACK_COLOR)
+    self.stylePage.id= "STYLE!"
+    self.stylePage:setOnRefreshCallback(self:getHandleRefreshEvent())
+    self:addElement(self.stylePage)
+
+    yValueForEntry = yValueForEntry + 1
+
+    self.styleTitle = LabelClass:new(nil, nil, "Style: (Press label to change!)" , self.document)
+    self.styleTitle:forceWidthSize(parentPageSizeX - 2)
+    self.styleTitle:setMargin(0)
+    self.styleTitle:setUpperCornerPos(parentPagePosX + 2, yValueForEntry)
+    self.styleTitle:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.stylePage:addElement(self.styleTitle)
+
+    yValueForEntry = yValueForEntry + 1
+    self:createStyleSubSection(self.stylePage, parentPagePosX + 1, yValueForEntry, "Primary:", ColonyConfigClass.configs.primary_style)
+    yValueForEntry = yValueForEntry + 1
+    self:createStyleSubSection(self.stylePage, parentPagePosX + 1, yValueForEntry, "Secondary:", ColonyConfigClass.configs.secondary_style)
+    yValueForEntry = yValueForEntry + 1
+    self:createStyleSubSection(self.stylePage, parentPagePosX + 1, yValueForEntry, "Tertiary:", ColonyConfigClass.configs.tertiary_style)
+
+    --self.primary:setOnManualToggle(self:getOnRefreshRateButtonPressed())
     --style:
     --Primary: (color 1)
     --Secondary: (color 2)
@@ -240,6 +266,14 @@ function ConfigurationPageClass:getOnRefreshRateButtonPressed()
     end
 end
 
+function ConfigurationPageClass:getOnStylePressed(configName, title)
+    return function()
+        local currentColor = self.document.config:get(configName)
+        local page = ColorSelectionPageClass:new(self.monitor,self.parentPage, self.document, title, currentColor)
+        self.parentPage:pushPage(page, self:getOnChannedlModified())
+    end
+end
+
 function ConfigurationPageClass:getRefreshRateDisplay()
         local refreshDelay = self.document.config:get(DocumentClass.configs.refresh_delay)
         return string.format("Automatic refresh delay:%s seconds (press to change)", refreshDelay)
@@ -268,6 +302,28 @@ function ConfigurationPageClass:getOnRefreshRateModified()
 
         self.document:endEdition()
     end
+end
+
+function ConfigurationPageClass:createStyleSubSection(stylePage, xPos, yPos, title, configName)
+    local label = ToggleableButtonClass:new(nil, nil,"", self.document)
+    label:setMargin(0)
+    label:setUpperCornerPos(xPos + 1, yPos)
+    label:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    label:setText(title)
+    label:setOnManualToggle(self:getOnStylePressed(configName, title))
+    stylePage:addElement(label)
+
+    local colorDisplay = LabelClass:new(nil, nil, " ", self.document)
+    colorDisplay:forceWidthSize(3)
+    colorDisplay:forceHeightSize(1)
+    colorDisplay:setUpperCornerPos(xPos + 11, yPos)
+    self:updateColor(configName, colorDisplay)
+    stylePage:addElement(colorDisplay)
+end
+
+function ConfigurationPageClass:updateColor(configName, colorDisplay)
+    local colorToSet = self.document.config:get(configName)
+    colorDisplay:setBackColor(colorToSet)
 end
 
 return ConfigurationPageClass
