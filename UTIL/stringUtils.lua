@@ -1,4 +1,3 @@
-local logger = require "UTIL.logger"
 -- Define the stringUtils module
 local stringUtils = {}
 

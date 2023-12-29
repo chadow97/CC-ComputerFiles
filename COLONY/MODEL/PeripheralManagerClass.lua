@@ -134,12 +134,12 @@ function PeripheralManagerClass:_onRefreshObs()
     -- first, get the wireless modem to use
     local wirelessModemObs = PeripheralManagerClass.getPeripheralObsForType(self.peripherals, perTypes.wired_modem, true)
     if #wirelessModemObs == 0 then
-        logger.logToFile("No wireless modem found!", logger.LOGGING_LEVEL.WARNING)
+        logger.log("No wireless modem found!", logger.LOGGING_LEVEL.WARNING)
         return
     end
     self.wirelessModemToUse = wirelessModemObs[1]
     if #wirelessModemObs > 1 then
-        logger.logToFile("More than one wireless modem found, ", logger.LOGGING_LEVEL.WARNING)
+        logger.log("More than one wireless modem found, ", logger.LOGGING_LEVEL.WARNING)
     end
 
     local proxyPerChannel = self.document.config:get(ColonyConfigClass.configs.proxy_peripherals_channel)

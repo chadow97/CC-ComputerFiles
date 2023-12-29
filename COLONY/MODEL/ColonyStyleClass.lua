@@ -31,7 +31,7 @@ end
 
 ---@param element Element
 function ColonyStyleClass:applyStyleToElement(element)
-    logger.logToFile(element)
+    logger.logOnError(nil,"Should never be called!")
     error("Must be implemented")
 end
 

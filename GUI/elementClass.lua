@@ -31,10 +31,7 @@ function ElementClass:new(xPos, yPos, document)
   instance.blockDraw = false
   instance.document = document
   instance.type = "element"
-  if not document then
-    logger.callStackToFile()
-    error("Document is nil")
-  end
+  logger.logOnError(document,"Document is invalid")
   return instance
 end
 
@@ -109,7 +106,7 @@ function ElementClass:draw()
     if not self:canDraw(self) then
         return
     end
-    logger.logToFile("Drawing :" .. tostring(self), logger.LOGGING_LEVEL.INFO)
+    logger.log("Drawing :" .. tostring(self), logger.LOGGING_LEVEL.INFO)
     if self.onDrawCallback then
         self:onDrawCallback()
     end

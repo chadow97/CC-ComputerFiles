@@ -1,4 +1,5 @@
 local logger = require "UTIL.logger"
+local TableFileHandlerClass = require("UTIL.tableFileHandlerClass")
 
 ---@class Config
 local ConfigClass = {}

@@ -21,4 +21,4 @@ local connection = ConnectionClass:new(channel, "right")
 local per = peripheralProxyClass:new(connection, peripheralType )
 
 
-logger.logToFile(per:callMethod(methodName,table.unpack(functionArgs)), logger.LOGGING_LEVEL.INFO)
+logger.log(per:callMethod(methodName,table.unpack(functionArgs)), logger.LOGGING_LEVEL.INFO)

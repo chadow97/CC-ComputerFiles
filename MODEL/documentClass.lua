@@ -158,9 +158,8 @@ function DocumentClass:handleEditionEnded()
 end
 
 function DocumentClass:applyStyle(element)
-    if not self.style then
-        logger.callStackToFile()
-    end
+    logger.logOnError(self.style, "No style to apply!")
+
     self.style:apply(element)
 end
 

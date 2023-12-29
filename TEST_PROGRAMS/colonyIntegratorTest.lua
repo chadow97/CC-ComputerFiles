@@ -10,4 +10,4 @@ local channel = 1
 local colIntPer = peripheralProxyClass:new(channel, "colonyIntegrator" )
 
 local WorkOrderId = colIntUtil.getFirstWorkOrderId(colIntPer)
-logger.logToFile(colIntUtil.getMissingRessourcesFromWorkOrder(colIntPer,WorkOrderId), logger.LOGGING_LEVEL.INFO)
+logger.log(colIntUtil.getMissingRessourcesFromWorkOrder(colIntPer,WorkOrderId), logger.LOGGING_LEVEL.INFO)

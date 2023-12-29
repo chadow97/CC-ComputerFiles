@@ -1,5 +1,6 @@
 local pretty = require "cc.pretty"
 local CustomPrintUtils = require "UTIL.customPrintUtils"
+local stringUtils      = require "UTIL.stringUtils"
 
 local logger = {}
 
@@ -10,6 +11,10 @@ logger.LOGGING_LEVEL = {
     WARNING = 4,
     INFO = 5
     }
+logger.OUTPUT = {
+    FILE = 1,
+    TERMINAL = 2
+}
 logger.terminal = nil
 logger.lastLineWriten = nil
 logger.directory = "output"
@@ -23,11 +28,13 @@ local function getFilePath()
 end
 
 
-function logger.init(terminal, fileName, shouldDeleteFile, loggingLevel)
+function logger.init(terminal, fileName, shouldDeleteFile, loggingLevel, output)
     logger.terminal = terminal
     logger.fileName = fileName or "logger.log"
     logger.isActive = true
+    logger.output = output or logger.OUTPUT.TERMINAL
     logger.setLoggingLevel(loggingLevel)
+    logger.tableDefaultToStringFunction = logger.__tostring
 
     if shouldDeleteFile then
         fs.delete(getFilePath())
@@ -46,7 +53,7 @@ function logger.db(text)
     logger.log(text, logger.LOGGING_LEVEL.ALWAYS_DEBUG)
 end
 
-function logger.log(text, logLevel)
+function logger.logToTerminal(text, logLevel)
     if not logger.canLog(logLevel) then
         return
     end
@@ -62,23 +69,21 @@ function logger.log(text, logLevel)
         term.redirect(originalTerminal)
 
     end
+
 end
 
-function logger.logGenericTableToFile(object, maxDepth, logLevel)
+function logger.log(object, logLevel)
     if not logger.canLog(logLevel) then
         return
     end
-    if not logger.fileName then
-        logger.fileName = "logger.log" 
-     end
-    local text = CustomPrintUtils.getAnythingString(object, maxDepth)
-    local path = getFilePath()
-    local file = fs.open(path, "a")
-    if not file then
-        return
+
+
+    if logger.output == logger.OUTPUT.FILE then
+        logger.logToFile(object,logLevel)
     end
-    file.write(text)
-    file.close()
+    if logger.output == logger.OUTPUT.TERMINAL then
+        logger.logToTerminal(object ,logLevel)
+    end
 end
 
 function logger.canLog(logLevel)
@@ -93,6 +98,38 @@ function logger.canLog(logLevel)
     return true
 end
 
+local function callStackObjectToString(callStackObject)
+    local resultString = string.format("CALLSTACK FROM ERROR: %s \n", callStackObject.errorMessage)
+    for _, callStackLine in ipairs(callStackObject.lines) do
+        resultString = resultString .. callStackLine .. "\n"    
+    end
+    return resultString
+
+end
+
+function logger.cs(...)
+    logger.logOnError(...)
+end
+
+function logger.logOnError(isValid, errorMessage)
+    if isValid then
+        return
+    end
+    errorMessage = errorMessage or "Unknown Error"
+    if not logger.canLog(logger.LOGGING_LEVEL.ALWAYS_DEBUG) then
+        return
+    end
+    local callStack = logger.getCallStack()
+    local callStackObject = {lines = callStack, errorMessage = errorMessage,type ="callstack"}
+    callStackObject.__tostring = callStackObjectToString
+    setmetatable(callStackObject,callStackObject)
+    logger.log(callStackObject, logger.LOGGING_LEVEL.ALWAYS_DEBUG)
+end
+
+local function isObToPrintCallStack(object)
+    return type(object) == "table" and object.type == "callstack" 
+end
+
 function logger.logToFile(objectToPrint, logLevel)
 
     if not logger.canLog(logLevel) then
@@ -103,8 +140,6 @@ function logger.logToFile(objectToPrint, logLevel)
        logger.fileName = "logger.log" 
     end
 
-    local text = tostring(objectToPrint)
-
     local path = getFilePath()
     local file = fs.open(path, "a")
     ---@diagnostic disable-next-line: param-type-mismatch
@@ -113,40 +148,28 @@ function logger.logToFile(objectToPrint, logLevel)
     if not file then
         return
     end
-    file.writeLine(pretty.render(pretty.group(pretty.text("[") .. pretty.pretty(time) .. pretty.text("-") .. pretty.text(logLevelString) .. pretty.text("]:").. pretty.pretty(text))))
+    local objectString = pretty.render(pretty.pretty(objectToPrint), 100)
+    local logString = string.format("[%s-%s]:", time, logLevelString)
+    if not isObToPrintCallStack(objectToPrint) and #stringUtils.splitLines(objectString) > 1 then
+        logString = logString .. "\n"
+    end
+    logString = logString .. objectString .. "\n"
+    file.write(logString)
     file.close()
 
 end
 
-function logger.callStackToFile()
-
-    if not logger.isActive then
-        return
-    end
-
-    if not logger.fileName then
-        logger.fileName = "logger.log" 
-    end
-
-    local path = getFilePath()
-
-    local file = fs.open(path, "a")
-    if not file then
-        return
-    end
-    file.writeLine("----------------------------------------------------------")
-
+function logger.getCallStack()
+    local callStack= {}
     local level = 2 -- start at level 2 to skip the printCallStack function itself
     while true do
         local info = debug.getinfo(level, "nSl")
         if not info then break end
         
-        file.writeLine(string.format("%s:%d in function '%s'", info.short_src, info.currentline, info.name or "?"))
+        table.insert(callStack,string.format("%s:%d in function '%s'", info.short_src, info.currentline, info.name or "?"))
         level = level + 1
     end
-
-    file.close()
-
+    return callStack
 end
 
 function logger.logLevelToString(logLevel)

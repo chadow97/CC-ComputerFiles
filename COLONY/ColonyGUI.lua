@@ -18,7 +18,8 @@ MonUtils.resetMonitor(monitor)
 local monitorX, monitorY = monitor.getSize()
 
 -- Initialize logger for debug
-logger.init(term.current(), "ColonyGUI.log", true)
+logger.init(term.current(), "ColonyGUI.log", true,logger.LOGGING_LEVEL.WARNING, logger.OUTPUT.FILE)
+logger.log("Started colony program", logger.LOGGING_LEVEL.ALWAYS)
 
 -- Create document, allows to retrieve data.
 local document = ColonyDocumentClass:new()
