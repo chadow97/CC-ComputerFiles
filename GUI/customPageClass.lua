@@ -9,7 +9,8 @@ local ELEMENT_BACK_COLOR = colors.red
 local INNER_ELEMENT_BACK_COLOR = colors.lime
 local TEXT_COLOR = colors.yellow
 
--- Define the RessourcePage Class 
+ 
+---@class CustomPage: Page
 local CustomPageClass = {}
 CustomPageClass.__index = CustomPageClass
 setmetatable(CustomPageClass, {__index = PageClass})

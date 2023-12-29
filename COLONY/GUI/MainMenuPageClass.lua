@@ -11,13 +11,6 @@ local MeInfoPageClass       = require "COLONY.GUI.MeInfoPageClass"
 local PeripheralPageClass   = require "COLONY.GUI.PeripheralPageClass"
 local ConfigurationPageClass= require "COLONY.GUI.ConfigurationPageClass"
 
--- Define constants
-
-local ELEMENT_BACK_COLOR = colors.red
-local INNER_ELEMENT_BACK_COLOR = colors.lime
-local TEXT_COLOR = colors.yellow
-
-
 -- Define the RessourcePage Class 
 local MainMenuPageClass = {}
 MainMenuPageClass.__index = MainMenuPageClass
@@ -44,7 +37,7 @@ function MainMenuPageClass:onBuildCustomPage()
   ColonyLogoLabel:setUpperCornerPos(parentPagePosX + (parentPageSizeX - 33)/2, yValueForEntry)
   ColonyLogoLabel:forceWidthSize(33)
   ColonyLogoLabel:forceHeightSize(14)
-  ColonyLogoLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+  ColonyLogoLabel:applyDocumentStyle()
   self:addElement(ColonyLogoLabel)
 
   local yValueForEntry = parentPagePosY + 16
@@ -52,7 +45,7 @@ function MainMenuPageClass:onBuildCustomPage()
   local ColonyButton = ToggleableButtonClass:new(1, 1, "General colony information", self.document)
   ColonyButton:forceWidthSize(parentPageSizeX - 2)
   ColonyButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
-  ColonyButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+  ColonyButton:applyDocumentStyle()
   ColonyButton:setOnManualToggle(self:getOnColonyPressed())
   ColonyButton:setCenterText(true)
   self:addElement(ColonyButton)
@@ -62,7 +55,7 @@ function MainMenuPageClass:onBuildCustomPage()
   local WorkOrdersButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Manage work orders", self.document)
   WorkOrdersButton:forceWidthSize(parentPageSizeX - 2)
   WorkOrdersButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
-  WorkOrdersButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+  WorkOrdersButton:applyDocumentStyle()
   WorkOrdersButton:setOnManualToggle(self:getOnWorkOrdersPressed())
   WorkOrdersButton:setCenterText(true)
   self:addElement(WorkOrdersButton)
@@ -72,7 +65,7 @@ function MainMenuPageClass:onBuildCustomPage()
   local RequestsButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Manage requests", self.document)
   RequestsButton:forceWidthSize(parentPageSizeX - 2)
   RequestsButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
-  RequestsButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+  RequestsButton:applyDocumentStyle()
   RequestsButton:setOnManualToggle(self:getOnRequestsPressed())
   RequestsButton:setCenterText(true)
   self:addElement(RequestsButton)
@@ -82,7 +75,7 @@ function MainMenuPageClass:onBuildCustomPage()
   local WorkersButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Manage builders and target inventories", self.document)
   WorkersButton:forceWidthSize(parentPageSizeX - 2)
   WorkersButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
-  WorkersButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+  WorkersButton:applyDocumentStyle()
   WorkersButton:setOnManualToggle(self:getOnManageBuildersPressed())
   WorkersButton:setCenterText(true)
   self:addElement(WorkersButton)
@@ -92,7 +85,7 @@ function MainMenuPageClass:onBuildCustomPage()
   local MeInfoButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Me system information", self.document)
   MeInfoButton:forceWidthSize(parentPageSizeX - 2)
   MeInfoButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
-  MeInfoButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+  MeInfoButton:applyDocumentStyle()
   MeInfoButton:setOnManualToggle(self:getOnMeInfoPressed())
   MeInfoButton:setCenterText(true)
   self:addElement(MeInfoButton)
@@ -102,7 +95,7 @@ function MainMenuPageClass:onBuildCustomPage()
   local PeriperalButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Connected Periperals", self.document)
   PeriperalButton:forceWidthSize(parentPageSizeX - 2)
   PeriperalButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
-  PeriperalButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+  PeriperalButton:applyDocumentStyle()
   PeriperalButton:setOnManualToggle(self:getOnPeripheralsPressed())
   PeriperalButton:setCenterText(true)
   self:addElement(PeriperalButton)
@@ -112,13 +105,12 @@ function MainMenuPageClass:onBuildCustomPage()
   local ConfigButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Configuration", self.document)
   ConfigButton:forceWidthSize(parentPageSizeX - 2)
   ConfigButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
-  ConfigButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+  ConfigButton:applyDocumentStyle()
   ConfigButton:setOnManualToggle(self:getOnConfigPressed())
   ConfigButton:setCenterText(true)
   self:addElement(ConfigButton)
 
-  self:setBackColor(ELEMENT_BACK_COLOR)
-
+  self:applyDocumentStyle()
 end
 
 function MainMenuPageClass:getOnColonyPressed()

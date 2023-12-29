@@ -8,24 +8,15 @@ local logger                = require "UTIL.logger"
 local CustomPageClass       = require "GUI.CustomPageClass"
 local PeripheralManagerClass= require "COLONY.MODEL.PeripheralManagerClass"
 
--- Define constants
-
-local ELEMENT_BACK_COLOR = colors.red
-local INNER_ELEMENT_BACK_COLOR = colors.lime
-local TEXT_COLOR = colors.yellow
-local SEND_ALL_TEXT_COLOR = colors.black
-
 local LOG_HEIGHT = 10
 
 local SEND_ALL_UNTOGGLED_TEXT = "Press to send/craft missing ressources."
 local SEND_ALL_TOGGLED_TEXT = "Sending and crafting! Press to stop."
 
--- Define the RessourcePage Class 
+---@class RessourcePage: CustomPage
 local RessourcePageClass = {}
 RessourcePageClass.__index = RessourcePageClass
 setmetatable(RessourcePageClass, {__index = CustomPageClass})
-
-
 
 function RessourcePageClass:new(monitor, parentPage, workOrderId, inventoryOb, document)
   self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "ressourcePage"), RessourcePageClass)
@@ -56,7 +47,7 @@ function RessourcePageClass:onBuildCustomPage()
   ressourceTable:setDataFetcher(self.ressourceFetcher)
   ressourceTable:setDisplayKey(false)
   ressourceTable:setRowHeight(8)
-  ressourceTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
+  ressourceTable:applyDocumentStyle()
   ressourceTable:setColumnCount(3)
   ressourceTable:setHasManualRefresh(true)
   ressourceTable:setSize(parentPageSizeX, parentPageSizeY - 4 - LOG_HEIGHT)
@@ -69,19 +60,19 @@ function RessourcePageClass:onBuildCustomPage()
   logElement:setUpperCornerPos(parentPagePosY + 1, ressourceTableEndY + 1)
   logElement:forceWidthSize(parentPageSizeX - 2)
   logElement:forceHeightSize(LOG_HEIGHT)
-  logElement:changeStyle(nil, INNER_ELEMENT_BACK_COLOR)
+  logElement:applyDocumentStyle()
   self.logElement = logElement
   
   local SendAllButton = ToggleableButtonClass:new(1, 1, SEND_ALL_UNTOGGLED_TEXT, self.document)
   SendAllButton:forceWidthSize(parentPageSizeX - 2)
   SendAllButton:setUpperCornerPos(parentPagePosX + 1, ressourceTableEndY + 1 + LOG_HEIGHT)
----@diagnostic disable-next-line: redundant-parameter
-  SendAllButton:changeStyle(SEND_ALL_TEXT_COLOR, INNER_ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, SEND_ALL_TEXT_COLOR)
+
+  SendAllButton:applyDocumentStyle()
   SendAllButton:setOnManualToggle(self:getOnSendAllPressedCallback())
   SendAllButton:disableAutomaticUntoggle()
   SendAllButton:setOnDrawCallback(self:getOnDrawSendAllButton())
 
-  self:setBackColor(ELEMENT_BACK_COLOR)
+  self:applyDocumentStyle()
 
   self:addElement(ressourceTable)
   self:addElement(SendAllButton)

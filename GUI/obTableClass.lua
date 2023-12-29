@@ -4,6 +4,7 @@ local logger     = require("UTIL.logger")
 local PageStackClass = require("GUI.PageStackClass")
 local stringUtils    = require("UTIL.stringUtils")
 
+---@class ObTable: TableGUI
 local ObTableClass = {}
 
 ObTableClass.__index = ObTableClass
@@ -11,10 +12,13 @@ setmetatable(ObTableClass, { __index = TableClass })
 
 -- Constructor for ObTableClass
 function ObTableClass:new(  monitor, x, y, title, sizeX, sizeY, document )
+    ---@class ObTable: TableGUI
     self = setmetatable(TableClass:new(  monitor, x, y, title, sizeX, sizeY, document ), ObTableClass)
     self.obList = {}
     self.dataFetcher = nil
     self.type = "ObClassTable"
+    self.buttonIdToObMap = {}
+    self.ObIdToButtonPairMap = {}
 
     return self
 end
@@ -37,44 +41,39 @@ end
 function ObTableClass:createElementButtons()
     --rewrite to not use internal table
     local index = 1
+    self.buttonIdToObMap = {}
+    self.ObIdToButtonPairMap = {}
     for _, ob in pairs(self.obList) do
+        self.ObIdToButtonPairMap[ob:getUniqueKey()] = {}
+        local CurrentButtonPair = self.ObIdToButtonPairMap[ob:getUniqueKey()]
         local keyButton, valueButton  = self:createTableElementsForRow(index, "tempValue", index)
         if keyButton then
-            keyButton.uniqueObKey = ob:getUniqueKey()
+            self.buttonIdToObMap[keyButton.id] = ob
+            CurrentButtonPair.key = keyButton
         end
-        valueButton.uniqueObKey = ob:getUniqueKey()
+        self.buttonIdToObMap[valueButton.id] = ob
+        CurrentButtonPair.value = valueButton
         index = index + 1
     end
 end
 
-
+---comment
+---@param button Button
+---@return unknown
 function ObTableClass:getObFromButton(button)
-    for _,ob in pairs(self.obList) do
-        if ob:getUniqueKey() == button.uniqueObKey then
-            return ob
-        end
-    end
-    assert(false, "No ob corresponds to that button!")
+    return self.buttonIdToObMap[button.id]
 end
 
 function ObTableClass:getButtonFromOb(ob, getKey)
     if not getKey then
         getKey = false
     end
-    for _, kvButtons in pairs(self.tableElements) do
-        local buttonToConsider 
-        if getKey then
-            buttonToConsider = kvButtons["keyButton"]
-        else
-            buttonToConsider = kvButtons["valueButton"]
-
-        end
-        if buttonToConsider.uniqueObKey == ob:getUniqueKey() then
-            return buttonToConsider
-        end  
-
+    local ObButtonPair = self.ObIdToButtonPairMap[ob:getUniqueKey()]
+    if getKey then
+        return ObButtonPair.key
+    else
+        return ObButtonPair.value
     end
-    assert(false, "No button corresponds to that ob!")
 end
 
 function ObTableClass:getStringToDisplayForElement(data, isKey, position)
@@ -134,8 +133,6 @@ end
 
 function ObTableClass:processTableElement(elementButton, key, value, position)
     -- overwritten because we do not want default table element behavior from TableClass
-    self:setupOnManualToggle(elementButton,key, false, position, value )
-
 end
 
 function ObTableClass:setOnTableElementPressedCallbackForElement(button, key, isKey, position, data)

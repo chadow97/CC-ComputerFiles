@@ -15,6 +15,7 @@ local function DEFAULT_TABLE_VALUE_DISPLAYED( value)
     return("{...}")
 end
 
+---@class TableGUI: Page 
 local TableClass = {}
 TableClass.__index = TableClass
 setmetatable(TableClass, { __index = PageClass })
@@ -55,6 +56,7 @@ function TableClass:new( monitor, x, y, title, sizeX, sizeY, document)
     self.type = "table"
     self.valueElementProperties = {}
     self.keyElementProperties = {}
+    self.onDrawButton = nil
 
     -- sets default scroll amount
     self:setScrollAmount()
@@ -394,7 +396,7 @@ function TableClass:updateElementStyleAccordingToData(tableElement, isKey, posit
         elementTextColor = self.textColor
     end
 
-    tableElement:changeStyle(elementTextColor, elementBackColor)
+    tableElement:changeStyle(elementTextColor, elementBackColor, elementBackColor, elementTextColor)
 
 end
 
@@ -437,6 +439,10 @@ function TableClass:createTableElementsForRow(key, value, position)
 
     self.tableElements[key] = {keyButton = keyElement, valueButton = valueElement}
     return keyElement, valueElement
+end
+
+function TableClass:setupOnDrawButton(button, key, isKey, position, data)
+
 end
 
 
@@ -693,6 +699,11 @@ function TableClass:nonTableElementsIterator()
         position = position + 1
         return button
     end
+end
+
+---@param style Style
+function TableClass:applyStyle(style)
+    style:applyStyleToTable(self)
 end
 
 -- Return the TableClass

@@ -11,13 +11,8 @@ local RequestItemsFetcher     = require "COLONY.MODEL.requestItemsFetcherClass"
 local LabelClass              = require "GUI.LabelClass"
 local RequestInventoryHandlerClass = require "COLONY.MODEL.RequestInventoryHandlerClass"
 
--- Define constants
-
-local ELEMENT_BACK_COLOR = colors.red
-local INNER_ELEMENT_BACK_COLOR = colors.lime
-local TEXT_COLOR = colors.yellow
-
 -- Define the RessourcePage Class 
+---@class RequestDetailsPageClass: CustomPage
 local RequestDetailsPageClass = {}
 RequestDetailsPageClass.__index = RequestDetailsPageClass
 setmetatable(RequestDetailsPageClass, {__index = CustomPageClass})
@@ -49,7 +44,8 @@ function RequestDetailsPageClass:onBuildCustomPage()
     self.requestLabel = LabelClass:new(nil, nil, "" , self.document)
     self.requestLabel:forceWidthSize(parentPageSizeX - 2)
     self.requestLabel:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + 1)
-    self.requestLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+
+    self.requestLabel:applyDocumentStyle()
     local request = self.requestManager:getOb(self.requestId)
     self:updateRequestText(request)
     self.requestLabel:setCenterText(true)
@@ -61,7 +57,7 @@ function RequestDetailsPageClass:onBuildCustomPage()
     requestDetailsTable:setDisplayKey(true)
     requestDetailsTable:setKeyRowPropertion(0.8)
     requestDetailsTable:setRowHeight(7)
-    requestDetailsTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
+    requestDetailsTable:applyDocumentStyle()
     requestDetailsTable:setHasManualRefresh(true)
     requestDetailsTable:setSize(parentPageSizeX, parentPageSizeY - 11 - 4)
     requestDetailsTable:setPos(parentPagePosX,parentPagePosY + 11)
@@ -72,11 +68,11 @@ function RequestDetailsPageClass:onBuildCustomPage()
     local InventoryLabel = LabelClass:new(nil, nil, self:getInventoryButtonText() , self.document)
     InventoryLabel:forceWidthSize(parentPageSizeX - 2)
     InventoryLabel:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + parentPageSizeY - 4)
-    InventoryLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    InventoryLabel:applyDocumentStyle()
     InventoryLabel:setCenterText(true)
     self:addElement(InventoryLabel)
     
-    self:setBackColor(ELEMENT_BACK_COLOR)
+    self:applyDocumentStyle()
 
 end
 

@@ -7,7 +7,7 @@ local DEFAULT_BACK_COLOR = colors.lightGray
 local DEFAULT_TEXT_COLOR = colors.black
 
 -- Define the ButtonClass table
-
+---@class Button: Element
 local ButtonClass = {}
 ButtonClass.__index = ButtonClass
 setmetatable(ButtonClass, { __index = ElementClass })
@@ -16,6 +16,7 @@ ButtonClass.properties = { should_center = "should_center"}
 
 -- Define a constructor for the ButtonClass
 function ButtonClass:new(xPos, yPos, text, document)
+  ---@class Button: Element
   local instance = setmetatable(ElementClass:new(xPos, yPos, document), ButtonClass)
   instance.text = text
   instance.margin = 1
@@ -284,6 +285,11 @@ end
 
 function ButtonClass:pressButton()
     self:callElementTouchedCallback()
+end
+
+---@param style Style
+function ButtonClass:applyStyle(style)
+    style:applyStyleToButton(self)
 end
 
 return ButtonClass

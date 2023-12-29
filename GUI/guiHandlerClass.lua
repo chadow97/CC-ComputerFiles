@@ -2,6 +2,7 @@ local logger = require "UTIL.logger"
 local DocumentClass = require "MODEL.DocumentClass"
 local GuiHandlerClass = {}
 
+---@class GuiHandler
 function GuiHandlerClass:new(mainPage, shouldStopFunc, document)
     if not mainPage then
         error("Gui handler must have a page!")

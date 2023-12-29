@@ -2,8 +2,9 @@ local logger = require "UTIL.logger"
 local ToggleableButtonClass = require("GUI.ToggleableButtonClass")
 local PageClass             = require("GUI.PageClass")
 local stringUtils           = require("UTIL.stringUtils")
--- define the PageStackClass
 
+
+---@class PageStack: Page
 local PageStackClass = {}
 PageStackClass.__index = PageStackClass
 setmetatable(PageStackClass, { __index = PageClass })
@@ -19,6 +20,9 @@ function PageStackClass:new(monitor, document)
   self:updateButtonPosition()
   self.exitButton:setMargin(0)
   self.type = "pageStack"
+  
+  ---@type function
+  self.onFirstPageClosed = nil
   PageClass.addElement(self, self.exitButton)
 
   self.exitButton:setOnManualToggle(
@@ -28,6 +32,10 @@ function PageStackClass:new(monitor, document)
   )
 
   return self
+end
+
+function PageStackClass:getExitButton()
+    return self.exitButton
 end
 
 function PageStackClass:__tostring() 
@@ -91,6 +99,12 @@ function PageStackClass:pushPage(page, functionToCallOnExit)
   self.document:endEdition()
 end
 
+
+---@param func function
+function PageStackClass:setOnFirstPageClosed(func)
+    self.onFirstPageClosed = func
+end
+
 -- pop the top page from the stack
 function PageStackClass:popPage(dataToPass)
   
@@ -99,6 +113,9 @@ function PageStackClass:popPage(dataToPass)
     return
   end
   if (#self.pageStack == 1) then
+    if self.onFirstPageClosed then
+        self.onFirstPageClosed()
+    end
     return
   end
   self.document:startEdition()

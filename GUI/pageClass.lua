@@ -3,6 +3,7 @@ local CustomPaintUtils = require("UTIL.customPaintUtils")
 local ElementClass     = require("GUI.ElementClass")
 local stringUtils      = require("UTIL.stringUtils")
 
+---@class Page:Element
 local PageClass = {}
 PageClass.__index = PageClass
 setmetatable(PageClass, { __index = ElementClass })
@@ -192,6 +193,11 @@ function PageClass:allElementsIterator()
         position = position + 1
         return element 
     end
+end
+
+---@param style Style
+function PageClass:applyStyle(style)
+    style:applyStyleToPage(self)
 end
 
 return PageClass

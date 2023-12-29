@@ -10,8 +10,10 @@ local MeSystemManagerClass    = require("COLONY.MODEL.MeSystemManagerClass")
 local ColonyConfigClass = require("COLONY.MODEL.ColonyConfigClass")
 local logger                  = require("UTIL.logger")
 local PeripheralManagerClass  = require("COLONY.MODEL.PeripheralManagerClass")
+local ColonyStyleClass        = require("COLONY.MODEL.ColonyStyleClass")
 
 
+---@class ColonyDocument:Document
 local ColonyDocumentClass = {}
 ColonyDocumentClass.__index = ColonyDocumentClass
 setmetatable(ColonyDocumentClass, { __index = DocumentClass })
@@ -19,8 +21,8 @@ setmetatable(ColonyDocumentClass, { __index = DocumentClass })
 -- Constructor for WorkOrderClass
 function ColonyDocumentClass:new()
 
-    local colonyConfig = ColonyConfigClass:new()
-    local o = setmetatable(DocumentClass:new(colonyConfig), ColonyDocumentClass)
+    local o = setmetatable(DocumentClass:new(), ColonyDocumentClass)
+    o:initializeDocument()
 
     -- register managers used in colony
     o:registerManager(InventoryManagerClass:new(o))
@@ -36,6 +38,18 @@ function ColonyDocumentClass:new()
     o:registerManager(RequestItemManagerClass:new(o))
 
     return o
+end
+
+function ColonyDocumentClass:initializeStyle()
+    self.style = ColonyStyleClass:new(self.config:getStyles())
+end
+
+function ColonyDocumentClass:initializeConfig()
+    self.config = ColonyConfigClass:new()
+end
+
+function ColonyDocumentClass:updateStyleFromConfig()
+    self.style:updateStyle(self.config:getStyles())
 end
 
 return ColonyDocumentClass

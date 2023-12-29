@@ -56,10 +56,12 @@ end
 
 function InventoryManagerClass:_onRefreshObs()
     self.inventories = {}
+---@diagnostic disable-next-line: param-type-mismatch
     local chests = {peripheral.find(PerTypes.chest)}
     if not chests then
         chests = {}
     end
+---@diagnostic disable-next-line: param-type-mismatch
     local barrels = {peripheral.find(PerTypes.barrel)}
     if not barrels then
         barrels = {}

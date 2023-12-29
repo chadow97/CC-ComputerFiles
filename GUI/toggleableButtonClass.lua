@@ -27,6 +27,7 @@ local function DefaultOnManualToggle (toggleButton)
 end
 
 -- Define the ToggleableButtonClass class
+---@class ToggleableButton: Button
 local ToggleableButtonClass = {}
 ToggleableButtonClass.__index = ToggleableButtonClass
 setmetatable(ToggleableButtonClass, {__index = ButtonClass})
@@ -35,6 +36,7 @@ setmetatable(ToggleableButtonClass, {__index = ButtonClass})
 ToggleableButtonClass.properties = { automatic_untoggle = "automatic_untoggle"}
 
 function ToggleableButtonClass:new(...)
+  ---@class ToggleableButton: Button
   local instance = setmetatable(ButtonClass.new(self, ...), ButtonClass)
   setmetatable(instance, self)
 
@@ -198,6 +200,11 @@ end
 
 function ToggleableButtonClass:pressButton()
     self.OnManualToggle(self)
+end
+
+---@param style Style
+function ToggleableButtonClass:applyStyle(style)
+    style:applyStyleToToggleButton(self)
 end
 
 return ToggleableButtonClass

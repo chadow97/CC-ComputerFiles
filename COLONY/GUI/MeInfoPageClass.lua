@@ -6,13 +6,7 @@ local stringUtils           = require "UTIL.stringUtils"
 local LabelClass            = require "GUI.LabelClass"
 local MeSystemManagerClass  = require "COLONY.MODEL.MeSystemManagerClass"
 
--- Define constants
-
-local ELEMENT_BACK_COLOR = colors.red
-local INNER_ELEMENT_BACK_COLOR = colors.lime
-local TEXT_COLOR = colors.yellow
-
--- Define the RessourcePage Class 
+---@class MeInfoPageClass: CustomPage
 local MeInfoPageClass = {}
 MeInfoPageClass.__index = MeInfoPageClass
 setmetatable(MeInfoPageClass, {__index = CustomPageClass})
@@ -43,7 +37,7 @@ function MeInfoPageClass:onBuildCustomPage()
     self.descLabel = LabelClass:new(nil, nil, self:getDescriptionForMeSystem(meSystem), self.document)
     self.descLabel:forceWidthSize(parentPageSizeX - 2)
     self.descLabel:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + 1)
-    self.descLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.descLabel:applyDocumentStyle()
     self:addElement(self.descLabel)
 
     local meItemTable = ObTableClass:new(self.monitor, 1,1, "Me Items", nil, nil, self.document)
@@ -51,13 +45,12 @@ function MeInfoPageClass:onBuildCustomPage()
     meItemTable:setDisplayKey(false)
     meItemTable:setRowHeight(5)
     meItemTable:setColumnCount(4)
-    meItemTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
+    meItemTable:applyDocumentStyle()
     meItemTable:setHasManualRefresh(true)
     meItemTable:setSize(parentPageSizeX, parentPageSizeY - 12 )
     meItemTable:setPos(parentPagePosX,parentPagePosY + 12)
 
-
-    self:setBackColor(ELEMENT_BACK_COLOR)
+    self:applyDocumentStyle()
     self:addElement(meItemTable)
 
 end

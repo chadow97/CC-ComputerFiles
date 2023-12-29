@@ -11,15 +11,7 @@ local NumberSelectionPageClass = require("GUI.NumberSelectionPageClass")
 local perTypes                 = require("UTIL.perTypes")
 local ColorSelectionPageClass  = require("GUI.ColorSelectionPageClass")
 
-
--- Define constants
-
-local ELEMENT_BACK_COLOR = colors.red
-local INNER_ELEMENT_BACK_COLOR = colors.lime
-local TEXT_COLOR = colors.yellow
-
-
--- Define the RessourcePage Class 
+---@class ConfigurationPage: CustomPage
 local ConfigurationPageClass = {}
 ConfigurationPageClass.__index = ConfigurationPageClass
 setmetatable(ConfigurationPageClass, {__index = CustomPageClass})
@@ -28,6 +20,7 @@ function ConfigurationPageClass:new(monitor, parentPage, document)
   self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "Configuration"), ConfigurationPageClass)
   self.peripheralManager = document:getManagerForType(PeripheralManagerClass.TYPE)
   self.colonyManager = document:getManagerForType(ColonyManagerClass.TYPE)
+  self.colorLabelMap = {}
 
 
   self:buildCustomPage()
@@ -49,7 +42,7 @@ function ConfigurationPageClass:onBuildCustomPage()
     self.titleLabel = LabelClass:new(nil, nil, "Configuration" , self.document)
     self.titleLabel:forceWidthSize(parentPageSizeX - 2)
     self.titleLabel:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
-    self.titleLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.titleLabel:applyDocumentStyle()
     self.titleLabel:setCenterText(true)
     self:addElement(self.titleLabel)
     yValueForEntry = yValueForEntry + 4
@@ -58,7 +51,7 @@ function ConfigurationPageClass:onBuildCustomPage()
     self.remoteConnectionPage = PageClass:new(self.monitor,nil, nil, self.document)
     self.remoteConnectionPage:setSize(parentPageSizeX-2, 7)
     self.remoteConnectionPage:setPos(parentPagePosX + 1, yValueForEntry)
-    self.remoteConnectionPage:setBackColor(INNER_ELEMENT_BACK_COLOR)
+    self.remoteConnectionPage:setBackColor(self.document.style.secondary)
     self.remoteConnectionPage.id= "CONFIG!"
     self.remoteConnectionPage:setOnRefreshCallback(self:getHandleRefreshEvent())
     self:addElement(self.remoteConnectionPage)
@@ -66,7 +59,7 @@ function ConfigurationPageClass:onBuildCustomPage()
     self.connectionLabel = LabelClass:new(nil, nil, "" , self.document)
     self.connectionLabel:forceWidthSize(parentPageSizeX - 4)
     self.connectionLabel:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
-    self.connectionLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.connectionLabel:changeStyle(self.document.style.tertiary, self.document.style.secondary)
     self.connectionLabel:setText(self:getConnectionDetails())
     self.connectionLabel:setMargin(0)
     self.remoteConnectionPage:addElement(self.connectionLabel)
@@ -74,7 +67,7 @@ function ConfigurationPageClass:onBuildCustomPage()
     yValueForEntry = yValueForEntry + 3
 
     self.channelButton = ToggleableButtonClass:new(nil, nil, "", self.document)
-    self.channelButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.channelButton:applyDocumentStyle()
     self.channelButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
     self.channelButton:setMargin(0)
     self.channelButton:setText(self:getChannelDisplay())
@@ -87,7 +80,7 @@ function ConfigurationPageClass:onBuildCustomPage()
     self.colonyLabel = LabelClass:new(nil, nil, "" , self.document)
     self.colonyLabel:forceWidthSize(parentPageSizeX - 2)
     self.colonyLabel:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
-    self.colonyLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.colonyLabel:applyDocumentStyle()
     self.colonyLabel:setText(self:getColonyDetails())
     self:addElement(self.colonyLabel)
 
@@ -96,7 +89,7 @@ function ConfigurationPageClass:onBuildCustomPage()
     self.meLabel = LabelClass:new(nil, nil, "" , self.document)
     self.meLabel:forceWidthSize(parentPageSizeX - 2)
     self.meLabel:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
-    self.meLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.meLabel:applyDocumentStyle()
     self.meLabel:setText(self:getMeDetails())
     self:addElement(self.meLabel)
 
@@ -105,7 +98,7 @@ function ConfigurationPageClass:onBuildCustomPage()
     self.refreshRateButton = ToggleableButtonClass:new(nil, nil,"", self.document)
     self.refreshRateButton:forceWidthSize(parentPageSizeX - 2)
     self.refreshRateButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
-    self.refreshRateButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.refreshRateButton:applyDocumentStyle()
     self.refreshRateButton:setText(self:getRefreshRateDisplay())
     self.refreshRateButton:setOnManualToggle(self:getOnRefreshRateButtonPressed())
     self:addElement(self.refreshRateButton)
@@ -115,7 +108,7 @@ function ConfigurationPageClass:onBuildCustomPage()
     self.stylePage = PageClass:new(self.monitor,nil, nil, self.document)
     self.stylePage:setSize(parentPageSizeX-2, 6)
     self.stylePage:setPos(parentPagePosX + 1, yValueForEntry)
-    self.stylePage:setBackColor(INNER_ELEMENT_BACK_COLOR)
+    self.stylePage:setBackColor(self.document.style.secondary)
     self.stylePage.id= "STYLE!"
     self.stylePage:setOnRefreshCallback(self:getHandleRefreshEvent())
     self:addElement(self.stylePage)
@@ -123,10 +116,10 @@ function ConfigurationPageClass:onBuildCustomPage()
     yValueForEntry = yValueForEntry + 1
 
     self.styleTitle = LabelClass:new(nil, nil, "Style: (Press label to change!)" , self.document)
-    self.styleTitle:forceWidthSize(parentPageSizeX - 2)
+    self.styleTitle:forceWidthSize(parentPageSizeX - 4)
     self.styleTitle:setMargin(0)
     self.styleTitle:setUpperCornerPos(parentPagePosX + 2, yValueForEntry)
-    self.styleTitle:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.styleTitle:applyDocumentStyle()
     self.stylePage:addElement(self.styleTitle)
 
     yValueForEntry = yValueForEntry + 1
@@ -136,13 +129,7 @@ function ConfigurationPageClass:onBuildCustomPage()
     yValueForEntry = yValueForEntry + 1
     self:createStyleSubSection(self.stylePage, parentPagePosX + 1, yValueForEntry, "Tertiary:", ColonyConfigClass.configs.tertiary_style)
 
-    --self.primary:setOnManualToggle(self:getOnRefreshRateButtonPressed())
-    --style:
-    --Primary: (color 1)
-    --Secondary: (color 2)
-    --Third: (color 3)
-
-    self:setBackColor(ELEMENT_BACK_COLOR)
+    self:applyDocumentStyle()
 end
 
 function ConfigurationPageClass:getHandleRefreshEvent()
@@ -267,10 +254,10 @@ function ConfigurationPageClass:getOnRefreshRateButtonPressed()
 end
 
 function ConfigurationPageClass:getOnStylePressed(configName, title)
-    return function()
+    return function(colorDisplay)
         local currentColor = self.document.config:get(configName)
         local page = ColorSelectionPageClass:new(self.monitor,self.parentPage, self.document, title, currentColor)
-        self.parentPage:pushPage(page, self:getOnChannedlModified())
+        self.parentPage:pushPage(page, self:getOnStyleModified(configName))
     end
 end
 
@@ -281,7 +268,6 @@ end
 
 function ConfigurationPageClass:getOnChannedlModified()
     return function(newChannel)
-        logger.logToFile(newChannel)
         self.document:startEdition()
         self.peripheralManager:forceCompleteRefresh()
         self.document.config:set(ColonyConfigClass.configs.proxy_peripherals_channel, newChannel)
@@ -304,11 +290,22 @@ function ConfigurationPageClass:getOnRefreshRateModified()
     end
 end
 
+function ConfigurationPageClass:getOnStyleModified(configName)
+    return function(color)
+        self.document:startEdition()
+        self.document.config:set(configName, color)
+        self:updateColor(configName)
+        self.document:updateStyleFromConfig()
+        self.document:registerEverythingAsDirty()
+        self.document:endEdition()
+    end
+end
+
 function ConfigurationPageClass:createStyleSubSection(stylePage, xPos, yPos, title, configName)
     local label = ToggleableButtonClass:new(nil, nil,"", self.document)
     label:setMargin(0)
     label:setUpperCornerPos(xPos + 1, yPos)
-    label:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    label:applyDocumentStyle()
     label:setText(title)
     label:setOnManualToggle(self:getOnStylePressed(configName, title))
     stylePage:addElement(label)
@@ -317,12 +314,14 @@ function ConfigurationPageClass:createStyleSubSection(stylePage, xPos, yPos, tit
     colorDisplay:forceWidthSize(3)
     colorDisplay:forceHeightSize(1)
     colorDisplay:setUpperCornerPos(xPos + 11, yPos)
-    self:updateColor(configName, colorDisplay)
+    self.colorLabelMap[configName] = colorDisplay
+    self:updateColor(configName)
     stylePage:addElement(colorDisplay)
 end
 
-function ConfigurationPageClass:updateColor(configName, colorDisplay)
+function ConfigurationPageClass:updateColor(configName)
     local colorToSet = self.document.config:get(configName)
+    local colorDisplay = self.colorLabelMap[configName]
     colorDisplay:setBackColor(colorToSet)
 end
 

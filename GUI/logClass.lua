@@ -16,7 +16,9 @@ local LogClass = {}
 LogClass.__index = LogClass
 setmetatable(LogClass, {__index = ButtonClass})
 
+---@class Log: Button
 function LogClass:new(x, y, text, document)
+  ---@class Log: Button
   local instance = ButtonClass.new(self, x, y, text, document) 
   setmetatable(instance, self)
   self.__index = self

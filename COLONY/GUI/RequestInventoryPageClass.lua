@@ -8,12 +8,7 @@ local RequestInventoryHandlerClass = require "COLONY.MODEL.RequestInventoryHandl
 local InventoryManagerClass = require "COLONY.MODEL.InventoryManagerClass"
 local ElementClass          = require "GUI.elementClass"
 
--- Define constants
-
-local ELEMENT_BACK_COLOR = colors.red
-local INNER_ELEMENT_BACK_COLOR = colors.lime
-local TEXT_COLOR = colors.yellow
-
+---@class RequestInventoryPageClass: CustomPage
 local RequestInventoryPageClass = {}
 RequestInventoryPageClass.__index = RequestInventoryPageClass
 setmetatable(RequestInventoryPageClass, {__index = CustomPageClass})
@@ -21,6 +16,7 @@ setmetatable(RequestInventoryPageClass, {__index = CustomPageClass})
 
 
 function RequestInventoryPageClass:new(monitor, parentPage, document)
+  ---@class RequestInventoryPageClass: CustomPage
   local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "requestPage"), RequestInventoryPageClass)
 
   o.parentPage = parentPage
@@ -47,7 +43,7 @@ function RequestInventoryPageClass:onBuildCustomPage()
     self.inventoryTable:setDataFetcher(self.inventoryManager)
     self.inventoryTable:setDisplayKey(false)
     self.inventoryTable:setRowHeight(6)
-    self.inventoryTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
+    self.inventoryTable:applyDocumentStyle()
     self.inventoryTable:setSize(parentPageSizeX, parentPageSizeY)
     self.inventoryTable:setPos(parentPagePosX,parentPagePosY)
     self.inventoryTable:setOnTableElementPressedCallback(self:getOnTargetInventoryPressed())
@@ -58,7 +54,7 @@ function RequestInventoryPageClass:onBuildCustomPage()
     local currentInventory = self.inventoryManager:getOb(currentInventoryKey)
     self:changeSelectedItem(currentInventory, false)
 
-    self:setBackColor(ELEMENT_BACK_COLOR)
+    self:applyDocumentStyle()
     self:addElement(self.inventoryTable)
     
 end

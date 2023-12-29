@@ -3,13 +3,8 @@ local ColonyManagerClass    = require "COLONY.MODEL.ColonyManagerClass"
 local LabelClass            = require "GUI.LabelClass"
 local stringUtils           = require "UTIL.stringUtils"
 
--- Define constants
-
-local ELEMENT_BACK_COLOR = colors.red
-local INNER_ELEMENT_BACK_COLOR = colors.lime
-local TEXT_COLOR = colors.yellow
-
 -- Define the RessourcePage Class 
+---@class ColonyPageClass: CustomPage
 local ColonyPageClass = {}
 ColonyPageClass.__index = ColonyPageClass
 setmetatable(ColonyPageClass, {__index = CustomPageClass})
@@ -36,19 +31,19 @@ function ColonyPageClass:onBuildCustomPage()
     self.titleLabel = LabelClass:new(nil, nil, "" , self.document)
     self.titleLabel:forceWidthSize(parentPageSizeX - 2)
     self.titleLabel:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + 1)
-    self.titleLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.titleLabel:applyDocumentStyle()
     self.titleLabel:setCenterText(true)
     self:addElement(self.titleLabel)
 
     self.descLabel = LabelClass:new(nil, nil, "", self.document)
     self.descLabel:forceWidthSize(parentPageSizeX - 2)
     self.descLabel:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + 5)
-    self.descLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.descLabel:applyDocumentStyle()
     self:addElement(self.descLabel)
 
-    self:updateLabelsText(colony)  
+    self:updateLabelsText(colony)
 
-    self:setBackColor(ELEMENT_BACK_COLOR)
+    self:applyDocumentStyle()
 
 end
 

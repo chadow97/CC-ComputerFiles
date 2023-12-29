@@ -1,13 +1,16 @@
 local logger = require "UTIL.logger"
 local ConfigClass = require "MODEL.ConfigClass"
--- ObClass.lua
+local StyleClass  = require "MODEL.StyleClass"
+
+---@class Document
 DocumentClass = {}
 DocumentClass.__index = DocumentClass
 
 DocumentClass.configs = {refresh_delay ="refresh_delay"}
 
--- Constructor for ObClass
-function DocumentClass:new(config)
+
+function DocumentClass:new()
+    ---@class Document
     local o = setmetatable({}, DocumentClass)
     o.managers = {}
     o.nEditionStarted = 0
@@ -15,15 +18,24 @@ function DocumentClass:new(config)
     o.dirtyAreas = {}
     o.completelyDirty = false
 
-    o.config = config or ConfigClass:new()
+    o:initializeDocument()
+
+    return o
+end
+
+function DocumentClass:initializeDocument()
+    self:initializeConfig()
+    self:initializeStyle()
     
     -- setup default configs
     local defaultConfigs = {
         [DocumentClass.configs.refresh_delay] = 10
         }
-    o.config:setDefaults(defaultConfigs)
+    self.config:setDefaults(defaultConfigs)
+end
 
-    return o
+function DocumentClass:initializeConfig()
+    self.config = ConfigClass:new()
 end
 
 function DocumentClass:getHandledObs()
@@ -32,6 +44,10 @@ function DocumentClass:getHandledObs()
         table.insert(types,type)
     end
     return types
+end
+
+function DocumentClass:initializeStyle()
+    self.style = StyleClass:new()
 end
 
 function DocumentClass:getObs(type)
@@ -139,6 +155,13 @@ function DocumentClass:handleEditionEnded()
             listener:onEditionEnded()
         end
     end
+end
+
+function DocumentClass:applyStyle(element)
+    if not self.style then
+        logger.callStackToFile()
+    end
+    self.style:apply(element)
 end
 
 return DocumentClass

@@ -67,7 +67,6 @@ function PeripheralClass:isWirelessModem()
     end
     if self._isWirelessModem == -1 then
         self._isWirelessModem = self.isWireless()
-        logger.logGenericTableToFile(self.isWireless())
     end
     return self._isWirelessModem
 end

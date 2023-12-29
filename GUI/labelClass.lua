@@ -3,11 +3,13 @@ local ButtonClass = require("GUI.ButtonClass")
 local stringUtils = require("UTIL.stringUtils")
 
 -- Define the LabelClass class
+---@class Label: Button
 local LabelClass = {}
 LabelClass.__index = LabelClass
 setmetatable(LabelClass, {__index = ButtonClass})
 
 function LabelClass.new(self, x, y, text, document)
+  ---@class Label: Button
   local instance = ButtonClass.new(self, x, y, text, document) 
   setmetatable(instance, self)
   self.__index = self

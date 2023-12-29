@@ -11,13 +11,10 @@ local MainMenuPageClass = require("COLONY.GUI.MainMenuPageClass")
 local PageStackClass     = require("GUI.PageStackClass")
 local ColonyDocumentClass= require("COLONY.MODEL.ColonyDocumentClass")
 
--- Define constants
-local BACKGROUND_COLOR = colors.yellow
-local ELEMENT_BACK_COLOR = colors.red
-
 -- Setup Monitor
 local monitor = peripheral.find("monitor")
 MonUtils.resetMonitor(monitor)
+---@diagnostic disable-next-line: undefined-field
 local monitorX, monitorY = monitor.getSize()
 
 -- Initialize logger for debug
@@ -31,24 +28,18 @@ local isRunning = true
 local function endProgram()
     isRunning = false
 end
-local exitButton = ButtonClass:new(monitorX, monitorY, "X", document)
-exitButton:setOnElementTouched(endProgram)
-exitButton:changeStyle(nil, ELEMENT_BACK_COLOR)
-exitButton:setMargin(0)
-
-
 
 local pageStack = PageStackClass:new(monitor, document)
 pageStack:setSize(monitorX - 2,monitorY - 2)
 pageStack:setPosition(2,2)
 local mainMenuPage = MainMenuPageClass:new(monitor, pageStack, document)
 pageStack:pushPage(mainMenuPage)
-pageStack:changeExitButtonStyle(nil, ELEMENT_BACK_COLOR)
+pageStack:setOnFirstPageClosed(endProgram)
+pageStack:getExitButton():applyDocumentStyle()
 
 local rootPage = PageClass:new(monitor, 1, 1, document)
-rootPage:setBackColor(BACKGROUND_COLOR)
+rootPage:setBackColor(document.style.tertiary)
 rootPage:addElement(pageStack)
-rootPage:addElement(exitButton)
 
 local shouldStopGuiLoop =
     function()

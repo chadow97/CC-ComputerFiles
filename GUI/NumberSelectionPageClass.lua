@@ -4,18 +4,13 @@ local LabelClass            = require "GUI.LabelClass"
 local PageClass             = require "GUI.pageClass"
 local ToggleableButtonClass = require "GUI.ToggleableButtonClass"
 
--- Define constants
-local ELEMENT_BACK_COLOR = colors.red
-local INNER_ELEMENT_BACK_COLOR = colors.lime
-local TEXT_COLOR = colors.yellow
-
-
--- Define the RessourcePage Class 
+---@class NumberSelectionPage: CustomPage
 local NumberSelectionPageClass = {}
 NumberSelectionPageClass.__index = NumberSelectionPageClass
 setmetatable(NumberSelectionPageClass, {__index = CustomPageClass})
 
 function NumberSelectionPageClass:new(monitor, parentPage, document, title, min, max)
+  ---@class NumberSelectionPage: CustomPage
   local instance = setmetatable(CustomPageClass:new(monitor, parentPage, document, "Configuration"), NumberSelectionPageClass)
   instance.title = title
   instance.min = min
@@ -58,7 +53,7 @@ function NumberSelectionPageClass:onBuildCustomPage()
     self.smallPage = PageClass:new(self.monitor,nil, nil, self.document)
     self.smallPage:setSize(smallPageSizeX, smallPageSizeY)
     self.smallPage:setPos(smallPagePosX, smallPagePosY)
-    self.smallPage:setBackColor(ELEMENT_BACK_COLOR)
+    self.smallPage:applyDocumentStyle()
     self.borderPage:addElement(self.smallPage)
 
     local yValueForEntry = smallPagePosY + 1
@@ -66,7 +61,7 @@ function NumberSelectionPageClass:onBuildCustomPage()
     self.titleLabel = LabelClass:new(nil, nil, self.title , self.document)
     self.titleLabel:forceWidthSize(smallPageSizeX - 2)
     self.titleLabel:setUpperCornerPos(smallPagePosX + 1, yValueForEntry)
-    self.titleLabel:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.titleLabel:applyDocumentStyle()
     self.titleLabel:setCenterText(true)
     self.smallPage:addElement(self.titleLabel)
   
@@ -88,7 +83,7 @@ function NumberSelectionPageClass:onBuildCustomPage()
     yValueForEntry = yValueForEntry + 4*4
 
     self.confirmButton = ToggleableButtonClass:new(nil, nil, "Confirm", self.document)
-    self.confirmButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.confirmButton:applyDocumentStyle()
     self.confirmButton:setUpperCornerPos(smallPagePosX + 1, yValueForEntry)
     self.confirmButton:setOnManualToggle(self:getOnConfirmPressed())
     self.confirmButton:setCenterText(true)
@@ -98,7 +93,7 @@ function NumberSelectionPageClass:onBuildCustomPage()
     yValueForEntry = yValueForEntry + 4
 
     self.minMaxInfo = LabelClass:new(nil, nil, string.format("Min:%s/Max:%s",self.min, self.max) , self.document)
-    self.minMaxInfo:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.minMaxInfo:applyDocumentStyle()
     self.minMaxInfo:setUpperCornerPos(smallPagePosX + 1, yValueForEntry)
     self.minMaxInfo:setCenterText(true)
     self.minMaxInfo:forceWidthSize(smallPageSizeX - 2)
@@ -129,7 +124,7 @@ end
 
 function NumberSelectionPageClass:createGridButton(xPos, yPos, symbol, onPress)
     local digitButton = ToggleableButtonClass:new(xPos, yPos, tostring(symbol), self.document)
-    digitButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    digitButton:applyDocumentStyle()
     digitButton:setOnManualToggle(onPress)
     self.smallPage:addElement(digitButton)
     return digitButton
@@ -143,7 +138,6 @@ function NumberSelectionPageClass:getOnDigitPressed(digit)
     return function ()
         local targetDisplay =  self.inputContent .. tostring(digit)
         local targetNumber = tonumber(targetDisplay)
-        logger.logToFile("maxdigitsize: " .. self.maxDigitSize)
         if #targetDisplay > self.maxDigitSize then
             return
         end

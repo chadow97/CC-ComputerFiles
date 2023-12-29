@@ -7,18 +7,11 @@ local InventoryManagerClass = require "COLONY.MODEL.InventoryManagerClass"
 local BuilderManagerClass   = require "COLONY.MODEL.BuilderManagerClass"
 local PeripheralManagerClass= require "COLONY.MODEL.PeripheralManagerClass"
 
--- Define constants
-
-local ELEMENT_BACK_COLOR = colors.red
-local INNER_ELEMENT_BACK_COLOR = colors.lime
-local TEXT_COLOR = colors.yellow
-
 -- Define the RessourcePage Class 
+---@class WorkOrderPage: CustomPage
 local WorkOrderPageClass = {}
 WorkOrderPageClass.__index = WorkOrderPageClass
 setmetatable(WorkOrderPageClass, {__index = CustomPageClass})
-
-
 
 function WorkOrderPageClass:new(monitor, parentPage, document)
   self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "workOrderPage"), WorkOrderPageClass)
@@ -45,13 +38,13 @@ function WorkOrderPageClass:onBuildCustomPage()
     workOrderTable:setDisplayKey(false)
     workOrderTable.title = nil
     workOrderTable:setRowHeight(5)
-    workOrderTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
+    workOrderTable:applyDocumentStyle()
     workOrderTable:setHasManualRefresh(true)
     workOrderTable:setSize(parentPageSizeX, parentPageSizeY)
     workOrderTable:setPos(parentPagePosX,parentPagePosY)
     workOrderTable:setOnTableElementPressedCallback(self:getOnWorkOrderPressed())
 
-    self:setBackColor(ELEMENT_BACK_COLOR)
+    self:applyDocumentStyle()
     self:addElement(workOrderTable)
 
 end

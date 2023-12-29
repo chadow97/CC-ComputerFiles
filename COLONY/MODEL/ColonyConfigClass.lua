@@ -1,7 +1,7 @@
 local ConfigClass = require("MODEL.ConfigClass") 
 local logger                  = require("UTIL.logger")
 
-
+---@class ColonyConfig: Config
 local ColonyConfigClass = {}
 ColonyConfigClass.__index = ColonyConfigClass
 setmetatable(ColonyConfigClass, { __index = ConfigClass })
@@ -41,6 +41,22 @@ end
 function ColonyConfigClass:getRequestInventoryPath()
     return fs.combine(self:get(ConfigClass.configs.data_dir_path),
                       self:get(ColonyConfigClass.configs.request_inventory_filename))
+end
+
+function ColonyConfigClass:getStyles()
+    return self:get(ColonyConfigClass.configs.primary_style), self:get(ColonyConfigClass.configs.secondary_style),self:get(ColonyConfigClass.configs.tertiary_style)
+end
+
+function ColonyConfigClass:getPrimaryStyle()
+    return self:get(ColonyConfigClass.configs.primary_style)
+end
+
+function ColonyConfigClass:getSecondaryStyle()
+    return self:get(ColonyConfigClass.configs.secondary_style)
+end
+
+function ColonyConfigClass:getTertiaryStyle()
+    return self:get(ColonyConfigClass.configs.tertiary_style)
 end
 
 return ColonyConfigClass

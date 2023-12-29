@@ -74,6 +74,9 @@ function logger.logGenericTableToFile(object, maxDepth, logLevel)
     local text = CustomPrintUtils.getAnythingString(object, maxDepth)
     local path = getFilePath()
     local file = fs.open(path, "a")
+    if not file then
+        return
+    end
     file.write(text)
     file.close()
 end
@@ -105,9 +108,11 @@ function logger.logToFile(objectToPrint, logLevel)
     local path = getFilePath()
     local file = fs.open(path, "a")
     ---@diagnostic disable-next-line: param-type-mismatch
-    local time = textutils.formatTime(os.time("local"))
+    local time = textutils.formatTime(os.time("local"), true)
     local logLevelString = logger.logLevelToString(logLevel)
-
+    if not file then
+        return
+    end
     file.writeLine(pretty.render(pretty.group(pretty.text("[") .. pretty.pretty(time) .. pretty.text("-") .. pretty.text(logLevelString) .. pretty.text("]:").. pretty.pretty(text))))
     file.close()
 
@@ -126,6 +131,9 @@ function logger.callStackToFile()
     local path = getFilePath()
 
     local file = fs.open(path, "a")
+    if not file then
+        return
+    end
     file.writeLine("----------------------------------------------------------")
 
     local level = 2 -- start at level 2 to skip the printCallStack function itself

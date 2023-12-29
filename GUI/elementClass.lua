@@ -3,6 +3,7 @@ local IdGenerator = require("UTIL.IdGenerator")
 local AreaClass = require("UTIL.AreaClass")
 -- Define the ButtonClass table
 
+---@class Element
 local ElementClass = {}
 ElementClass.__index = ElementClass
 
@@ -16,8 +17,8 @@ ElementClass.properties = { on_draw_function = "on_draw_function"}
 
 -- Define a constructor for the ButtonClass
 function ElementClass:new(xPos, yPos, document)
+  ---@class Element
   local instance = setmetatable({}, ElementClass)
-  assert(document, "Document is nil!")
   instance.x = xPos or 1
   instance.y = yPos or 1
   instance.monitor = nil
@@ -30,6 +31,10 @@ function ElementClass:new(xPos, yPos, document)
   instance.blockDraw = false
   instance.document = document
   instance.type = "element"
+  if not document then
+    logger.callStackToFile()
+    error("Document is nil")
+  end
   return instance
 end
 
@@ -108,7 +113,6 @@ function ElementClass:draw()
     if self.onDrawCallback then
         self:onDrawCallback()
     end
-
     self:internalDraw()
     self:removeDirty()
 end
@@ -188,6 +192,16 @@ end
 function ElementClass:setParentPage(page)
     self.parentPage = page
     self:setParentDirty()
+end
+
+
+---@param style Style
+function ElementClass:applyStyle(style)
+    style:applyStyleToElement(self)
+end
+
+function ElementClass:applyDocumentStyle()
+    self:applyStyle(self.document.style)
 end
 
 function ElementClass:onResumeAfterContextLost()

@@ -6,13 +6,9 @@ local CustomPageClass       = require "GUI.CustomPageClass"
 local ToggleableButtonClass = require "GUI.ToggleableButtonClass"
 local ElementClass          = require "GUI.ElementClass"
 
--- Define constants
-
-local ELEMENT_BACK_COLOR = colors.red
-local INNER_ELEMENT_BACK_COLOR = colors.lime
-local TEXT_COLOR = colors.yellow
 
 -- Define the RessourcePage Class 
+---@class BuilderPage: CustomPage
 local BuilderPageClass = {}
 BuilderPageClass.__index = BuilderPageClass
 setmetatable(BuilderPageClass, {__index = CustomPageClass})
@@ -43,7 +39,7 @@ builderTable:setDataFetcher(self.document:getManagerForType(BuilderManagerClass.
 builderTable:setDisplayKey(false)
 builderTable.title = nil
 builderTable:setRowHeight(7)
-builderTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
+builderTable:applyDocumentStyle()
 builderTable:setHasManualRefresh(true)
 builderTable:setSize(sizeXForTables, parentPageSizeY)
 builderTable:setPos(parentPagePosX,parentPagePosY)
@@ -57,7 +53,7 @@ inventoryTable:setDataFetcher(self.inventoryManager)
 inventoryTable:setDisplayKey(false)
 inventoryTable.title = nil
 inventoryTable:setRowHeight(6)
-inventoryTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
+inventoryTable:applyDocumentStyle()
 inventoryTable:setHasManualRefresh(true)
 inventoryTable:setSize(sizeXForTables, parentPageSizeY)
 inventoryTable:setPos(parentPagePosX + sizeXForTables + 1,parentPagePosY)
@@ -66,7 +62,7 @@ inventoryTable:setTableElementsProperties({[ToggleableButtonClass.properties.aut
 inventoryTable:setOnTableElementPressedCallback(self:getOnInventoryPressed())
 self.inventoryTable = inventoryTable
 
-self:setBackColor(ELEMENT_BACK_COLOR)
+self:applyDocumentStyle()
 
 self:addElement(builderTable)
 self:addElement(inventoryTable)

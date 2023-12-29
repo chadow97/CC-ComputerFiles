@@ -1,5 +1,6 @@
 local logger = require "UTIL.logger"
 
+---@class Config
 local ConfigClass = {}
 ConfigClass.__index = ConfigClass
 
@@ -10,6 +11,7 @@ ConfigClass.configs =
     }
 
 function ConfigClass:new()
+    ---@class Config
     local o = setmetatable({}, ConfigClass)
     o.configTable = {}
 
@@ -19,12 +21,15 @@ function ConfigClass:new()
     o.tableFileHandler = TableFileHandlerClass:new(o:getConfigPath())
 
     o:_readSavedConfig()
+    
 
     return o
 end
 
 function ConfigClass:setDefault(configKey, configValue)
-    self:_changeConfigWithoutSaving(configKey,configValue)
+    if not self.configTable[configKey] then
+        self:_changeConfigWithoutSaving(configKey,configValue)
+    end
 end
 
 function  ConfigClass:get(configKey)

@@ -1,5 +1,5 @@
 
-local customPrintUtils = require("customPrintUtils")
+---@diagnostic disable-next-line: different-requires
 local functionHelperUtils = require("functionHelperUtils")
 
 local function toboolean(str)

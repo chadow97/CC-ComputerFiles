@@ -8,15 +8,7 @@ local RequestInventoryHandlerClass = require "COLONY.MODEL.RequestInventoryHandl
 local RequestInventoryPageClass = require "COLONY.GUI.RequestInventoryPageClass"
 local ButtonClass               = require "GUI.ButtonClass"
 
--- Define constants
-
-local ELEMENT_BACK_COLOR = colors.red
-local INNER_ELEMENT_BACK_COLOR = colors.lime
-local TEXT_COLOR = colors.yellow
-
-local DEFAULT_FILE_PATH = "./DATA/inventoryForRequests.txt"
-
--- Define the RessourcePage Class 
+---@class RequestPage: CustomPage
 local RequestPageClass = {}
 RequestPageClass.__index = RequestPageClass
 setmetatable(RequestPageClass, {__index = CustomPageClass})
@@ -24,6 +16,7 @@ setmetatable(RequestPageClass, {__index = CustomPageClass})
 
 
 function RequestPageClass:new(monitor, parentPage, document)
+  ---@class RequestPage: CustomPage
   local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "requestInventoryPage"), RequestPageClass)
 
   o.parentPage = parentPage
@@ -51,20 +44,20 @@ function RequestPageClass:onBuildCustomPage()
     requestTable:setDisplayKey(true)
     requestTable:setKeyRowPropertion(0.8)
     requestTable:setRowHeight(10)
-    requestTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
+    requestTable:applyDocumentStyle()
     requestTable:setHasManualRefresh(true)
     requestTable:setSize(parentPageSizeX, parentPageSizeY - 4)
     requestTable:setPos(parentPagePosX,parentPagePosY)
     requestTable:setOnTableElementPressedCallback(self:getOnRequestPressed())
     requestTable:setTableElementsProperties({[ButtonClass.properties.should_center]= true}, false, true)
     
-    self:setBackColor(ELEMENT_BACK_COLOR)
+    self:applyDocumentStyle()
     self:addElement(requestTable)
 
     self.targetInventoryButton = ToggleableButtonClass:new(1, 1, self:getInventoryButtonText(), self.document)
     self.targetInventoryButton:forceWidthSize(parentPageSizeX - 2)
     self.targetInventoryButton:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + parentPageSizeY - 4)
-    self.targetInventoryButton:changeStyle(TEXT_COLOR, INNER_ELEMENT_BACK_COLOR)
+    self.targetInventoryButton:applyDocumentStyle()
     self.targetInventoryButton:setOnManualToggle(self:getOnTargetInventoryPressed())
     self.targetInventoryButton:setCenterText(true)
     self:addElement(self.targetInventoryButton)

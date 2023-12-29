@@ -4,18 +4,13 @@ local CustomPageClass       = require "GUI.CustomPageClass"
 local PeripheralManagerClass    = require "COLONY.MODEL.PeripheralManagerClass"
 local PeripheralClass           = require "COLONY.MODEL.PeripheralClass"
 
--- Define constants
-
-local ELEMENT_BACK_COLOR = colors.red
-local INNER_ELEMENT_BACK_COLOR = colors.lime
-local TEXT_COLOR = colors.yellow
-
--- Define the RessourcePage Class 
+---@class PeripheralPageClass: CustomPage
 local PeripheralPageClass = {}
 PeripheralPageClass.__index = PeripheralPageClass
 setmetatable(PeripheralPageClass, {__index = CustomPageClass})
 
 function PeripheralPageClass:new(monitor, parentPage, document)
+  ---@class PeripheralPageClass: CustomPage
   local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "PeripheralPage"), PeripheralPageClass)
 
   o.parentPage = parentPage
@@ -47,13 +42,13 @@ function PeripheralPageClass:onBuildCustomPage()
     peripheralTable:setDisplayKey(false)
     peripheralTable:setRowHeight(5)
     peripheralTable:setColumnCount(3)
-    peripheralTable:changeStyle(ELEMENT_BACK_COLOR, INNER_ELEMENT_BACK_COLOR, TEXT_COLOR)
+    peripheralTable:applyDocumentStyle()
     peripheralTable:setHasManualRefresh(true)
     peripheralTable:setSize(parentPageSizeX, parentPageSizeY)
     peripheralTable:setPos(parentPagePosX,parentPagePosY)    
     self:addElement(peripheralTable)
 
-    self:setBackColor(ELEMENT_BACK_COLOR)
+    self:applyDocumentStyle()
 end
 
 
