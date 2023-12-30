@@ -1,3 +1,6 @@
+-- add absolute paths to package to allow programs to use libraries from anywhere!
+package.path = package.path .. ";/?;/?.lua"
+
 local logger = require("UTIL.logger")
 local s2t = require("UTIL.stringToTypeUtils")
 
