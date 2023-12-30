@@ -1,0 +1,6 @@
+
+-- auto run program!
+shell.run("COLONY/ColonyGUI.lua")
+
+-- use to debug:
+-- shell.run("UTILITY_PROGRAMS/programTester.lua", "COLONY/ColonyGUI.lua")
