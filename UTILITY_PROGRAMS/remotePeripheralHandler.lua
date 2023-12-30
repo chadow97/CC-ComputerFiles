@@ -49,6 +49,7 @@ local function handleCallMethod(peripheralName, methodName, senderID, args)
         end
 
         -- call method
+---@diagnostic disable-next-line: param-type-mismatch
         local success, result = pcall(peripheralObj[methodName], table.unpack(serializedArgs))
         if success then
             message = {response = result}
@@ -87,6 +88,9 @@ local messageCount = 0
 while true do
     logger.log("waiting for message " .. messageCount)
     local senderID, message, protocol = rednet.receive()
+    if (not senderID) then
+        error("No sender id received!")
+    end
     messageCount = messageCount + 1
     logger.log("received message ".. messageCount.."... processing!")
     logger.log(message)

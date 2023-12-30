@@ -11,6 +11,8 @@ local PageStackClass = require("GUI.PageStackClass")
 local LogClass = require("GUI.LogClass")
 local DocumentClass = require("MODEL.DocumentClass")
 
+
+---@type Monitor
 local monitor = peripheral.find("monitor")
 MonUtils.resetMonitor(monitor)
 
