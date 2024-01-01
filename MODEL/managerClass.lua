@@ -11,6 +11,7 @@ function ManagerClass:new(document)
     o.document = document
     o.refreshDelay = document.config:get(DocumentClass.configs.refresh_delay)
     o.lastRefreshTime = nil
+    o.modificationListeners = {}
     return o
 end
 
@@ -86,6 +87,24 @@ end
 
 function ManagerClass:_onRefreshObs()
     error("refresh should be implemented")
+end
+
+function ManagerClass:addNewOb(ob)
+    error("should be implemented")
+end
+
+function ManagerClass:registerModificationListener(listener)
+    table.insert(self.modificationListeners, listener)
+end
+
+function ManagerClass:_obModified(ob)
+    for _, listener in ipairs(self.modificationListeners) do
+        listener:onObModified(ob)
+    end
+end
+
+function ManagerClass:handleEvent(eventName, ...)
+
 end
 
 

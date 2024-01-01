@@ -107,6 +107,24 @@ function ObTableClass:getRowCount()
     return #self.obList
 end
 
+function ObTableClass:onObModified(ob)
+    self:refreshData()
+end
+
+function ObTableClass:refreshWithNewObList(newObList)
+    -- nothing to do if table didn't change
+    if (not newObList or newObList == self.obList) then
+        return
+    end
+    self.document:startEdition()
+    self.obList = newObList
+    self.areButtonsDirty = true
+    self:setElementDirty()
+    self:onPostRefreshData()
+    self.document:registerCurrentAreaAsDirty(self)
+    self.document:endEdition()
+end
+
 function ObTableClass:refreshData()
     -- ask data handler for new data
 
@@ -118,17 +136,7 @@ function ObTableClass:refreshData()
 
     local NewObList = self.dataFetcher:getObs()
 
-    -- nothing to do if table didn't change
-    if (not NewObList or NewObList == self.obList) then
-        return
-    end
-    self.document:startEdition()
-    self.obList = NewObList
-    self.areButtonsDirty = true
-    self:setElementDirty()
-    self:onPostRefreshData()
-    self.document:registerCurrentAreaAsDirty(self)
-    self.document:endEdition()
+    self:refreshWithNewObList(NewObList)
 end
 
 function ObTableClass:processTableElement(elementButton, key, value, position)

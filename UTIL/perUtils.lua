@@ -1,3 +1,4 @@
+local logger = require "UTIL.logger"
 local PerUtils = {}
 
 function PerUtils.getMePer()
@@ -38,9 +39,7 @@ function PerUtils.getPerFromName(peripheral_name)
     if peripheral_object == nil then
         -- try to find with type if possible
         peripheral_object = peripheral.find(peripheral_name)
-        if peripheral_object == nil then
-            print("Invalid peripheral")
-        end       
+        logger.logOnError(peripheral_object, "Invalid peripheral!")     
     end
 
     return peripheral_object

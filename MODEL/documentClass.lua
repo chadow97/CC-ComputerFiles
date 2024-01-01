@@ -163,4 +163,10 @@ function DocumentClass:applyStyle(element)
     self.style:apply(element)
 end
 
+function DocumentClass:handleEvent(...)
+    for _, manager in pairs(self.managers) do
+        manager:handleEvent(...)
+    end
+end
+
 return DocumentClass

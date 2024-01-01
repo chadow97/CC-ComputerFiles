@@ -120,20 +120,23 @@ function stringUtils.Truncate(str, maxLength)
   end
 end
 
+function stringUtils.CenterStringInLine(stringToCenter, width)
+    local padding = width - #stringToCenter
+    if padding < 0 then
+        padding = 0
+    end
+    local leftPadding = math.floor(padding / 2)
+    local rightPadding = padding - leftPadding
+    return string.rep(" ", leftPadding) .. stringToCenter .. string.rep(" ", rightPadding)
+end
+
 function stringUtils.CenterLinesInRectangle(lines, width, height)
     local centeredLines = {}
 
-    -- Function to center a single line
-    local function centerLine(line)
-        local padding = width - #line
-        local leftPadding = math.floor(padding / 2)
-        local rightPadding = padding - leftPadding
-        return string.rep(" ", leftPadding) .. line .. string.rep(" ", rightPadding)
-    end
 
     -- Center each line horizontally
     for _, line in ipairs(lines) do
-        table.insert(centeredLines, centerLine(line))
+        table.insert(centeredLines, stringUtils.CenterStringInLine(line, width))
     end
 
     -- Center vertically

@@ -1,6 +1,6 @@
 
 -- auto run program!
-shell.run("RPH/RphGUI.lua")
+--shell.run("RPH/RphGUI.lua")
 
 -- use to debug:
 -- shell.run("UTILITY_PROGRAMS/programTester.lua", "RPH/RphGUI.lua")

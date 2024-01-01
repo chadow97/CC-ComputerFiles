@@ -72,14 +72,14 @@ function logger.logToTerminal(text, logLevel)
 
 end
 
-function logger.log(object, logLevel)
+function logger.log(object, logLevel, title)
     if not logger.canLog(logLevel) then
         return
     end
 
 
     if logger.output == logger.OUTPUT.FILE then
-        logger.logToFile(object,logLevel)
+        logger.logToFile(object,logLevel, title)
     end
     if logger.output == logger.OUTPUT.TERMINAL then
         logger.logToTerminal(object ,logLevel)
@@ -99,7 +99,7 @@ function logger.canLog(logLevel)
 end
 
 local function callStackObjectToString(callStackObject)
-    local resultString = string.format("CALLSTACK FROM ERROR: %s \n", callStackObject.errorMessage)
+    local resultString = ""
     for _, callStackLine in ipairs(callStackObject.lines) do
         resultString = resultString .. callStackLine .. "\n"    
     end
@@ -123,14 +123,16 @@ function logger.logOnError(isValid, errorMessage)
     local callStackObject = {lines = callStack, errorMessage = errorMessage,type ="callstack"}
     callStackObject.__tostring = callStackObjectToString
     setmetatable(callStackObject,callStackObject)
-    logger.log(callStackObject, logger.LOGGING_LEVEL.ALWAYS_DEBUG)
+    logger.log(callStackObject, 
+               logger.LOGGING_LEVEL.ALWAYS_DEBUG, 
+               string.format("CALLSTACK FROM ERROR: %s", callStackObject.errorMessage))
 end
 
 local function isObToPrintCallStack(object)
     return type(object) == "table" and object.type == "callstack" 
 end
 
-function logger.logToFile(objectToPrint, logLevel)
+function logger.logToFile(objectToPrint, logLevel, title)
 
     if not logger.canLog(logLevel) then
         return
@@ -138,6 +140,10 @@ function logger.logToFile(objectToPrint, logLevel)
 
     if not logger.fileName then
        logger.fileName = "logger.log" 
+    end
+
+    if not title then
+        title = ""
     end
 
     local path = getFilePath()
@@ -150,8 +156,8 @@ function logger.logToFile(objectToPrint, logLevel)
     end
     local objectString = pretty.render(pretty.pretty(objectToPrint), 100)
     local logString = string.format("[%s-%s]:", time, logLevelString)
-    if not isObToPrintCallStack(objectToPrint) and #stringUtils.splitLines(objectString) > 1 then
-        logString = logString .. "\n"
+    if #stringUtils.splitLines(objectString) > 1 or title ~= "" then
+        logString = logString .. title .. "\n"
     end
     logString = logString .. objectString .. "\n"
     file.write(logString)

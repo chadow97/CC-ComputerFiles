@@ -1,12 +1,17 @@
 local logger = require "UTIL.logger"
 local DocumentClass = require "MODEL.DocumentClass"
-local GuiHandlerClass = {}
+
+local PerformanceMonitorClass = require("PERFMON.PerformanceMonitor")
+
+
 
 ---@class GuiHandler
+local GuiHandlerClass = {}
 function GuiHandlerClass:new(mainPage, shouldStopFunc, document)
     if not mainPage then
         error("Gui handler must have a page!")
     end
+    ---@class GuiHandler
     local o = {
       mainPage = mainPage,
       shouldStopFunc = shouldStopFunc or function() return false end,
@@ -52,6 +57,7 @@ end
 function GuiHandlerClass:loop()
   local refreshTimerID = nil
   local timerStartTime = nil
+  local PerfMonitor = PerformanceMonitorClass.getInstance()
   
   while not self.shouldStopFunc() do
     local timeSinceLastUpdate = 0
@@ -71,17 +77,36 @@ function GuiHandlerClass:loop()
       refreshTimerID = os.startTimer(self.refreshDelay)
       timerStartTime = os.epoch("utc")
     end
-    
-    local eventData = {os.pullEvent()}
-    local eventName = eventData[1]
-    
-    if eventName == "timer" and eventData[2] == refreshTimerID then
-      eventData = {"refresh_data"}
-      refreshTimerID = nil
-      self:handleRefresh()
+
+    if PerfMonitor ~= nil then
+        PerfMonitor:startSection("Event Pull")   
     end
-    
+    local eventData = {os.pullEvent()}
+    ---@type string
+    local eventName = eventData[1]
+    local isRefreshingData = false
+    if PerfMonitor ~= nil then
+        PerfMonitor:endSection("Event Pull")
+    end
+    --overload event refresh data
+    if eventName == "timer" and eventData[2] == refreshTimerID then
+        eventName = "refresh_data"
+        eventData = {eventName}
+        refreshTimerID = nil
+        isRefreshingData = true
+        
+    end
+    if PerfMonitor ~= nil then
+        PerfMonitor:startSection(eventName)
+    end
+    if (isRefreshingData) then
+        self:handleRefresh()
+    end
+    self.document:handleEvent(table.unpack(eventData))
     self.mainPage:handleEvent(table.unpack(eventData))
+    if PerfMonitor ~= nil then
+        PerfMonitor:endSection(eventName)
+    end
   end
 end
 

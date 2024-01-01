@@ -1,15 +1,21 @@
 -- add absolute paths to package to allow programs to use libraries from anywhere!
 package.path = package.path .. ";/?;/?.lua"
 -- Import required modules
-local ButtonClass = require("GUI.ButtonClass")
+local RphDocumentClass = require "RPH.MODEL.RphDocumentClass"
+local MessagesPageClass = require "RPH.GUI.MessagesPageClass"
 local PageClass = require("GUI.PageClass")
 local MonUtils = require("UTIL.monUtils")
 local logger = require("UTIL.logger")
-local peripheralProxyClass = require("UTIL.peripheralProxy")
 local GuiHandlerClass = require("GUI.GuiHandlerClass")
-local MainMenuPageClass = require("COLONY.GUI.MainMenuPageClass")
 local PageStackClass     = require("GUI.PageStackClass")
-local ColonyDocumentClass= require("COLONY.MODEL.ColonyDocumentClass")
+local PerformanceMonitorClass = require("PERFMON.PerformanceMonitor")
+-- Initialize logger for debug
+logger.init(term.current(), "RPH.log", true,logger.LOGGING_LEVEL.WARNING, logger.OUTPUT.FILE)
+logger.log("Started RPH", logger.LOGGING_LEVEL.ALWAYS)
+
+
+local PerfMonitor = PerformanceMonitorClass.createInstance("./output/perf_report_rph.log", "RPH", false)
+PerfMonitor:startSection("Initialisation")
 
 -- Setup Monitor
 ---@type Monitor
@@ -18,12 +24,9 @@ MonUtils.resetMonitor(monitor)
 
 local monitorX, monitorY = monitor.getSize()
 
--- Initialize logger for debug
-logger.init(term.current(), "RPH.log", true,logger.LOGGING_LEVEL.WARNING, logger.OUTPUT.FILE)
-logger.log("Started RPH", logger.LOGGING_LEVEL.ALWAYS)
 
 -- Create document, allows to retrieve data.
-local document = DocumentClass:new()
+local document = RphDocumentClass:new()
 document:startEdition()
 -- Setup exit program button
 local isRunning = true
@@ -31,11 +34,14 @@ local function endProgram()
     isRunning = false
 end
 
+-- Open the rednet modem
+rednet.open("left")
+
 local pageStack = PageStackClass:new(monitor, document)
 pageStack:setSize(monitorX - 2,monitorY - 2)
 pageStack:setPosition(2,2)
-local mainMenuPage = MainMenuPageClass:new(monitor, pageStack, document)
-pageStack:pushPage(mainMenuPage)
+local messagePageClass = MessagesPageClass:new(monitor, pageStack, document)
+pageStack:pushPage(messagePageClass)
 pageStack:setOnFirstPageClosed(endProgram)
 pageStack:getExitButton():applyDocumentStyle()
 
@@ -50,6 +56,8 @@ local shouldStopGuiLoop =
 local guiHandler = GuiHandlerClass:new(rootPage, shouldStopGuiLoop, document)
 document:registerEverythingAsDirty()
 document:endEdition()
+PerfMonitor:endSection("Initialisation")
 guiHandler:loop()
+PerfMonitor:endMonitoring()
 
 
