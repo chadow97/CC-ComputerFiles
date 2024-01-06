@@ -19,6 +19,7 @@ function ColonyConnectionProviderClass:new(document)
 end
 
 function ColonyConnectionProviderClass:getCurrentChannel()
+    logger.db(self.document)
     return self.document.config:get(ColonyConfigClass.configs.proxy_peripherals_channel)
 end
 

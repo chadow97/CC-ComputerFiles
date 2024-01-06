@@ -1,6 +1,6 @@
 
 local DocumentClass = require("MODEL.DocumentClass")  -- Adjust the path if necessary
-local InventoryManagerClass = require("COMMON.MODEL.InventoryClass")
+local InventoryManagerClass = require("COMMON.MODEL.InventoryManagerClass")
 local BuilderManagerClass = require("COLONY.MODEL.BuilderManagerClass")
 local ColonyManagerClass  = require("COLONY.MODEL.ColonyManagerClass")
 local RequestManagerClass = require("COLONY.MODEL.RequestManagerClass")
@@ -11,6 +11,7 @@ local ColonyConfigClass = require("COLONY.MODEL.ColonyConfigClass")
 local logger                  = require("UTIL.logger")
 local PeripheralManagerClass  = require("COMMON.MODEL.PeripheralManagerClass")
 local ColonyStyleClass        = require("COLONY.MODEL.ColonyStyleClass")
+local ColonyConnectionProviderClass = require("COLONY.MODEL.ColonyConnectionProviderClass")
 
 
 ---@class ColonyDocument:Document
@@ -27,7 +28,8 @@ function ColonyDocumentClass:new()
     -- register managers used in colony
     o:registerManager(InventoryManagerClass:new(o))
     -- make sure to initialize peripherals after inventory as it uses the mgr
-    o:registerManager(PeripheralManagerClass:new(o))
+    logger.db(o)
+    o:registerManager(PeripheralManagerClass:new(o, ColonyConnectionProviderClass:new(o)))
 
     o:registerManager(MeSystemManagerClass:new(o))
     o:registerManager(MeItemManagerClass:new(o))
