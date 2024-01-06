@@ -2,7 +2,7 @@ local logger = require "UTIL.logger"
 local DocumentClass = require("MODEL.DocumentClass")
 
 ---@class Manager
-ManagerClass = {}
+local ManagerClass = {}
 ManagerClass.__index = ManagerClass
 
 -- Constructor for ObClass

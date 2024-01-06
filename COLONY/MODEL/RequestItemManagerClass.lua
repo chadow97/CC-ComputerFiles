@@ -6,6 +6,7 @@ local MeItemManagerClass  = require("COLONY.MODEL.MeItemManagerClass")
 local InventoryManagerClass = require("COMMON.MODEL.InventoryManagerClass")
 local PeripheralManagerClass= require("COMMON.MODEL.PeripheralManagerClass")
 
+---@class RequestItemManager: Manager
 local RequestItemManagerClass = {}
 
 RequestItemManagerClass.TYPE = "REQUEST_ITEM"
@@ -14,6 +15,7 @@ RequestItemManagerClass.__index = RequestItemManagerClass
 setmetatable(RequestItemManagerClass, { __index = ManagerClass })
 
 function RequestItemManagerClass:new(document)
+    ---@class RequestItemManager: Manager
     local o = setmetatable(ManagerClass:new(document), RequestItemManagerClass)
     o.colonyPeripheral = document:getManagerForType(PeripheralManagerClass.TYPE):getMainColonyPeripheral()
     o.type = RequestItemManagerClass.TYPE

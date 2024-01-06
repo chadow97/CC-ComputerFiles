@@ -2,15 +2,15 @@ local logger = require "UTIL.logger"
 local ConfigClass = require "MODEL.ConfigClass"
 local StyleClass  = require "MODEL.StyleClass"
 
----@class Document
-DocumentClass = {}
+---@class ObDocument
+local DocumentClass = {}
 DocumentClass.__index = DocumentClass
 
 DocumentClass.configs = {refresh_delay ="refresh_delay"}
 
 
 function DocumentClass:new()
-    ---@class Document
+    ---@class ObDocument
     local o = setmetatable({}, DocumentClass)
     o.managers = {}
     o.nEditionStarted = 0

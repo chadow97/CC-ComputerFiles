@@ -1,5 +1,4 @@
 local logger = require "UTIL.logger"
-local TableFileHandlerClass = require("UTIL.tableFileHandlerClass")
 local RemoteConnectionClass = require("UTIL.RemoteConnectionClass")
 
 ---@class ConnectionProvider
