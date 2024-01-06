@@ -3,9 +3,9 @@ local logger                = require "UTIL.logger"
 local WorkOrderFetcherClass = require "COLONY.MODEL.WorkOrderFetcherClass"
 local RessourcePageClass    = require "COLONY.GUI.RessourcePageClass"
 local CustomPageClass       = require "GUI.CustomPageClass"
-local InventoryManagerClass = require "COLONY.MODEL.InventoryManagerClass"
+local InventoryManagerClass = require "COMMON.model.inventoryManagerClass"
 local BuilderManagerClass   = require "COLONY.MODEL.BuilderManagerClass"
-local PeripheralManagerClass= require "COLONY.MODEL.PeripheralManagerClass"
+local PeripheralManagerClass= require "COMMON.MODEL.PeripheralManagerClass"
 
 -- Define the RessourcePage Class 
 ---@class WorkOrderPage: CustomPage

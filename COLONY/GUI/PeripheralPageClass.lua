@@ -1,8 +1,8 @@
 local ObTableClass          = require "GUI.ObTableClass"
 local logger                = require "UTIL.logger"
 local CustomPageClass       = require "GUI.CustomPageClass"
-local PeripheralManagerClass    = require "COLONY.MODEL.PeripheralManagerClass"
-local PeripheralClass           = require "COLONY.MODEL.PeripheralClass"
+local PeripheralManagerClass    = require "COMMON.MODEL.PeripheralManagerClass"
+local PeripheralClass           = require "COMMON.MODEL.PeripheralClass"
 
 ---@class PeripheralPageClass: CustomPage
 local PeripheralPageClass = {}

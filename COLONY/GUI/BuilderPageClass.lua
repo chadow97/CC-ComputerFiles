@@ -1,7 +1,7 @@
 local ObTableClass          = require "GUI.ObTableClass"
 local logger                = require "UTIL.logger"
 local BuilderManagerClass   = require "COLONY.MODEL.BuilderManagerClass"
-local InventoryManagerClass = require "COLONY.MODEL.InventoryManagerClass"
+local InventoryManagerClass = require "COMMON.model.inventoryManagerClass"
 local CustomPageClass       = require "GUI.CustomPageClass"
 local ToggleableButtonClass = require "GUI.ToggleableButtonClass"
 local ElementClass          = require "GUI.ElementClass"

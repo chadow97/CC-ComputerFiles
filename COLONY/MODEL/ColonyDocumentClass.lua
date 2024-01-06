@@ -1,6 +1,6 @@
 
 local DocumentClass = require("MODEL.DocumentClass")  -- Adjust the path if necessary
-local InventoryManagerClass = require("COLONY.MODEL.InventoryManagerClass")
+local InventoryManagerClass = require("COMMON.MODEL.InventoryClass")
 local BuilderManagerClass = require("COLONY.MODEL.BuilderManagerClass")
 local ColonyManagerClass  = require("COLONY.MODEL.ColonyManagerClass")
 local RequestManagerClass = require("COLONY.MODEL.RequestManagerClass")
@@ -9,7 +9,7 @@ local MeItemManagerClass      = require("COLONY.MODEL.MeItemManagerClass")
 local MeSystemManagerClass    = require("COLONY.MODEL.MeSystemManagerClass")
 local ColonyConfigClass = require("COLONY.MODEL.ColonyConfigClass")
 local logger                  = require("UTIL.logger")
-local PeripheralManagerClass  = require("COLONY.MODEL.PeripheralManagerClass")
+local PeripheralManagerClass  = require("COMMON.MODEL.PeripheralManagerClass")
 local ColonyStyleClass        = require("COLONY.MODEL.ColonyStyleClass")
 
 

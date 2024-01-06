@@ -5,7 +5,7 @@ local RequestManagerClass   = require "COLONY.MODEL.RequestManagerClass"
 local RequestDetailsPageClass = require "COLONY.GUI.RequestDetailsPageClass"
 local ToggleableButtonClass   = require "GUI.ToggleableButtonClass"
 local RequestInventoryHandlerClass = require "COLONY.MODEL.RequestInventoryHandlerClass"
-local InventoryManagerClass = require "COLONY.MODEL.InventoryManagerClass"
+local InventoryManagerClass = require "COMMON.model.inventoryManagerClass"
 local ElementClass          = require "GUI.elementClass"
 
 ---@class RequestInventoryPageClass: CustomPage

@@ -10,7 +10,7 @@ setmetatable(MessagesPageClass, {__index = CustomPageClass})
 
 function MessagesPageClass:new(monitor, parentPage, document)
   ---@class MessagesPage: CustomPage
-  local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "PeripheralPage"), MessagesPageClass)
+  local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "MessagePage"), MessagesPageClass)
 
   o.parentPage = parentPage
   o.messageManager = o.document:getManagerForType(MessageManagerClass.TYPE)

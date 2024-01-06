@@ -1,7 +1,7 @@
 -- InventoryManagerClass.lua
 local ManagerClass = require("MODEL.ManagerClass")  -- Adjust the path if necessary
 local PerTypes     = require("UTIL.perTypes")
-local InventoryClass = require("COLONY.MODEL.InventoryClass")
+local InventoryClass = require("COMMON.MODEL.InventoryClass")
 local logger         = require("UTIL.logger")
 local ChestWrapper   = require("UTIL.InventoryWrapperClass")
 

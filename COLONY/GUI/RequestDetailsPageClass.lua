@@ -3,7 +3,7 @@ local logger                = require "UTIL.logger"
 local ButtonClass           = require "GUI.ButtonClass"
 local RequestItemClass      = require "COLONY.MODEL.RequestItemClass"
 local MeUtils               = require "UTIL.meUtils"
-local InventoryManagerClass = require "COLONY.MODEL.InventoryManagerClass"
+local InventoryManagerClass = require "COMMON.model.inventoryManagerClass"
 
 local CustomPageClass       = require "GUI.CustomPageClass"
 local RequestManagerClass   = require "COLONY.MODEL.RequestManagerClass"

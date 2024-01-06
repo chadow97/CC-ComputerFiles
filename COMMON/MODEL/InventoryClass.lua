@@ -1,7 +1,7 @@
 -- InventoryClass.lua
 local ObClass = require("MODEL.ObClass")  -- Adjust the path if necessary
 local stringUtils = require("UTIL.stringUtils")
-local PeripheralClass = require("COLONY.MODEL.PeripheralClass")
+local PeripheralClass = require("COMMON.MODEL.PeripheralClass")
 local logger          = require("UTIL.logger")
 
 

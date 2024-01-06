@@ -1,11 +1,13 @@
 local logger = require "UTIL.logger"
 local DocumentClass = require("MODEL.DocumentClass")
--- ObClass.lua
+
+---@class Manager
 ManagerClass = {}
 ManagerClass.__index = ManagerClass
 
 -- Constructor for ObClass
 function ManagerClass:new(document)
+    ---@class Manager
     local o = setmetatable({}, ManagerClass)
     o.type = nil
     o.document = document

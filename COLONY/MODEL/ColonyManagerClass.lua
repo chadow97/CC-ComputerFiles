@@ -2,7 +2,7 @@
 local colIntUtil = require("UTIL.colonyIntegratorPerUtils")
 local logger = require("UTIL.logger")
 local ColonyClass           = require("COLONY.MODEL.ColonyClass")
-local PeripheralManagerClass= require("COLONY.MODEL.PeripheralManagerClass")
+local PeripheralManagerClass= require("COMMON.MODEL.PeripheralManagerClass")
 
 local DEFAULT_FILE_PATH = "./DATA/associations.txt"
 

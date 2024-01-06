@@ -3,8 +3,8 @@ local logger = require("UTIL.logger")
 local RequestManagerClass = require("COLONY.MODEL.RequestManagerClass")
 local RequestItemClass    = require("COLONY.MODEL.RequestItemClass")
 local MeItemManagerClass  = require("COLONY.MODEL.MeItemManagerClass")
-local InventoryManagerClass = require("COLONY.MODEL.InventoryManagerClass")
-local PeripheralManagerClass= require("COLONY.MODEL.PeripheralManagerClass")
+local InventoryManagerClass = require("COMMON.MODEL.InventoryClass")
+local PeripheralManagerClass= require("COMMON.MODEL.PeripheralManagerClass")
 
 local RequestItemManagerClass = {}
 

@@ -2,22 +2,21 @@
 local ManagerClass = require("MODEL.ManagerClass")  -- Adjust the path if necessary
 local logger         = require("UTIL.logger")
 local perUtils       = require("UTIL.perUtils")
-local PeripheralClass= require("COLONY.MODEL.PeripheralClass")
-local InventoryManagerClass = require("COLONY.MODEL.InventoryManagerClass")
+local PeripheralClass= require("COMMON.MODEL.PeripheralClass")
+local InventoryManagerClass = require("COMMON.MODEL.InventoryClass")
 local perTypes              = require("UTIL.perTypes")
-local ColonyConfigClass     = require("COLONY.MODEL.ColonyConfigClass")
 local peripheralProxy       = require("UTIL.peripheralProxy")
-local RemoteConnectionClass = require("UTIL.RemoteConnectionClass")
 local RemoteComputerClass   = require("UTIL.RemoteComputerClass")
 
-
+---@class PeripheralManager: Manager
 local PeripheralManagerClass = {}
 PeripheralManagerClass.__index = PeripheralManagerClass
 setmetatable(PeripheralManagerClass, { __index = ManagerClass })
 
 PeripheralManagerClass.TYPE = "Peripheral"
 -- Constructor for PeripheralManagerClass
-function PeripheralManagerClass:new(document)
+function PeripheralManagerClass:new(document, connectionProvider)
+    ---@class PeripheralManager: Manager
     local o = setmetatable(ManagerClass:new(document), PeripheralManagerClass)
     o.type = PeripheralManagerClass.TYPE
     o.peripherals = {}
@@ -26,6 +25,9 @@ function PeripheralManagerClass:new(document)
     o.wirelessModemToUse = nil
     o.connection = nil
     o.remoteComputer = nil
+    ---@type ConnectionProvider
+    o.connectionProvider = connectionProvider
+    ---T
     return o
 end
 
@@ -142,20 +144,8 @@ function PeripheralManagerClass:_onRefreshObs()
         logger.log("More than one wireless modem found, ", logger.LOGGING_LEVEL.WARNING)
     end
 
-    local proxyPerChannel = self.document.config:get(ColonyConfigClass.configs.proxy_peripherals_channel)
-    local wirelessModemName = nil
-    if self.wirelessModemToUse then
-        wirelessModemName = self.wirelessModemToUse.name
-    end
-    if self.connection then
-        if not self.connection:isTo(wirelessModemName, proxyPerChannel) then
-            self.connection:close()
-            self.connection = nil
-        end
-    end
-    if not self.connection then
-        self.connection = RemoteConnectionClass:new(proxyPerChannel, self.wirelessModemToUse.name)
-    end 
+    self.connection = self.connectionProvider:getConnection(self.wirelessModemToUse)
+
     self.remoteComputer = RemoteComputerClass:new(self.connection)
 
     local remotePeripheralNames = self.remoteComputer:getPeripherals()

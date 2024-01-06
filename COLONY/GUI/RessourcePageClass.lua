@@ -6,7 +6,7 @@ local RessourceClass        = require "COLONY.MODEL.RessourceClass"
 local MeUtils               = require "UTIL.meUtils"
 local logger                = require "UTIL.logger"
 local CustomPageClass       = require "GUI.CustomPageClass"
-local PeripheralManagerClass= require "COLONY.MODEL.PeripheralManagerClass"
+local PeripheralManagerClass= require "COMMON.MODEL.PeripheralManagerClass"
 
 local LOG_HEIGHT = 10
 
