@@ -5,6 +5,7 @@ local BuilderClass = require("COLONY.MODEL.builderClass")
 local TableFileHandlerClass = require("UTIL.tableFileHandlerClass")
 local InventoryManagerClass = require("COMMON.MODEL.InventoryClass")
 local PeripheralManagerClass= require("COMMON.MODEL.PeripheralManagerClass")
+local ManagerClass = require("MODEL.ManagerClass")
 
 local BuilderManagerClass = {}
 

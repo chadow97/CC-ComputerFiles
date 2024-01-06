@@ -11,8 +11,6 @@ setmetatable(InventoryClass, { __index = PeripheralClass })
 
 -- Constructor for InventoryClass
 function InventoryClass:new(inventoryWrapper)
-    logger.cs()
-    logger.db(inventoryWrapper)
     local uniqueKey = inventoryWrapper:getName()
     local o = setmetatable(PeripheralClass:new(inventoryWrapper.per), InventoryClass)
     o.name = uniqueKey

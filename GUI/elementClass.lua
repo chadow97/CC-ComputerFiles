@@ -1,6 +1,7 @@
 local logger = require("UTIL.logger")
 local IdGenerator = require("UTIL.IdGenerator")
 local AreaClass = require("UTIL.AreaClass")
+local expect    = require("cc.expect").expect
 -- Define the ButtonClass table
 
 ---@class Element
@@ -17,6 +18,8 @@ ElementClass.properties = { on_draw_function = "on_draw_function"}
 
 -- Define a constructor for the ButtonClass
 function ElementClass:new(xPos, yPos, document)
+  expect(1, xPos,"number", "nil")
+  expect(2, yPos,"number", "nil")
   ---@class Element
   local instance = setmetatable({}, ElementClass)
   instance.x = xPos or 1
@@ -173,6 +176,8 @@ function ElementClass:isPosInElement(x, y)
 end
 
 function ElementClass:setPos(x, y)
+    expect(1,x,"number", "nil")
+    expect(2,y, "number", "nil")
     self.x = x
     self.y = y
     self:setParentDirty()

@@ -3,6 +3,7 @@ local colIntUtil = require("UTIL.colonyIntegratorPerUtils")
 local logger = require("UTIL.logger")
 local RequestClass = require("COLONY.MODEL.RequestClass")
 local PeripheralManagerClass = require("COMMON.MODEL.PeripheralManagerClass")
+local ManagerClass = require("MODEL.ManagerClass")
 
 local RequestManagerClass = {}
 

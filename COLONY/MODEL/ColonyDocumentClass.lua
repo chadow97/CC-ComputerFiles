@@ -28,7 +28,6 @@ function ColonyDocumentClass:new()
     -- register managers used in colony
     o:registerManager(InventoryManagerClass:new(o))
     -- make sure to initialize peripherals after inventory as it uses the mgr
-    logger.db(o)
     o:registerManager(PeripheralManagerClass:new(o, ColonyConnectionProviderClass:new(o)))
 
     o:registerManager(MeSystemManagerClass:new(o))

@@ -34,7 +34,7 @@ end
 
 
 function PeripheralProxy:callMethodInternal(methodName, info, ...)
-    print("calling method!" .. methodName)
+    logger.log("Calling method: ".. methodName, logger.LOGGING_LEVEL.INFO)
     if  type(self.peripheralName) =="function" then
         return "Missing peripheral name!"
     end

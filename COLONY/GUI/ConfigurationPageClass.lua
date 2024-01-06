@@ -10,6 +10,8 @@ local ColonyManagerClass = require("COLONY.MODEL.ColonyManagerClass")
 local NumberSelectionPageClass = require("GUI.NumberSelectionPageClass")
 local perTypes                 = require("UTIL.perTypes")
 local ColorSelectionPageClass  = require("GUI.ColorSelectionPageClass")
+local DocumentClass = require("MODEL.DocumentClass")
+local StyleConfigurationModuleBuilder = require("COMMON.GUI.StyleConfigurationModuleBuilder")
 
 ---@class ConfigurationPage: CustomPage
 local ConfigurationPageClass = {}
@@ -105,29 +107,13 @@ function ConfigurationPageClass:onBuildCustomPage()
 
     yValueForEntry = yValueForEntry + 4
 
-    self.stylePage = PageClass:new(self.monitor,nil, nil, self.document)
-    self.stylePage:setSize(parentPageSizeX-2, 6)
-    self.stylePage:setPos(parentPagePosX + 1, yValueForEntry)
-    self.stylePage:setBackColor(self.document.style.secondary)
-    self.stylePage.id= "STYLE!"
-    self.stylePage:setOnRefreshCallback(self:getHandleRefreshEvent())
-    self:addElement(self.stylePage)
+    local stylesData = {
+                       {title="Primary:", config=ColonyConfigClass.configs.primary_style},
+                       {title="Secondary:", config=ColonyConfigClass.configs.secondary_style},
+                       {title="Tertiary", config=ColonyConfigClass.configs.tertiary_style}
+                       }
 
-    yValueForEntry = yValueForEntry + 1
-
-    self.styleTitle = LabelClass:new(nil, nil, "Style: (Press label to change!)" , self.document)
-    self.styleTitle:forceWidthSize(parentPageSizeX - 4)
-    self.styleTitle:setMargin(0)
-    self.styleTitle:setUpperCornerPos(parentPagePosX + 2, yValueForEntry)
-    self.styleTitle:applyDocumentStyle()
-    self.stylePage:addElement(self.styleTitle)
-
-    yValueForEntry = yValueForEntry + 1
-    self:createStyleSubSection(self.stylePage, parentPagePosX + 1, yValueForEntry, "Primary:", ColonyConfigClass.configs.primary_style)
-    yValueForEntry = yValueForEntry + 1
-    self:createStyleSubSection(self.stylePage, parentPagePosX + 1, yValueForEntry, "Secondary:", ColonyConfigClass.configs.secondary_style)
-    yValueForEntry = yValueForEntry + 1
-    self:createStyleSubSection(self.stylePage, parentPagePosX + 1, yValueForEntry, "Tertiary:", ColonyConfigClass.configs.tertiary_style)
+    StyleConfigurationModuleBuilder.buildStyleModule(self.parentPage,self,yValueForEntry, self.document, self.monitor, stylesData)
 
     self:applyDocumentStyle()
 end

@@ -2,6 +2,7 @@ local logger = require("UTIL.logger")
 local CustomPaintUtils = require("UTIL.customPaintUtils")
 local ElementClass     = require("GUI.ElementClass")
 local stringUtils      = require("UTIL.stringUtils")
+local expect    = require("cc.expect").expect
 
 ---@class Page:Element
 local PageClass = {}
@@ -10,7 +11,11 @@ setmetatable(PageClass, { __index = ElementClass })
 
 local DEFAULT_BACK_COLOR = colors.black
 
+
 function PageClass:new(monitor, xPos, yPos, document)
+    expect(2,xPos,"number", "nil")
+    expect(3, yPos,"number", "nil")
+
     self = setmetatable(ElementClass:new(xPos, yPos, document), PageClass)
     self.elements = {}
     -- By default, area is entire monitor

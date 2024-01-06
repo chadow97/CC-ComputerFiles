@@ -5,6 +5,7 @@ local RequestItemClass    = require("COLONY.MODEL.RequestItemClass")
 local MeItemManagerClass  = require("COLONY.MODEL.MeItemManagerClass")
 local InventoryManagerClass = require("COMMON.MODEL.InventoryManagerClass")
 local PeripheralManagerClass= require("COMMON.MODEL.PeripheralManagerClass")
+local ManagerClass = require("MODEL.ManagerClass")
 
 ---@class RequestItemManager: Manager
 local RequestItemManagerClass = {}

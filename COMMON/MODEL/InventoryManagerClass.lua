@@ -66,7 +66,6 @@ function InventoryManagerClass:_onRefreshObs()
     if not barrels then
         barrels = {}
     end
-    logger.db(chests)
     for _, chest in pairs(chests) do
         local inventoryOb = InventoryClass:new(ChestWrapper:new(chest))
         table.insert(self.inventories, inventoryOb)

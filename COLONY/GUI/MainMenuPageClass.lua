@@ -8,7 +8,7 @@ local ColonyPageClass       = require "COLONY.GUI.ColonyPageClass"
 local RequestPageClass      = require "COLONY.GUI.RequestPageClass"
 local LabelClass            = require "GUI.LabelClass"
 local MeInfoPageClass       = require "COLONY.GUI.MeInfoPageClass"
-local PeripheralPageClass   = require "COLONY.GUI.PeripheralPageClass"
+local PeripheralPageClass   = require "COMMON.GUI.PeripheralPageClass"
 local ConfigurationPageClass= require "COLONY.GUI.ConfigurationPageClass"
 
 -- Define the RessourcePage Class 
