@@ -43,12 +43,10 @@ function privateFunctions.createModuleInternal(styleModule)
     local parentPageWidth = styleModule.parentPage:getSize()
     local insertsWidth = parentPageWidth - 2
     local nextElementYPos = styleModule.startingPosition
-    logger.db(styleModule:getHeight())
     stylePage:setSize(insertsWidth, styleModule:getHeight())
     stylePage:setPos(parentPagePosX + 1, nextElementYPos)
     stylePage:setBackColor(styleModule.document.style.secondary)
 
-    logger.db(styleModule.targetPage)
     styleModule.targetPage:addElement(stylePage)
 
     local stylePageInsertsWidth = insertsWidth - 2
