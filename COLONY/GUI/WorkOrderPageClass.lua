@@ -7,7 +7,7 @@ local InventoryManagerClass = require "COMMON.model.inventoryManagerClass"
 local BuilderManagerClass   = require "COLONY.MODEL.BuilderManagerClass"
 local PeripheralManagerClass= require "COMMON.MODEL.PeripheralManagerClass"
 
--- Define the RessourcePage Class 
+-- Define the WorkOrderPage Class 
 ---@class WorkOrderPage: CustomPage
 local WorkOrderPageClass = {}
 WorkOrderPageClass.__index = WorkOrderPageClass
