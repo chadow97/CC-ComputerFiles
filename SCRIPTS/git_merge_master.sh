@@ -12,7 +12,7 @@ git pull origin master
 
 # Display a recap of the changes between the temp branch and the current master branch
 echo "Recap of changes to be merged:"
-git diff temp
+git diff temp --name-only --shortstat
 
 # Wait for user confirmation
 read -p "Press enter to continue or Ctrl+C to cancel"
@@ -27,3 +27,4 @@ git commit -m "$1"
 git push origin master
 
 # Return to the original branch
+git checkout $current_branch
