@@ -7,6 +7,6 @@ current_branch=$(git rev-parse --abbrev-ref HEAD)
 if [ "$current_branch" != "temp" ]; then
     echo "Error: Not on branch 'temp'"
 else
-    git add -A && git commit -m "AUTO-COMMIT"
+    git add -A && git commit -m "AUTO-COMMIT" && git push
     echo "added and commited changes on temp"
 fi
