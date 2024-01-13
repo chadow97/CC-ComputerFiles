@@ -29,8 +29,8 @@ while read -r dir; do
         echo "Error: Empty or invalid directory path found in git_directories.txt."
         continue
     fi
-    
-    full_path="${dir}"
+
+    full_path=$(echo -n "${dir}" | tr -d '\r')
 
     echo "updating $full_path"
     
