@@ -35,3 +35,5 @@ git push
 
 # Return to the original branch
 git checkout $current_branch
+git pull
+git git reset --hard master
