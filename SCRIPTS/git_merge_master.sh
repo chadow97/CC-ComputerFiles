@@ -7,6 +7,7 @@ if [ "$current_branch" != "temp" ]; then
     echo "Error: Not on branch 'temp'"
     exit 1
 fi
+#make sure all current changes are committed and sent to remote computers
 git update-comp
 
 # Fetch the latest changes from the remote repository
