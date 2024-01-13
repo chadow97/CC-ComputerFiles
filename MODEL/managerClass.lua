@@ -5,7 +5,7 @@ local DocumentClass = require("MODEL.DocumentClass")
 local ManagerClass = {}
 ManagerClass.__index = ManagerClass
 
--- Constructor for ObClass
+-- Constructor for Manager Class
 function ManagerClass:new(document)
     ---@class Manager
     local o = setmetatable({}, ManagerClass)
