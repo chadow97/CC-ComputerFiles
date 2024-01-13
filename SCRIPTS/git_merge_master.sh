@@ -3,12 +3,18 @@
 # Get the current branch
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 
+if [ "$current_branch" != "temp" ]; then
+    echo "Error: Not on branch 'temp'"
+    exit 1
+fi
+git update-comp
+
 # Fetch the latest changes from the remote repository
-git fetch origin
+git fetch
 
 # Ensure the local master branch is up-to-date with the remote repository
 git checkout master
-git pull origin master
+git pull
 
 # Display a recap of the changes between the temp branch and the current master branch
 echo "Recap of changes to be merged:"
@@ -24,7 +30,7 @@ git merge --squash temp
 git commit -m "$1"
 
 # Push the changes to the remote repository's master branch
-git push origin master
+git push
 
 # Return to the original branch
 git checkout $current_branch
