@@ -37,3 +37,4 @@ git push
 git checkout $current_branch
 git pull
 git reset --hard master
+git push
