@@ -3,6 +3,12 @@
 # Get the current branch
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 
+if [ "$current_branch" != "temp" ]; then
+    echo "Error: Not on branch 'temp'"
+    exit 1
+fi
+git update-comp
+
 # Fetch the latest changes from the remote repository
 git fetch
 
