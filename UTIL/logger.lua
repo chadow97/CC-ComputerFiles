@@ -54,6 +54,7 @@ function logger.db(text)
 end
 
 function logger.logToTerminal(text, logLevel)
+    error("shouldnt print to terminal..")
     if not logger.canLog(logLevel) then
         return
     end
