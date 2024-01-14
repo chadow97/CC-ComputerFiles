@@ -30,11 +30,11 @@ git merge --squash temp
 # Commit the squashed changes with the provided commit message
 git commit -m "$1"
 
-# Push the changes to the remote repository's master branch
+# Push the changes to the remote repository's master branch2
 git push
 
 # Return to the original branch
 git checkout $current_branch
 git pull
 git reset --hard master
-git push
+git push  --force
