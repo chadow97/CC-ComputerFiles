@@ -174,6 +174,7 @@ function logger.getCallStack()
         table.insert(callStack,string.format("%s:%d in function '%s'", info.short_src, info.currentline, info.name or "?"))
         level = level + 1
     end
+    print("test")
     return callStack
 end
 
