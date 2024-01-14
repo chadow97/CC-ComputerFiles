@@ -166,7 +166,7 @@ end
 
 function logger.getCallStack()
     local callStack= {}
-    local level = 2 -- start at level 2 to skip the printCallStack function itself
+    local level = 1 -- start at level 2 to skip the printCallStack function itself
     while true do
         local info = debug.getinfo(level, "nSl")
         if not info then break end
