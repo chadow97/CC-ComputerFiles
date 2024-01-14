@@ -81,6 +81,7 @@ function logger.log(object, logLevel, title)
         logger.logToFile(object,logLevel, title)
     end
     if logger.output == logger.OUTPUT.TERMINAL then
+        print("printing to terminal")
         logger.logToTerminal(object ,logLevel)
     end
 end
@@ -122,7 +123,6 @@ function logger.logOnError(isValid, errorMessage)
     local callStackObject = {lines = callStack, errorMessage = errorMessage,type ="callstack"}
     callStackObject.__tostring = callStackObjectToString
     setmetatable(callStackObject,callStackObject)
-    print("before log")
     logger.log(callStackObject, 
                logger.LOGGING_LEVEL.ALWAYS_DEBUG, 
                string.format("CALLSTACK FROM ERROR: %s", callStackObject.errorMessage))
