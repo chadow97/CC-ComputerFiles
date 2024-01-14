@@ -159,9 +159,7 @@ function logger.logToFile(objectToPrint, logLevel, title)
         logString = logString .. title .. "\n"
     end
     logString = logString .. objectString .. "\n"
-    print("writing something to file..")
     file.write(logString)
-    print("done writing..")
     file.close()
 
 end
