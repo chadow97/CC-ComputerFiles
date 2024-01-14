@@ -77,7 +77,7 @@ function logger.log(object, logLevel, title)
         return
     end
 
-
+    print(logger.output)
     if logger.output == logger.OUTPUT.FILE then
         logger.logToFile(object,logLevel, title)
     end
