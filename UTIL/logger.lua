@@ -79,9 +79,10 @@ function logger.log(object, logLevel, title)
 
     if logger.output == logger.OUTPUT.FILE then
         logger.logToFile(object,logLevel, title)
+        return
     end
     if logger.output == logger.OUTPUT.TERMINAL then
-        print("printing to terminal")
+        print(logger.output)
         logger.logToTerminal(object ,logLevel)
     end
 end
