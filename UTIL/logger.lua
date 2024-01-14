@@ -76,13 +76,13 @@ function logger.log(object, logLevel, title)
     if not logger.canLog(logLevel) then
         return
     end
-
+    print(logger.output)
     if logger.output == logger.OUTPUT.FILE then
         logger.logToFile(object,logLevel, title)
         return
     end
     if logger.output == logger.OUTPUT.TERMINAL then
-        print(logger.output)
+        
         logger.logToTerminal(object ,logLevel)
     end
 end
