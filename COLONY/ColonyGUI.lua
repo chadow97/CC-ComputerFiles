@@ -17,6 +17,8 @@ local MainMenuPageClass = require("COLONY.GUI.MainMenuPageClass")
 local PageStackClass     = require("GUI.PageStackClass")
 local ColonyDocumentClass= require("COLONY.MODEL.ColonyDocumentClass")
 
+logger.db("wtf")
+
 -- Setup Monitor
 local monitor = peripheral.find("monitor")
 MonUtils.resetMonitor(monitor)
