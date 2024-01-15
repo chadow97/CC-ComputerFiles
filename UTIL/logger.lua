@@ -133,6 +133,7 @@ function logger.logOnError(isValid, errorMessage)
     logger.log(callStackObject, 
                logger.LOGGING_LEVEL.ALWAYS_DEBUG, 
                string.format("CALLSTACK FROM ERROR: %s", callStackObject.errorMessage))
+    print("nok")
 end
 
 local function isObToPrintCallStack(object)
