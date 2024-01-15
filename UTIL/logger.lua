@@ -31,6 +31,9 @@ end
 function logger.init(terminal, fileName, shouldDeleteFile, loggingLevel, output)
     logger.terminal = terminal
     logger.fileName = fileName or "logger.log"
+    if output == logger.OUTPUT.TERMINAL then
+        error("initialising for terminal")
+    end
     logger.isActive = true
     logger.output = output or logger.OUTPUT.TERMINAL
     logger.setLoggingLevel(loggingLevel)
