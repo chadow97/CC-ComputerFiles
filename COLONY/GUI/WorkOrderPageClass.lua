@@ -2,7 +2,6 @@ local ObTableClass          = require "GUI.ObTableClass"
 local logger                = require "UTIL.logger"
 local WorkOrderFetcherClass = require "COLONY.MODEL.WorkOrderFetcherClass"
 local RessourcePageClass    = require "COLONY.GUI.RessourcePageClass"
-print("workorderpage")
 local CustomPageClass       = require "GUI.CustomPageClass"
 local InventoryManagerClass = require "COMMON.model.inventoryManagerClass"
 local BuilderManagerClass   = require "COLONY.MODEL.BuilderManagerClass"
