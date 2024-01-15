@@ -118,6 +118,7 @@ function logger.cs(...)
 end
 
 function logger.logOnError(isValid, errorMessage)
+    assert(logger.output ~= logger.OUTPUT.TERMINAL)
     if isValid then
         return
     end
