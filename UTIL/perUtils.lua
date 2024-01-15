@@ -38,6 +38,7 @@ function PerUtils.getPerFromName(peripheral_name)
     local peripheral_object = peripheral.wrap(peripheral_name)
     if peripheral_object == nil then
         -- try to find with type if possible
+        print("didnt find per!")
         peripheral_object = peripheral.find(peripheral_name)
         logger.logOnError(peripheral_object, "Invalid peripheral!")     
     end
