@@ -1,5 +1,5 @@
-local RessourceFetcherClass = require "MODEL.RessourceFetcherClass"
 print("ressource page")
+local RessourceFetcherClass = require "MODEL.RessourceFetcherClass"
 local ObTableClass          = require "GUI.ObTableClass"
 local LogClass              = require "GUI.LogClass"
 local ToggleableButtonClass = require "GUI.ToggleableButtonClass"
