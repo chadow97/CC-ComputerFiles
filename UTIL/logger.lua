@@ -121,7 +121,6 @@ function logger.logOnError(isValid, errorMessage)
     if isValid then
         return
     end
-    assert(logger.output != logger.OUTPUT.TERMINAL)
     errorMessage = errorMessage or "Unknown Error"
     if not logger.canLog(logger.LOGGING_LEVEL.ALWAYS_DEBUG) then
         return
@@ -131,6 +130,7 @@ function logger.logOnError(isValid, errorMessage)
     callStackObject.__tostring = callStackObjectToString
     setmetatable(callStackObject,callStackObject)
     print("ok..")
+    assert(logger.output != logger.OUTPUT.TERMINAL)
     logger.log(callStackObject, 
                logger.LOGGING_LEVEL.ALWAYS_DEBUG, 
                string.format("CALLSTACK FROM ERROR: %s", callStackObject.errorMessage))
