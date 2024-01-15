@@ -1,4 +1,3 @@
-print("ressource page")
 local RessourceFetcherClass = require "MODEL.RessourceFetcherClass"
 local ObTableClass          = require "GUI.ObTableClass"
 local LogClass              = require "GUI.LogClass"

@@ -11,9 +11,6 @@ if monitor then
     terminal = monitor
 end
 
-logger.init(terminal)
-logger.terminal.clear() 
-
 -- Open the rednet modem
 rednet.open("left")
 

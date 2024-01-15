@@ -1,7 +1,6 @@
 -- WorkOrderFetcher.lua
 local DataFetcherClass = require("MODEL.DataFetcherClass") 
 local logger = require("UTIL.logger")
-print("fetcher")
 local MeUtils= require("UTIL.meUtils")
 local RessourceClass = require("COLONY.MODEL.RessourceClass")
 local MeItemManagerClass   = require("COLONY.MODEL.MeItemManagerClass")

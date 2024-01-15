@@ -3,7 +3,6 @@ local CustomPrintUtils = require "UTIL.customPrintUtils"
 local stringUtils      = require "UTIL.stringUtils"
 
 local logger = {}
-print("creatnig logger...")
 
 logger.LOGGING_LEVEL = {
     ALWAYS_DEBUG = 1, -- these are temporary but we always went to see them
@@ -34,9 +33,6 @@ function logger.init(terminal, fileName, shouldDeleteFile, loggingLevel, output)
     logger.fileName = fileName or "logger.log"
     logger.isActive = true
     logger.output = output or logger.OUTPUT.TERMINAL
-    if logger.output == logger.OUTPUT.TERMINAL then
-        error("initialising for terminal")
-    end
     logger.setLoggingLevel(loggingLevel)
     logger.tableDefaultToStringFunction = logger.__tostring
 
@@ -58,8 +54,7 @@ function logger.db(text)
 end
 
 function logger.logToTerminal(text, logLevel)
-    error("shouldnt print to terminal..")
-    if not logger.canLog(logLevel) then
+        if not logger.canLog(logLevel) then
         return
     end
 
@@ -81,14 +76,14 @@ function logger.log(object, logLevel, title)
     if not logger.canLog(logLevel) then
         return
     end
-    print(logger.output)
+    
+
     if logger.output == logger.OUTPUT.FILE then
         logger.logToFile(object,logLevel, title)
         return
     end
     if logger.output == logger.OUTPUT.TERMINAL then
-        
-        logger.logToTerminal(object ,logLevel)
+                logger.logToTerminal(object ,logLevel)
     end
 end
 
@@ -118,8 +113,7 @@ function logger.cs(...)
 end
 
 function logger.logOnError(isValid, errorMessage)
-    assert(logger.output ~= logger.OUTPUT.TERMINAL)
-    if isValid then
+        if isValid then
         return
     end
     errorMessage = errorMessage or "Unknown Error"
@@ -130,13 +124,10 @@ function logger.logOnError(isValid, errorMessage)
     local callStackObject = {lines = callStack, errorMessage = errorMessage,type ="callstack"}
     callStackObject.__tostring = callStackObjectToString
     setmetatable(callStackObject,callStackObject)
-    print("ok..")
-    assert(logger.output ~= logger.OUTPUT.TERMINAL)
-    logger.log(callStackObject, 
+        logger.log(callStackObject, 
                logger.LOGGING_LEVEL.ALWAYS_DEBUG, 
                string.format("CALLSTACK FROM ERROR: %s", callStackObject.errorMessage))
-    print("nok")
-end
+    end
 
 local function isObToPrintCallStack(object)
     return type(object) == "table" and object.type == "callstack" 
@@ -177,7 +168,7 @@ end
 
 function logger.getCallStack()
     local callStack= {}
-    local level = 1 -- start at level 2 to skip the printCallStack function itself
+    local level = 2 -- start at level 2 to skip the printCallStack function itself
     while true do
         local info = debug.getinfo(level, "nSl")
         if not info then break end

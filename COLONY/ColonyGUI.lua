@@ -6,23 +6,16 @@ local logger = require("UTIL.logger")
 -- Initialize logger for debug, doing so before other modules so logging works as initialized!
 logger.init(term.current(), "ColonyGUI.log", true,logger.LOGGING_LEVEL.WARNING, logger.OUTPUT.FILE)
 logger.log("Started colony program", logger.LOGGING_LEVEL.ALWAYS)
-
-assert(logger.output ~= logger.OUTPUT.TERMINAL)
-
 -- Import required modules
 local ButtonClass = require("GUI.ButtonClass")
 local PageClass = require("GUI.PageClass")
 local MonUtils = require("UTIL.monUtils")
-assert(logger.output ~= logger.OUTPUT.TERMINAL)
+local logger = require("UTIL.logger")
 local peripheralProxyClass = require("UTIL.peripheralProxy")
-assert(logger.output ~= logger.OUTPUT.TERMINAL)
 local GuiHandlerClass = require("GUI.GuiHandlerClass")
-assert(logger.output ~= logger.OUTPUT.TERMINAL)
 local MainMenuPageClass = require("COLONY.GUI.MainMenuPageClass")
-assert(logger.output ~= logger.OUTPUT.TERMINAL)
 local PageStackClass     = require("GUI.PageStackClass")
 local ColonyDocumentClass= require("COLONY.MODEL.ColonyDocumentClass")
-
 
 -- Setup Monitor
 local monitor = peripheral.find("monitor")
