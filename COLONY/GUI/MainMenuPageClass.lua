@@ -1,12 +1,12 @@
 
 local ToggleableButtonClass = require "GUI.ToggleableButtonClass"
 local logger                = require "UTIL.logger"
-print("after req")
 local WorkOrderPageClass    = require "COLONY.GUI.WorkOrderPageClass"
 local BuilderPageClass      = require "COLONY.GUI.BuilderPageClass"
 local CustomPageClass       = require "GUI.CustomPageClass"
 local ColonyPageClass       = require "COLONY.GUI.ColonyPageClass"
 local RequestPageClass      = require "COLONY.GUI.RequestPageClass"
+print("after req")
 local LabelClass            = require "GUI.LabelClass"
 local MeInfoPageClass       = require "COLONY.GUI.MeInfoPageClass"
 local PeripheralPageClass   = require "COMMON.GUI.PeripheralPageClass"
