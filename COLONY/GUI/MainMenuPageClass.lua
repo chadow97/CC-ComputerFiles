@@ -10,6 +10,7 @@ local LabelClass            = require "GUI.LabelClass"
 local MeInfoPageClass       = require "COLONY.GUI.MeInfoPageClass"
 local PeripheralPageClass   = require "COMMON.GUI.PeripheralPageClass"
 local ConfigurationPageClass= require "COLONY.GUI.ConfigurationPageClass"
+print("after req")
 
 -- Define the RessourcePage Class 
 local MainMenuPageClass = {}
