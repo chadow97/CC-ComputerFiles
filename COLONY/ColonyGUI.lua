@@ -14,10 +14,10 @@ local MonUtils = require("UTIL.monUtils")
 local peripheralProxyClass = require("UTIL.peripheralProxy")
 local GuiHandlerClass = require("GUI.GuiHandlerClass")
 local MainMenuPageClass = require("COLONY.GUI.MainMenuPageClass")
+print("what")
 local PageStackClass     = require("GUI.PageStackClass")
 local ColonyDocumentClass= require("COLONY.MODEL.ColonyDocumentClass")
 
-logger.db("wtf")
 
 -- Setup Monitor
 local monitor = peripheral.find("monitor")
