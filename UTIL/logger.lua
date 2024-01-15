@@ -121,6 +121,7 @@ function logger.logOnError(isValid, errorMessage)
     if isValid then
         return
     end
+    assert(logger.output != logger.OUTPUT.TERMINAL)
     errorMessage = errorMessage or "Unknown Error"
     if not logger.canLog(logger.LOGGING_LEVEL.ALWAYS_DEBUG) then
         return
