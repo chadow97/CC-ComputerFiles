@@ -1,6 +1,7 @@
 
 local ToggleableButtonClass = require "GUI.ToggleableButtonClass"
 local logger                = require "UTIL.logger"
+print("after req")
 local WorkOrderPageClass    = require "COLONY.GUI.WorkOrderPageClass"
 local BuilderPageClass      = require "COLONY.GUI.BuilderPageClass"
 local CustomPageClass       = require "GUI.CustomPageClass"
@@ -10,7 +11,6 @@ local LabelClass            = require "GUI.LabelClass"
 local MeInfoPageClass       = require "COLONY.GUI.MeInfoPageClass"
 local PeripheralPageClass   = require "COMMON.GUI.PeripheralPageClass"
 local ConfigurationPageClass= require "COLONY.GUI.ConfigurationPageClass"
-print("after req")
 
 -- Define the RessourcePage Class 
 local MainMenuPageClass = {}
