@@ -1,5 +1,6 @@
 local ObTableClass          = require "GUI.ObTableClass"
 local logger                = require "UTIL.logger"
+print("workorderpage")
 local WorkOrderFetcherClass = require "COLONY.MODEL.WorkOrderFetcherClass"
 local RessourcePageClass    = require "COLONY.GUI.RessourcePageClass"
 local CustomPageClass       = require "GUI.CustomPageClass"
