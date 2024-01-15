@@ -1,8 +1,8 @@
 local MeUtils = {}
 
-print("merUtil.. wtf")
 local perUtils = require("UTIL.perUtils")
 local peripheralWrapper = require("UTIL.peripheralWrapper")
+print("merUtil.. wtf")
 local perTypes          = require("UTIL.perTypes")
 
 local logger = require("UTIL.logger")
