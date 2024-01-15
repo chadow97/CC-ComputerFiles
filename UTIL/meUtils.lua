@@ -4,8 +4,8 @@ local perUtils = require("UTIL.perUtils")
 local peripheralWrapper = require("UTIL.peripheralWrapper")
 local perTypes          = require("UTIL.perTypes")
 
-print("merUtil.. wtf")
 local logger = require("UTIL.logger")
+print("merUtil.. wtf")
 
 local MePeripheral = perUtils.getPerFromName("meBridge")
 
