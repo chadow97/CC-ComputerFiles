@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": ".."
+		},
+		{
+			"path": "../../../Users/dal10/curseforge/minecraft/Instances/Colony Manager Test Env/saves/Test world/computercraft/computer/0/output"
 		}
 	],
 	"settings": {

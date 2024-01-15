@@ -54,7 +54,7 @@ function logger.db(text)
 end
 
 function logger.logToTerminal(text, logLevel)
-    if not logger.canLog(logLevel) then
+        if not logger.canLog(logLevel) then
         return
     end
 
@@ -76,13 +76,14 @@ function logger.log(object, logLevel, title)
     if not logger.canLog(logLevel) then
         return
     end
-
+    
 
     if logger.output == logger.OUTPUT.FILE then
         logger.logToFile(object,logLevel, title)
+        return
     end
     if logger.output == logger.OUTPUT.TERMINAL then
-        logger.logToTerminal(object ,logLevel)
+                logger.logToTerminal(object ,logLevel)
     end
 end
 
@@ -112,7 +113,7 @@ function logger.cs(...)
 end
 
 function logger.logOnError(isValid, errorMessage)
-    if isValid then
+        if isValid then
         return
     end
     errorMessage = errorMessage or "Unknown Error"
@@ -123,10 +124,10 @@ function logger.logOnError(isValid, errorMessage)
     local callStackObject = {lines = callStack, errorMessage = errorMessage,type ="callstack"}
     callStackObject.__tostring = callStackObjectToString
     setmetatable(callStackObject,callStackObject)
-    logger.log(callStackObject, 
+        logger.log(callStackObject, 
                logger.LOGGING_LEVEL.ALWAYS_DEBUG, 
                string.format("CALLSTACK FROM ERROR: %s", callStackObject.errorMessage))
-end
+    end
 
 local function isObToPrintCallStack(object)
     return type(object) == "table" and object.type == "callstack" 

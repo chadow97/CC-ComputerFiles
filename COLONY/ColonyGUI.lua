@@ -1,5 +1,11 @@
 -- add absolute paths to package to allow programs to use libraries from anywhere!
 package.path = package.path .. ";/?;/?.lua"
+
+
+local logger = require("UTIL.logger")
+-- Initialize logger for debug, doing so before other modules so logging works as initialized!
+logger.init(term.current(), "ColonyGUI.log", true,logger.LOGGING_LEVEL.WARNING, logger.OUTPUT.FILE)
+logger.log("Started colony program", logger.LOGGING_LEVEL.ALWAYS)
 -- Import required modules
 local ButtonClass = require("GUI.ButtonClass")
 local PageClass = require("GUI.PageClass")
@@ -17,9 +23,6 @@ MonUtils.resetMonitor(monitor)
 ---@diagnostic disable-next-line: undefined-field
 local monitorX, monitorY = monitor.getSize()
 
--- Initialize logger for debug
-logger.init(term.current(), "ColonyGUI.log", true,logger.LOGGING_LEVEL.WARNING, logger.OUTPUT.FILE)
-logger.log("Started colony program", logger.LOGGING_LEVEL.ALWAYS)
 
 -- Create document, allows to retrieve data.
 local document = ColonyDocumentClass:new()
