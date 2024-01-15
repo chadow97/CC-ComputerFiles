@@ -5,9 +5,9 @@ local peripheralWrapper = require("UTIL.peripheralWrapper")
 local perTypes          = require("UTIL.perTypes")
 
 local logger = require("UTIL.logger")
-print("merUtil.. wtf")
 
 local MePeripheral = perUtils.getPerFromName("meBridge")
+print("merUtil.. wtf")
 
 function MeUtils.getItemList()
     if not MePeripheral then
