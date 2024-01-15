@@ -2,6 +2,7 @@
 local ToggleableButtonClass = require "GUI.ToggleableButtonClass"
 local logger                = require "UTIL.logger"
 print("after req")
+assert(logger.output ~= logger.OUTPUT.TERMINAL)
 local WorkOrderPageClass    = require "COLONY.GUI.WorkOrderPageClass"
 local BuilderPageClass      = require "COLONY.GUI.BuilderPageClass"
 local CustomPageClass       = require "GUI.CustomPageClass"
