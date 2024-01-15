@@ -130,7 +130,7 @@ function logger.logOnError(isValid, errorMessage)
     callStackObject.__tostring = callStackObjectToString
     setmetatable(callStackObject,callStackObject)
     print("ok..")
-    assert(logger.output != logger.OUTPUT.TERMINAL)
+    assert(logger.output ~= logger.OUTPUT.TERMINAL)
     logger.log(callStackObject, 
                logger.LOGGING_LEVEL.ALWAYS_DEBUG, 
                string.format("CALLSTACK FROM ERROR: %s", callStackObject.errorMessage))
