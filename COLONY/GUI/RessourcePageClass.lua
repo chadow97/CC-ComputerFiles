@@ -1,6 +1,6 @@
 local RessourceFetcherClass = require "MODEL.RessourceFetcherClass"
-local ObTableClass          = require "GUI.ObTableClass"
 print("ressource page")
+local ObTableClass          = require "GUI.ObTableClass"
 local LogClass              = require "GUI.LogClass"
 local ToggleableButtonClass = require "GUI.ToggleableButtonClass"
 local RessourceClass        = require "COLONY.MODEL.RessourceClass"
