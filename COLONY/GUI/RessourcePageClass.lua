@@ -4,6 +4,7 @@ local LogClass              = require "GUI.LogClass"
 local ToggleableButtonClass = require "GUI.ToggleableButtonClass"
 local RessourceClass        = require "COLONY.MODEL.RessourceClass"
 local MeUtils               = require "UTIL.meUtils"
+print("ressource page")
 local logger                = require "UTIL.logger"
 local CustomPageClass       = require "GUI.CustomPageClass"
 local PeripheralManagerClass= require "COMMON.MODEL.PeripheralManagerClass"
