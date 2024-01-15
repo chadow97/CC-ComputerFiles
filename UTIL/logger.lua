@@ -3,6 +3,7 @@ local CustomPrintUtils = require "UTIL.customPrintUtils"
 local stringUtils      = require "UTIL.stringUtils"
 
 local logger = {}
+print("creatnig logger...")
 
 logger.LOGGING_LEVEL = {
     ALWAYS_DEBUG = 1, -- these are temporary but we always went to see them
