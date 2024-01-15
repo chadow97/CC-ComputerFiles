@@ -129,6 +129,7 @@ function logger.logOnError(isValid, errorMessage)
     local callStackObject = {lines = callStack, errorMessage = errorMessage,type ="callstack"}
     callStackObject.__tostring = callStackObjectToString
     setmetatable(callStackObject,callStackObject)
+    print("ok..")
     logger.log(callStackObject, 
                logger.LOGGING_LEVEL.ALWAYS_DEBUG, 
                string.format("CALLSTACK FROM ERROR: %s", callStackObject.errorMessage))
