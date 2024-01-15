@@ -2,9 +2,9 @@ local MeUtils = {}
 
 local perUtils = require("UTIL.perUtils")
 local peripheralWrapper = require("UTIL.peripheralWrapper")
-print("merUtil.. wtf")
 local perTypes          = require("UTIL.perTypes")
 
+print("merUtil.. wtf")
 local logger = require("UTIL.logger")
 
 local MePeripheral = perUtils.getPerFromName("meBridge")
