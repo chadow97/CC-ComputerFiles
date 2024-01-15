@@ -40,7 +40,9 @@ function PerUtils.getPerFromName(peripheral_name)
         -- try to find with type if possible
         print("didnt find per!")
         peripheral_object = peripheral.find(peripheral_name)
-        logger.logOnError(peripheral_object, "Invalid peripheral!")     
+        print("per.find")
+        logger.logOnError(peripheral_object, "Invalid peripheral!") 
+        print("per.log on error")    
     end
 
     return peripheral_object
