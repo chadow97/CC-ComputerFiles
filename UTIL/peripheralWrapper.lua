@@ -1,5 +1,4 @@
 local logger = require("UTIL.logger")
-logger.init(term.current())
 
 -- Define the PeripheralWrapper class
 local PeripheralWrapper = {}
