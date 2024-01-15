@@ -66,6 +66,10 @@ function ColonyPageClass:handleRefreshEvent(...)
 end
 
 function ColonyPageClass:getDescriptionForColony(colony)
+    -- if no colony is connected
+    if colony.id == nil then
+        return "No connected colony!"
+    end
     local description = stringUtils.Format(
     [[
 ID: %(id)
