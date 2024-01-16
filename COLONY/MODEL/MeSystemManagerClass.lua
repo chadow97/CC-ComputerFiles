@@ -34,7 +34,11 @@ function MeSystemManagerClass:clear()
 end
 
 function MeSystemManagerClass:_onRefreshObs()
-    self.meSystem = MeSystemClass:new(self:getMeSystemData())
+    if meUtils.hasActiveMe() then
+        self.meSystem = MeSystemClass:new(self:getMeSystemData())
+    else
+        self.meSystem = nil
+    end
 end
 
 

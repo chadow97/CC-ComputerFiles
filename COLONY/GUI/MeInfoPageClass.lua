@@ -56,6 +56,9 @@ function MeInfoPageClass:onBuildCustomPage()
 end
 
 function MeInfoPageClass:getDescriptionForMeSystem(meSystem)
+    if meSystem == nil then
+        return "No me system!"
+    end
     return string.format(
     [[
 General ME system information:
