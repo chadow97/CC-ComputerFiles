@@ -19,6 +19,11 @@ local ColonyDocumentClass= require("COLONY.MODEL.ColonyDocumentClass")
 
 -- Setup Monitor
 local monitor = peripheral.find("monitor")
+if (monitor == nil ) then
+    print("No monitor to display!!")
+    logger.log("No monitor to use!",logger.LOGGING_LEVEL.ERROR)
+    return
+end
 MonUtils.resetMonitor(monitor)
 ---@diagnostic disable-next-line: undefined-field
 local monitorX, monitorY = monitor.getSize()
