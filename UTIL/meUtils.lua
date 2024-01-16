@@ -15,6 +15,10 @@ function MeUtils.getItemList()
     return items
 end
 
+function MeUtils.hasActiveMe()
+    return MePeripheral ~= nil
+end
+
 local function getNamesFromList(_list)
     local itemNames = {}
 

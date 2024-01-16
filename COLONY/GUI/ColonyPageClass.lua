@@ -48,8 +48,13 @@ function ColonyPageClass:onBuildCustomPage()
 end
 
 function ColonyPageClass:updateLabelsText(colony)
-    self.titleLabel:setText(tostring(colony.name))
-    self.descLabel:setText(self:getDescriptionForColony(colony))
+    if colony.name == nil then
+        self.titleLabel:setText("No colony found!")
+        self.descLabel:setText("")
+    else
+        self.titleLabel:setText(tostring(colony.name))
+        self.descLabel:setText(self:getDescriptionForColony(colony))
+    end
 end
 
 function ColonyPageClass:handleRefreshEvent(...)
@@ -66,6 +71,7 @@ function ColonyPageClass:handleRefreshEvent(...)
 end
 
 function ColonyPageClass:getDescriptionForColony(colony)
+
     local description = stringUtils.Format(
     [[
 ID: %(id)
