@@ -39,7 +39,7 @@ function logger.init(terminal, fileName, shouldDeleteFile, loggingLevel, output)
     if shouldDeleteFile then
         fs.delete(getFilePath())
     end
-    print(getFilePath())
+    print("init" .. getFilePath())
 end
 
 function logger.setLoggingLevel(loggingLevel)
@@ -81,10 +81,12 @@ function logger.log(object, logLevel, title)
 
     if logger.output == logger.OUTPUT.FILE then
         logger.logToFile(object,logLevel, title)
+        print("logging to file")
         return
     end
     if logger.output == logger.OUTPUT.TERMINAL then
-                logger.logToTerminal(object ,logLevel)
+        logger.logToTerminal(object ,logLevel)
+        print("logging to term")
     end
 end
 
