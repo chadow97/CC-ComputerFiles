@@ -149,6 +149,7 @@ function logger.logToFile(objectToPrint, logLevel, title)
     end
 
     local path = getFilePath()
+    print(path)
     local file = fs.open(path, "a")
     ---@diagnostic disable-next-line: param-type-mismatch
     local time = textutils.formatTime(os.time("local"), true)
