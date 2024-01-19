@@ -157,6 +157,7 @@ function logger.logToFile(objectToPrint, logLevel, title)
     local time = textutils.formatTime(os.time("local"), true)
     local logLevelString = logger.logLevelToString(logLevel)
     if not file then
+        print("dit not open file!")
         return
     end
     local objectString = pretty.render(pretty.pretty(objectToPrint), 100)
