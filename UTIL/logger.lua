@@ -39,6 +39,7 @@ function logger.init(terminal, fileName, shouldDeleteFile, loggingLevel, output)
     if shouldDeleteFile then
         fs.delete(getFilePath())
     end
+    print(getFilePath())
 end
 
 function logger.setLoggingLevel(loggingLevel)
@@ -148,7 +149,6 @@ function logger.logToFile(objectToPrint, logLevel, title)
     end
 
     local path = getFilePath()
-    print(file)
     local file = fs.open(path, "a")
     ---@diagnostic disable-next-line: param-type-mismatch
     local time = textutils.formatTime(os.time("local"), true)
