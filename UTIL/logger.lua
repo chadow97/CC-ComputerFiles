@@ -39,7 +39,6 @@ function logger.init(terminal, fileName, shouldDeleteFile, loggingLevel, output)
     if shouldDeleteFile then
         fs.delete(getFilePath())
     end
-    print("init" .. getFilePath())
 end
 
 function logger.setLoggingLevel(loggingLevel)
@@ -81,12 +80,10 @@ function logger.log(object, logLevel, title)
 
     if logger.output == logger.OUTPUT.FILE then
         logger.logToFile(object,logLevel, title)
-        print("logging to file")
         return
     end
     if logger.output == logger.OUTPUT.TERMINAL then
         logger.logToTerminal(object ,logLevel)
-        print("logging to term")
     end
 end
 
@@ -151,13 +148,12 @@ function logger.logToFile(objectToPrint, logLevel, title)
     end
 
     local path = getFilePath()
-    print(path)
-    local file = fs.open(path, "a")
+    local file, error = fs.open(path, "a")
     ---@diagnostic disable-next-line: param-type-mismatch
     local time = textutils.formatTime(os.time("local"), true)
     local logLevelString = logger.logLevelToString(logLevel)
     if not file then
-        print("dit not open file!")
+        print("Logger encountered error while openning file " .. path ..": " .. error)
         return
     end
     local objectString = pretty.render(pretty.pretty(objectToPrint), 100)
