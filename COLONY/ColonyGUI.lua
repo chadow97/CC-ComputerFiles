@@ -5,10 +5,6 @@ package.path = package.path .. ";/?;/?.lua"
 local logger = require("UTIL.logger")
 -- Initialize logger for debug, doing so before other modules so logging works as initialized!
 logger.init(term.current(), "ColonyGUI.log", true,logger.LOGGING_LEVEL.WARNING, logger.OUTPUT.FILE)
-
-
-print(fs.open("OUTPUT/yoyo", "a"))
-file.write("whyyyyy")
 logger.log("Started colony program", logger.LOGGING_LEVEL.ALWAYS)
 -- Import required modules
 local ButtonClass = require("GUI.ButtonClass")
