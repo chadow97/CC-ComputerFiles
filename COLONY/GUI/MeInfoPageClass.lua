@@ -4,7 +4,7 @@ local CustomPageClass       = require "GUI.CustomPageClass"
 local MeItemManagerClass    = require "COLONY.MODEL.MeItemManagerClass"
 local stringUtils           = require "UTIL.stringUtils"
 local LabelClass            = require "GUI.LabelClass"
-local MeSystemManagerClass  = require "COLONY.MODEL.MeSystemManagerClass"
+local MeSystemManagerClass  = require "COMMON.MODEL.MeSystemManagerClass"
 
 ---@class MeInfoPageClass: CustomPage
 local MeInfoPageClass = {}

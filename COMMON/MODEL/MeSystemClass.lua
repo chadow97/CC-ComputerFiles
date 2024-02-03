@@ -14,7 +14,7 @@ function MeSystemClass:new(mePeripheral)
     local o = setmetatable(PeripheralClass:new(mePeripheral), MeSystemClass)
 
     o.name = o.uniqueKey
-    
+
     o.availableItemStorage = 0
     o.usedItemStorage = 0
     o.totalItemStorage = 0
@@ -148,6 +148,22 @@ function MeSystemClass:updateData()
     self.energyStorage = self.per.getEnergyStorage()
     self.maxEnergyStorage = self.per.getMaxEnergyStorage()
     self.energyUsage = self.per.getEnergyUsage()
+end
+
+function MeSystemClass:getUsedPercentage()
+    return math.floor((self.usedItemStorage / self.totalItemStorage)*100)
+end
+
+function MeSystemClass:getFreePercentage()
+    return 100 - self:getUsedPercentage()
+end
+
+function MeSystemClass:getEnergyPercentage()
+    return math.floor((self.energyStorage / self.maxEnergyStorage)*100)
+end
+
+function MeSystemClass:getNumberOfCraftingCells()
+    return #self.cells
 end
 
 
