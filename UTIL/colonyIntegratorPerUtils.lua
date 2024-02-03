@@ -126,14 +126,11 @@ function ColonyIntegratorPerUtils.getCitizensByType(per, type)
     end
     local citizensForType = {}
     local citizens = ColonyIntegratorPerUtils.getCitizens(per)
-    logger.db({"citizens", citizens})
-    logger.db("finding type " .. tostring(type))
     for _, citizen in pairs(citizens) do
         if citizen.work and citizen.work.type == type then
             citizensForType[citizen.id] = citizen
         end
     end
-    logger.db(citizensForType)
     return citizensForType
     
 end
