@@ -3,7 +3,7 @@ local colIntUtil = require("UTIL.colonyIntegratorPerUtils")
 local logger = require("UTIL.logger")
 local BuilderClass = require("COLONY.MODEL.builderClass")
 local TableFileHandlerClass = require("UTIL.tableFileHandlerClass")
-local InventoryManagerClass = require("COMMON.MODEL.InventoryClass")
+local InventoryManagerClass = require("COMMON.MODEL.InventoryManagerClass")
 local PeripheralManagerClass= require("COMMON.MODEL.PeripheralManagerClass")
 local ManagerClass = require("MODEL.ManagerClass")
 
