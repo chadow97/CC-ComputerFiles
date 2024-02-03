@@ -38,11 +38,13 @@ function BuilderManagerClass:onAssociationModified(builderOb)
 end
 
 function BuilderManagerClass:_onRefreshObs()
+    logger.db("refreshing builder manager!")
     if not self.associations then
         self:readAssociations()
     end
-    for _, builderData in ipairs(self:getBuilders()) do
 
+    for _, builderData in ipairs(self:getBuilders()) do
+        logger.db("creating builder ob")
         local potentialOb = BuilderClass:new(builderData, self)
         potentialOb.associatedInventoryName = self.associations[potentialOb:getUniqueKey()]
         if not potentialOb.associatedInventoryName then
