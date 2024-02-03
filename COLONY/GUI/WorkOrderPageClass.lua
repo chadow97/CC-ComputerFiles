@@ -61,7 +61,7 @@ function WorkOrderPageClass:getOnWorkOrderPressed()
         if builderId then
             local inventoryManager = self.document:getManagerForType(InventoryManagerClass.TYPE)
             local builderManager = self.document:getManagerForType(BuilderManagerClass.TYPE)
-            logger.db(builderManager.builders)
+            logger.db({"builders",builderManager.builders})
             local builder = builderManager:getOb(builderId)
             assert(builder, "Couldnt find builder associated with work order!")
             local inventoryId = builder:getAssociatedInventory()
