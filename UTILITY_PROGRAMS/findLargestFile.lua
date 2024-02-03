@@ -53,7 +53,7 @@ local function main(args)
     table.sort(itemList, function(a, b) return a.size > b.size end)
 
     -- Fixed total space of the drive
-    local totalSpace = 1000000
+    local totalSpace = fs.getCapacity("/")
 
     -- Calculating the total used space
     local totalUsedSpace = getSize("/")
