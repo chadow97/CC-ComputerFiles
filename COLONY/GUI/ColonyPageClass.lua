@@ -25,6 +25,9 @@ end
 function ColonyPageClass:onBuildCustomPage()
     self.colonyMgr = self.document:getManagerForType(ColonyManagerClass.TYPE)
     local colony = self.colonyMgr:getColony()
+    if not colony then
+        logger.log("No colony found!", logger.LOGGING_LEVEL.WARNING)
+    end
 
     local parentPageSizeX, parentPageSizeY = self.parentPage:getSize()
     local parentPagePosX, parentPagePosY = self.parentPage:getPos()
