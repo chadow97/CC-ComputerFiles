@@ -53,6 +53,7 @@ function ColonyPageClass:onBuildCustomPage()
 end
 
 function ColonyPageClass:updateLabelsText(colony)
+    logger.db(colony)
     if colony.name == nil then
         self.titleLabel:setText("No colony found!")
         self.descLabel:setText("")
