@@ -64,6 +64,9 @@ end
 
 function DocumentClass:getManagerForType(type)
     local mgr = self.managers[type]
+    if not mgr then
+        logger.cs()
+    end
     assert(mgr, "No manager found for type ".. type .. "!")
     return self.managers[type]
 end
