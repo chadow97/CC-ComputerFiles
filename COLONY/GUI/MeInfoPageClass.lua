@@ -33,7 +33,7 @@ function MeInfoPageClass:onBuildCustomPage()
     local parentPageSizeX, parentPageSizeY = self.parentPage:getSize()
     local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 
-    local meSystem = self.meSystemManager:getMeSystem()
+    local meSystem = self.meSystemManager:getDefaultMeSystem()
     self.descLabel = LabelClass:new(nil, nil, self:getDescriptionForMeSystem(meSystem), self.document)
     self.descLabel:forceWidthSize(parentPageSizeX - 2)
     self.descLabel:setUpperCornerPos(parentPagePosX + 1, parentPagePosY + 1)
