@@ -73,6 +73,7 @@ function BuilderManagerClass:getBuilders()
         logger.log(status, logger.LOGGING_LEVEL.ERROR)
         builders = {}
     end
+    logger.db({"builders from get builders",builders})
     return builders
 end
 
