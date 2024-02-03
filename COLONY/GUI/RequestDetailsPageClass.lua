@@ -2,8 +2,8 @@ local ObTableClass          = require "GUI.ObTableClass"
 local logger                = require "UTIL.logger"
 local ButtonClass           = require "GUI.ButtonClass"
 local RequestItemClass      = require "COLONY.MODEL.RequestItemClass"
-local MeUtils               = require "UTIL.meUtils"
 local InventoryManagerClass = require "COMMON.model.inventoryManagerClass"
+local MeSystemManagerClass  = require "COMMON.MODEL.MeSystemManagerClass"
 
 local CustomPageClass       = require "GUI.CustomPageClass"
 local RequestManagerClass   = require "COLONY.MODEL.RequestManagerClass"
@@ -24,7 +24,10 @@ function RequestDetailsPageClass:new(requestId, monitor, parentPage, document)
   self.requestId = requestId
   self.parentPage = parentPage
   self.requestLabel = nil
+
   self.requestManager = self.document:getManagerForType(RequestManagerClass.TYPE)
+  self.meSystemManager = self.document:getManagerForType(MeSystemManagerClass.TYPE)
+
   self.requestInventoryHandler = RequestInventoryHandlerClass:new(self.document)
   self.inventoryKey = self.requestInventoryHandler:getRequestInventoryKey()
 
@@ -107,11 +110,17 @@ function RequestDetailsPageClass:getOnRequestItemPressed()
         if  isKey then
             return
         end
+
+        local meSystem = self.meSystemManager:getDefaultMeSystem()
+        if not meSystem then
+            logger.log("No me system!", logger.LOGGING_LEVEL.WARNING)
+            return
+        end
         local action = requestItem:getActionToDo()
         if action == RequestItemClass.ACTIONS.SENDTOEXTERNAL then
-            MeUtils.exportItem(requestItem:getUniqueKey(), requestItem:getAmountToSendFromMe(),  self.inventoryKey)
+            meSystem.exportItem(requestItem:getUniqueKey(), requestItem:getAmountToSendFromMe(),  self.inventoryKey)
         elseif action == RequestItemClass.ACTIONS.CRAFT then
-            MeUtils.craftItem(requestItem:getUniqueKey(), requestItem:getAmountMissingWithMe())
+            meSystem.craftItem(requestItem:getUniqueKey(), requestItem:getAmountMissingWithMe())
         end
             end
 end
