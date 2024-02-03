@@ -85,7 +85,7 @@ Energy usage: %s
 end
 
 function MeInfoPageClass:handleRefreshEvent(...)
-    local meSystem = self.meSystemManager:getMeSystem()
+    local meSystem = self.meSystemManager:getDefaultMeSystem()
 
     self.document:startEdition()
     self.descLabel:setText(self:getDescriptionForMeSystem(meSystem))
