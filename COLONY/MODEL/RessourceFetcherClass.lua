@@ -56,6 +56,7 @@ function RessourceFetcherClass:getExternalInventoryItems()
 end
 
 function RessourceFetcherClass:getRessourceRequirementsFromColony()
+    logger.db(self.workOrderId)
 
     local ressourceRequirementFromColony = self.colonyPeripheral:getWorkOrderResources(self.workOrderId)
     if not ressourceRequirementFromColony then
