@@ -65,7 +65,7 @@ local function main(args)
     local percentageUsed = (totalUsedSpace / totalSpace) * 100
 
     -- Displaying the total space information
-    print("Total space available: ": .. totalSpace  .." bytes")
+    print("Total space available: " .. totalSpace  .." bytes")
     print("Total space used: " .. totalUsedSpace .. " bytes")
     print("Total space available: " .. totalAvailableSpace .. " bytes")
     print("Percentage of space used: " .. string.format("%.2f", percentageUsed) .. "%")
