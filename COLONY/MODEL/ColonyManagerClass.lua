@@ -44,6 +44,7 @@ end
 
 function ColonyManagerClass:getColonyData()
     local status, colonyData = pcall(colIntUtil.getColony, self.colonyPeripheral)
+    logger.db({status, colonyData})
     if not status then
         colonyData = {}
     end
