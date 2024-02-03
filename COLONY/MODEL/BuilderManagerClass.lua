@@ -70,6 +70,7 @@ end
 function BuilderManagerClass:getBuilders()
     local status, builders = pcall(colIntUtil.getBuilders, self.colonyPeripheral)
     if not status then
+        logger.log(status, logger.LOGGING_LEVEL.ERROR)
         builders = {}
     end
     return builders
