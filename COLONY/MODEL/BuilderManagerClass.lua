@@ -45,7 +45,7 @@ function BuilderManagerClass:_onRefreshObs()
 
     local builders = self:getBuilders()
     logger.db(builders)
-    for _, builderData in ipairs(builders) do
+    for _, builderData in pairs(builders) do
         logger.db("creating builder ob")
         local potentialOb = BuilderClass:new(builderData, self)
         potentialOb.associatedInventoryName = self.associations[potentialOb:getUniqueKey()]
