@@ -43,7 +43,9 @@ function BuilderManagerClass:_onRefreshObs()
         self:readAssociations()
     end
 
-    for _, builderData in ipairs(self:getBuilders()) do
+    local builders = self:getBuilders()
+    logger.db(builders)
+    for _, builderData in ipairs(builders) do
         logger.db("creating builder ob")
         local potentialOb = BuilderClass:new(builderData, self)
         potentialOb.associatedInventoryName = self.associations[potentialOb:getUniqueKey()]
@@ -76,7 +78,6 @@ function BuilderManagerClass:getBuilders()
         logger.log(status, logger.LOGGING_LEVEL.ERROR)
         builders = {}
     end
-    logger.db(builders)
     return builders
 end
 
