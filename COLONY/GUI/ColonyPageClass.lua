@@ -1,3 +1,4 @@
+local logger                = require "UTIL.logger"
 local CustomPageClass       = require "GUI.CustomPageClass"
 local ColonyManagerClass    = require "COLONY.MODEL.ColonyManagerClass"
 local LabelClass            = require "GUI.LabelClass"

@@ -83,7 +83,7 @@ function logger.log(object, logLevel, title)
         return
     end
     if logger.output == logger.OUTPUT.TERMINAL then
-                logger.logToTerminal(object ,logLevel)
+        logger.logToTerminal(object ,logLevel)
     end
 end
 
@@ -148,11 +148,12 @@ function logger.logToFile(objectToPrint, logLevel, title)
     end
 
     local path = getFilePath()
-    local file = fs.open(path, "a")
+    local file, error = fs.open(path, "a")
     ---@diagnostic disable-next-line: param-type-mismatch
     local time = textutils.formatTime(os.time("local"), true)
     local logLevelString = logger.logLevelToString(logLevel)
     if not file then
+        print("Logger encountered error while openning file " .. path ..": " .. error)
         return
     end
     local objectString = pretty.render(pretty.pretty(objectToPrint), 100)
