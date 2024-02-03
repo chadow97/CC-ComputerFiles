@@ -133,6 +133,7 @@ function ColonyIntegratorPerUtils.getCitizensByType(per, type)
             citizensForType[citizen.id] = citizen
         end
     end
+    logger.db(citizensForType)
     return citizensForType
     
 end
