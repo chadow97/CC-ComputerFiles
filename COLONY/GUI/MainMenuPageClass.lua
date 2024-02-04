@@ -136,8 +136,8 @@ function MainMenuPageClass:getOnColonyPressed()
 function MainMenuPageClass:getOnWorkOrdersPressed()
   return function()
       self.document:startEdition()
-      local WorkOrderPage = WorkOrderPageClass:new(self.monitor, self.parentPage, self.document)
-      self.parentPage:addElement(WorkOrderPage)
+      --local WorkOrderPage = WorkOrderPageClass:new(self.monitor, self.parentPage, self.document)
+      --self.parentPage:addElement(WorkOrderPage)
       self.document:endEdition()
   end
 end
