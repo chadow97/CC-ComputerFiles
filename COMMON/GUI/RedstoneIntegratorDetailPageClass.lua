@@ -31,6 +31,7 @@ function RedstoneIntegratorDetailPageClass:__tostring()
 
 function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
 
+
     local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 
     local containerPage = PageClass:new(self.monitor,2, 2, self.document)
@@ -39,8 +40,10 @@ function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
     local parentPageWidth = self.parentPage:getSize()
     local insertsWidth = parentPageWidth - 2
     local nextElementYPos = parentPagePosY
-    containerPage:setSize(insertsWidth, 6)
+    containerPage:setSize(parentPageWidth, 6)
     containerPage:setPos(parentPagePosX + 1, nextElementYPos)
+    logger.db({parentPagePosX, nextElementYPos})
+    logger.db({parentPageWidth,6})
     containerPage:setBackColor(self.document.style.tertiary)
 
     self.parentPage:addElement(containerPage)
