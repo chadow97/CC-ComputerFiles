@@ -8,6 +8,7 @@ local LabelClass = require "GUI.LabelClass"
 local PageClass  = require "GUI.PageClass"
 local ColonyConfigClass = require "COLONY.MODEL.ColonyConfigClass"
 local ToggleableButtonClass = require "GUI.ToggleableButtonClass"
+local TextSelectionPageClass= require "GUI.TextSelectionPageClass"
 
 ---@class RedstoneIntegratorDetailPageClass: CustomPage
 local RedstoneIntegratorDetailPageClass = {}
@@ -116,11 +117,16 @@ function RedstoneIntegratorDetailPageClass:getAssociatedInventoryString()
   return "Associated inventory: " .. assInventory .. " (Press to edit)"
 end
 
+function RedstoneIntegratorDetailPageClass:getOnNicknameModified()
+  return function (newNickname)
+    logger.db(newNickname)
+  end
+end
+
 function RedstoneIntegratorDetailPageClass:getOnNicknamePressed()
   return function()
-      self.document:startEdition()
-      --TODO
-      self.document:endEdition()
+      local page = TextSelectionPageClass:new(self.monitor,self.parentPage, self.document, "New nickname:")
+      self.parentPage:pushPage(page, self:getOnNicknameModified())
   end
 end
 
