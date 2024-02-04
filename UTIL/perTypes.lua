@@ -13,7 +13,8 @@ local perTypes = {
     -- Advanced peripheral types
     chatbox = "chatBox",
     me_bridge = "meBridge",
-    colony_integrator = "colonyIntegrator"
+    colony_integrator = "colonyIntegrator",
+    redstone_integrator = "redstoneIntegrator"
    
 }
 

@@ -40,10 +40,6 @@ local button = ButtonClass:new(1,1, "text", document)
 
 logger.log(button)
 
---check db
-logger.db("printing debug string! (should be in file!)")
-
-
 --check call stack
 local function secondFunction()
     logger.logOnError(false, "There was an error...")
