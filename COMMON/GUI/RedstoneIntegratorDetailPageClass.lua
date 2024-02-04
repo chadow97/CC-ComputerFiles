@@ -41,7 +41,7 @@ function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
     local nextElementYPos = parentPagePosY
     containerPage:setSize(insertsWidth, 6)
     containerPage:setPos(parentPagePosX + 1, nextElementYPos)
-    containerPage:setBackColor(self.document.style.secondary)
+    containerPage:setBackColor(self.document.style.tertiary)
 
     self.parentPage:addElement(containerPage)
 
