@@ -14,6 +14,9 @@ function RedstoneIntegratorClass:new(redstoneIntegratorPeripheral)
     local o = setmetatable(PeripheralClass:new(redstoneIntegratorPeripheral), RedstoneIntegratorClass)
 
     o.name = o.uniqueKey
+    o.nickname = nil
+    o.active = false
+    o.associatedInventory = nil
 
     return o
 end
@@ -29,7 +32,19 @@ end
 
 -- Overriding GetDisplayString method
 function RedstoneIntegratorClass:GetDisplayString()
-    local displayString = string.format(self.uniqueKey)
+    local nickname = self.nickname or "No nickname"
+    local associatedInventoryKey = "None"
+    local displayString = string.format(
+[[Redstone integrator
+ID : %s
+Nickname : %s 
+IsActive: %s
+Associated Inventory: %s
+]],
+self.name,
+nickname,
+tostring(self.active),
+associatedInventoryKey)
     return displayString
 end
 
