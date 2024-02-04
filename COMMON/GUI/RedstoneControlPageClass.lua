@@ -4,6 +4,7 @@ local CustomPageClass       = require "GUI.CustomPageClass"
 local PeripheralManagerClass    = require "COMMON.MODEL.PeripheralManagerClass"
 local PeripheralClass           = require "COMMON.MODEL.PeripheralClass"
 local RedstoneIntegratorManagerClass = require "COMMON.MODEL.RedstoneIntegratorManagerClass"
+local RedstoneIntegratorDetailPageClass = require "COMMON.GUI.RedstoneIntegratorDetailPageClass"
 
 ---@class RedstoneControlPageClass: CustomPage
 local RedstoneControlPageClass = {}
@@ -31,20 +32,34 @@ function RedstoneControlPageClass:onBuildCustomPage()
     local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 
     
-    local peripheralTable = ObTableClass:new(self.monitor, 1,1, "Redstone controllers", nil, nil, self.document)
+    local RiTable = ObTableClass:new(self.monitor, 1,1, "Redstone controllers", nil, nil, self.document)
 
 
-    peripheralTable:setDataFetcher(self.RiManager)
-    peripheralTable:setDisplayKey(false)
-    peripheralTable:setRowHeight(6)
-    peripheralTable:setColumnCount(3)
-    peripheralTable:applyDocumentStyle()
-    peripheralTable:setHasManualRefresh(true)
-    peripheralTable:setSize(parentPageSizeX, parentPageSizeY)
-    peripheralTable:setPos(parentPagePosX,parentPagePosY)    
-    self:addElement(peripheralTable)
+    RiTable:setDataFetcher(self.RiManager)
+    RiTable:setDisplayKey(false)
+    RiTable:setRowHeight(6)
+    RiTable:setColumnCount(3)
+    RiTable:applyDocumentStyle()
+    RiTable:setHasManualRefresh(true)
+    RiTable:setSize(parentPageSizeX, parentPageSizeY)
+    RiTable:setPos(parentPagePosX,parentPagePosY) 
+    RiTable:setOnTableElementPressedCallback(self:getOnRiPressed())   
+    self:addElement(RiTable)
 
     self:applyDocumentStyle()
+end
+
+function RedstoneControlPageClass:getOnRiPressed()
+  return function(positionInTable, isKey, Ri)
+
+      if (not isKey) then
+          return
+      end
+      self.document:startEdition()
+      local ressourcePage = RedstoneIntegratorDetailPageClass:new(self.monitor, self.parentPage, self.document, Ri)
+      self.parentPage:addElement(ressourcePage)
+      self.document:endEdition()
+  end
 end
 
 
