@@ -36,7 +36,7 @@ function RedstoneIntegratorClass:setState(IsActive)
 end
 
 function RedstoneIntegratorClass:toggleState()
-    self:setState(!self.active)
+    self:setState(not self.active)
 end
 
 -- Overriding GetDisplayString method
