@@ -34,11 +34,11 @@ function RessourceFetcherClass:getMeDataPerItemMap()
         return
     end
 
-    local CraftableItems = meSystem.getCraftableItems()
+    local CraftableItems = meSystem:getCraftableItems()
     for _, value in pairs(CraftableItems) do
         items[value.name] = value
     end
-    local CurrentMeItems = meSystem.getItemList()
+    local CurrentMeItems = meSystem:getItemList()
     for _, value in pairs(CurrentMeItems) do
         items[value.name] = value
     end

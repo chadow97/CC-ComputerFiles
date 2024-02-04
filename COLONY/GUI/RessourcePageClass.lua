@@ -128,13 +128,13 @@ function RessourcePageClass:getOnPostTableRefreshCallback()
           break;
          end
       if ressource.status == RessourceClass.RESSOURCE_STATUSES.all_in_me_or_ex then
-        meSystem.exportItem(ressource.itemId, ressource.missingWithExternalInventory, self.inventoryOb:getUniqueKey())
+        meSystem:exportItem(ressource.itemId, ressource.missingWithExternalInventory, self.inventoryOb:getUniqueKey())
         local lineToOutput = string.format("Sent %s %s to externalStorage", ressource.missingWithExternalInventory, ressource.itemId)
         self.logElement:addLine(lineToOutput)
       end
       if ressource.status == RessourceClass.RESSOURCE_STATUSES.craftable then
-          if not meSystem.isItemBeingCrafted(ressource.itemId) and hasFreeCpuLeft then
-            meSystem.craftItem(ressource.itemId, ressource.missingWithExternalInventoryAndMe)
+          if not meSystem:isItemBeingCrafted(ressource.itemId) and hasFreeCpuLeft then
+            meSystem:craftItem(ressource.itemId, ressource.missingWithExternalInventoryAndMe)
             local lineToOutput = string.format("Crafting %s %s", ressource.missingWithExternalInventoryAndMe, ressource.itemId)
             self.logElement:addLine(lineToOutput)
             nextFreeCpu = nextFreeCpu + 1
@@ -159,9 +159,9 @@ function RessourcePageClass:getOnRessourcePressed()
         end
         local actionToDo = ressource:getActionToDo()
         if actionToDo == RessourceClass.ACTIONS.SENDTOEXTERNAL then
-          meSystem.exportItem(ressource.itemId, ressource.missingWithExternalInventory,  ressourcePage.inventoryOb:getUniqueKey())
+          meSystem:exportItem(ressource.itemId, ressource.missingWithExternalInventory,  ressourcePage.inventoryOb:getUniqueKey())
         elseif actionToDo == RessourceClass.ACTIONS.CRAFT then
-          meSystem.craftItem(ressource.itemId, ressource.missingWithExternalInventoryAndMe)
+          meSystem:craftItem(ressource.itemId, ressource.missingWithExternalInventoryAndMe)
         end
             end
 end

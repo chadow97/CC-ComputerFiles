@@ -89,7 +89,7 @@ function MeItemManagerClass:getMeItems()
     for _, value in pairs(CraftableItems) do
         table.insert(meItems,value)
     end
-    local CurrentMeItems = meSystem.getItemList()
+    local CurrentMeItems = meSystem:getItemList()
     for _, value in pairs(CurrentMeItems) do
         table.insert(meItems,value)
     end
