@@ -36,7 +36,7 @@ function RedstoneControlPageClass:onBuildCustomPage()
 
     peripheralTable:setDataFetcher(self.RiManager)
     peripheralTable:setDisplayKey(false)
-    peripheralTable:setRowHeight(5)
+    peripheralTable:setRowHeight(6)
     peripheralTable:setColumnCount(3)
     peripheralTable:applyDocumentStyle()
     peripheralTable:setHasManualRefresh(true)
