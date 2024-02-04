@@ -51,7 +51,10 @@ function RequestInventoryPageClass:onBuildCustomPage()
     [ElementClass.properties.on_draw_function] = self:getOnDrawTableElement()})
     
     local currentInventoryKey = self.requestInventoryHandler:getRequestInventoryKey()
-    local currentInventory = self.inventoryManager:getOb(currentInventoryKey)
+    local currentInventory = nil
+    if currentInventoryKey then
+        currentInventory = self.inventoryManager:getOb(currentInventoryKey)        
+    end
     self:changeSelectedItem(currentInventory, false)
 
     self:applyDocumentStyle()

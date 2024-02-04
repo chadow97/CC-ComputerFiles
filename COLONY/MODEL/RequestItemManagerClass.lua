@@ -46,7 +46,11 @@ function RequestItemManagerClass:_onRefreshObs()
         for _, requestItemData in ipairs(requestOb.items) do
             local meItemInfo = self.meItemManager:getObEvenIfMissing(requestItemData.name)
             assert(meItemInfo, "didnt return object!")
-            local amountInExternalInventory = requestInventory:getItemAmount(requestItemData.name)
+
+            local amountInExternalInventory = 0
+            if requestInventory then
+                amountInExternalInventory = requestInventory:getItemAmount(requestItemData.name)
+            end
             local potentialOb = RequestItemClass:new(requestItemData, meItemInfo, amountInExternalInventory, requestOb, self)
 
             local currentOb = self:getOb(potentialOb:getUniqueKey())
