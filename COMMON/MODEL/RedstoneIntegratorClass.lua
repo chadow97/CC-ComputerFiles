@@ -3,6 +3,7 @@ local ObClass = require("MODEL.ObClass")  -- Adjust the path if necessary
 local stringUtils = require("UTIL.stringUtils")
 local PeripheralClass = require("COMMON.MODEL.PeripheralClass")
 local logger          = require("UTIL.logger")
+local perSides        = require("UTIL.perSides")
 
 
 local RedstoneIntegratorClass = {}
@@ -32,7 +33,9 @@ end
 
 function RedstoneIntegratorClass:setState(IsActive)
     self.active = IsActive
-    self.per.setOutput("top", IsActive)
+    for _,side in pairs(perSides) do
+        self.per.setOutput(side, IsActive)
+    end
 end
 
 function RedstoneIntegratorClass:toggleState()
