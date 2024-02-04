@@ -61,15 +61,15 @@ function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
 
     nextElementYPos = nextElementYPos + 1
 
-    local NicknameButton = ToggleableButtonClass:new(nil, nil,"", self.document)
-    NicknameButton:forceWidthSize(InsertsWidth)
-    NicknameButton:setMargin(0)
-    NicknameButton:setUpperCornerPos(parentPagePosX + 2, nextElementYPos)
-    NicknameButton:applyDocumentStyle()
-    NicknameButton:setText(self:getNicknameString())
-    NicknameButton:setOnManualToggle(self:getOnNicknamePressed())
+    self.NicknameButton = ToggleableButtonClass:new(nil, nil,"", self.document)
+    self.NicknameButton:forceWidthSize(InsertsWidth)
+    self.NicknameButton:setMargin(0)
+    self.NicknameButton:setUpperCornerPos(parentPagePosX + 2, nextElementYPos)
+    self.NicknameButton:applyDocumentStyle()
+    self.NicknameButton:setText(self:getNicknameString())
+    self.NicknameButton:setOnManualToggle(self:getOnNicknamePressed())
 
-    containerPage:addElement(NicknameButton)
+    containerPage:addElement(self.NicknameButton)
 
     nextElementYPos = nextElementYPos + 1
 
@@ -119,7 +119,11 @@ end
 
 function RedstoneIntegratorDetailPageClass:getOnNicknameModified()
   return function (newNickname)
-    logger.db(newNickname)
+    self.document:startEdition()
+    self.Ri:setNickname(newNickname)
+    self.NicknameButton:setText(self:getNicknameString())
+    self.document:registerCurrentAreaAsDirty(self.NicknameButton)
+    self.document:endEdition()
   end
 end
 

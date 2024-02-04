@@ -42,6 +42,10 @@ function RedstoneIntegratorClass:toggleState()
     self:setState(not self.active)
 end
 
+function RedstoneIntegratorClass:setNickname(nickname)
+    self.nickname = nickname
+end
+
 -- Overriding GetDisplayString method
 function RedstoneIntegratorClass:GetDisplayString()
     local nickname = self.nickname or "No nickname"
