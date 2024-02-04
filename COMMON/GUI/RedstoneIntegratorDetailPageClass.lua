@@ -32,12 +32,12 @@ function RedstoneIntegratorDetailPageClass:__tostring()
 function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
 
 
-    local parentPagePosX, parentPagePosY = self:getPos()
+  local parentPageSizeX, parentPageSizeY = self.parentPage:getSize()
+  local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 
     local containerPage = PageClass:new(self.monitor,2, 2, self.document)
 
-    local parentPagePosX  = parentPagePosX
-    local parentPageWidth = self:getSize()
+    local parentPageWidth = parentPageSizeX
     local insertsWidth = parentPageWidth - 2
     local nextElementYPos = parentPagePosY
     containerPage:setSize(parentPageWidth, 6)
