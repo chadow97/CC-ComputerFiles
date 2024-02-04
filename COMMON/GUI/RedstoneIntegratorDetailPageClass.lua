@@ -62,11 +62,11 @@ function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
 
     local NicknameButton = ToggleableButtonClass:new(nil, nil,"", self.document)
     NicknameButton:forceWidthSize(InsertsWidth)
+    NicknameButton:setMargin(0)
     NicknameButton:setUpperCornerPos(parentPagePosX + 2, nextElementYPos)
     NicknameButton:applyDocumentStyle()
     NicknameButton:setText(self:getNicknameString())
     NicknameButton:setOnManualToggle()
-    NicknameButton:setMargin(0)
 
     self:addElement(NicknameButton)
 
@@ -74,22 +74,22 @@ function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
 
     local StateButton = ToggleableButtonClass:new(nil, nil,"", self.document)
     StateButton:forceWidthSize(InsertsWidth)
+    StateButton:setMargin(0)
     StateButton:setUpperCornerPos(parentPagePosX + 2, nextElementYPos)
     StateButton:applyDocumentStyle()
     StateButton:setText(self:getStateString())
     StateButton:setOnManualToggle()
-    StateButton:setMargin(0)
     self:addElement(StateButton)
 
     nextElementYPos = nextElementYPos + 1
 
     local AssInvButton = ToggleableButtonClass:new(nil, nil,"", self.document)
     AssInvButton:forceWidthSize(InsertsWidth)
+    AssInvButton:setMargin(0)
     AssInvButton:setUpperCornerPos(parentPagePosX + 2, nextElementYPos)
     AssInvButton:applyDocumentStyle()
     AssInvButton:setText(self:getAssociatedInventoryString())
     AssInvButton:setOnManualToggle()
-    AssInvButton:setMargin(0)
     self:addElement(AssInvButton)
 
     self:applyDocumentStyle()
