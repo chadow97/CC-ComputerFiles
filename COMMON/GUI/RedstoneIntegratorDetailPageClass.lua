@@ -96,7 +96,10 @@ function RedstoneIntegratorDetailPageClass:getIdString()
 end
 
 function RedstoneIntegratorDetailPageClass:getNicknameString()
-  return "Nickname: " .. self.Ri.nickname .. " (Press to edit)"
+
+  local nicknameToDisplay = self.Ri.nickname or "No nickname"
+
+  return "Nickname: " .. nicknameToDisplay .. " (Press to edit)"
 end
 
 function RedstoneIntegratorDetailPageClass:getStateString()
@@ -104,7 +107,8 @@ function RedstoneIntegratorDetailPageClass:getStateString()
 end
 
 function RedstoneIntegratorDetailPageClass:getAssociatedInventoryString()
-  return "Associated inventory: " .. self.Ri.associatedInventory .. " (Press to edit)"
+  local assInventory = self.Ri.associatedInventory or "No associated inventory"
+  return "Associated inventory: " .. assInventory .. " (Press to edit)"
 end
 
 
