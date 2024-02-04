@@ -111,6 +111,11 @@ function RequestDetailsPageClass:getOnRequestItemPressed()
             return
         end
 
+        if not self.inventoryKey then
+            logger.log("Cannot process request item because no inventory", logger.LOGGING_LEVEL.WARNING)
+            return
+        end
+
         local meSystem = self.meSystemManager:getDefaultMeSystem()
         if not meSystem then
             logger.log("No me system!", logger.LOGGING_LEVEL.WARNING)
