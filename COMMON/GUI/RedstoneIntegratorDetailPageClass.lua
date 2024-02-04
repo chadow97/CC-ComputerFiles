@@ -68,7 +68,7 @@ function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
     NicknameButton:setText(self:getNicknameString())
     NicknameButton:setOnManualToggle(self:getOnNicknamePressed())
 
-    self:addElement(NicknameButton)
+    containerPage:addElement(NicknameButton)
 
     nextElementYPos = nextElementYPos + 1
 
@@ -79,7 +79,7 @@ function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
     StateButton:applyDocumentStyle()
     StateButton:setText(self:getStateString())
     StateButton:setOnManualToggle()
-    self:addElement(StateButton)
+    containerPage:addElement(StateButton)
 
     nextElementYPos = nextElementYPos + 1
 
@@ -90,7 +90,7 @@ function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
     AssInvButton:applyDocumentStyle()
     AssInvButton:setText(self:getAssociatedInventoryString())
     AssInvButton:setOnManualToggle()
-    self:addElement(AssInvButton)
+    containerPage:addElement(AssInvButton)
 
     self:applyDocumentStyle()
 end
