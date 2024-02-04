@@ -43,7 +43,8 @@ function BuilderManagerClass:_onRefreshObs()
     end
 
     local builders = self:getBuilders()
-    for _, builderData in pairs(builders) do
+    --[[
+    for id, builderData in pairs(builders) do
         local potentialOb = BuilderClass:new(builderData, self)
         potentialOb.associatedInventoryName = self.associations[potentialOb:getUniqueKey()]
         if not potentialOb.associatedInventoryName then
@@ -62,6 +63,7 @@ function BuilderManagerClass:_onRefreshObs()
         end
 
     end
+    ]]--
 end
 
 function BuilderManagerClass:readAssociations()
