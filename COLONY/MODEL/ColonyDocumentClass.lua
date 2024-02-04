@@ -12,6 +12,7 @@ local logger                  = require("UTIL.logger")
 local PeripheralManagerClass  = require("COMMON.MODEL.PeripheralManagerClass")
 local ColonyStyleClass        = require("COLONY.MODEL.ColonyStyleClass")
 local ColonyConnectionProviderClass = require("COLONY.MODEL.ColonyConnectionProviderClass")
+local RedstoneIntegratorManagerClass= require("COMMON.MODEL.RedstoneIntegratorManagerClass")
 
 
 ---@class ColonyDocument:Document
@@ -32,6 +33,7 @@ function ColonyDocumentClass:new()
 
     o:registerManager(MeSystemManagerClass:new(o))
     o:registerManager(MeItemManagerClass:new(o))
+    o:registerManager(RedstoneIntegratorManagerClass:new(o))
 
     o:registerManager(ColonyManagerClass:new(o))
     o:registerManager(BuilderManagerClass:new(o))
