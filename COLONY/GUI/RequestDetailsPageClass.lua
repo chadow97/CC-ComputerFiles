@@ -123,9 +123,9 @@ function RequestDetailsPageClass:getOnRequestItemPressed()
         end
         local action = requestItem:getActionToDo()
         if action == RequestItemClass.ACTIONS.SENDTOEXTERNAL then
-            meSystem.exportItem(requestItem:getUniqueKey(), requestItem:getAmountToSendFromMe(),  self.inventoryKey)
+            meSystem:exportItem(requestItem:getUniqueKey(), requestItem:getAmountToSendFromMe(),  self.inventoryKey)
         elseif action == RequestItemClass.ACTIONS.CRAFT then
-            meSystem.craftItem(requestItem:getUniqueKey(), requestItem:getAmountMissingWithMe())
+            meSystem:craftItem(requestItem:getUniqueKey(), requestItem:getAmountMissingWithMe())
         end
             end
 end
