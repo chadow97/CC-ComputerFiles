@@ -52,7 +52,7 @@ end
 function RedstoneControlPageClass:getOnRiPressed()
   return function(positionInTable, isKey, Ri)
 
-      if (not isKey) then
+      if (isKey) then
           return
       end
       self.document:startEdition()
