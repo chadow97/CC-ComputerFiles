@@ -39,6 +39,10 @@ function RequestItemClass:new(requestItemData, meItemInfo, amountInExternalInven
     return self
 end
 
+function RequestItemClass:__tostring() 
+    return "NO!"
+end
+
 function RequestItemClass:getAmountMissingForRequest()
     return math.max(self.count - self.amountInExternalInventory,0)
 end
