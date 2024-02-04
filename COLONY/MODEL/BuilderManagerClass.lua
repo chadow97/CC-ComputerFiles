@@ -46,7 +46,6 @@ function BuilderManagerClass:_onRefreshObs()
     local builders = self:getBuilders()
     for id, builderData in pairs(builders) do
         local potentialOb = BuilderClass:new(builderData, self)
-        --[[
         potentialOb.associatedInventoryName = self.associations[potentialOb:getUniqueKey()]
         if not potentialOb.associatedInventoryName then
             -- get default inventory
@@ -62,9 +61,7 @@ function BuilderManagerClass:_onRefreshObs()
         else
             currentOb:copyFrom(potentialOb)
         end
-        logger.db("created builder!")
 
-        ]]--
     end
 end
 
