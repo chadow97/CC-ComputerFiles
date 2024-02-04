@@ -146,24 +146,24 @@ function RessourcePageClass:getOnPostTableRefreshCallback()
 end
 
 function RessourcePageClass:getOnRessourcePressed()
-    local ressourcePage = self
-    return function (positionInTable, isKey, ressource)
-          -- do nothing if key, it shouldnt be displayed
-        if  isKey then
-            return
-        end
-        local meSystem = self.meSystemManager:getDefaultMeSystem()
-        if not meSystem then
-            logger.log("No me system, cannot execute action!", logger.LOGGING_LEVEL.WARNING)
-            return
-        end
-        local actionToDo = ressource:getActionToDo()
-        if actionToDo == RessourceClass.ACTIONS.SENDTOEXTERNAL then
-          meSystem:exportItem(ressource.itemId, ressource.missingWithExternalInventory,  ressourcePage.inventoryOb:getUniqueKey())
-        elseif actionToDo == RessourceClass.ACTIONS.CRAFT then
-          meSystem:craftItem(ressource.itemId, ressource.missingWithExternalInventoryAndMe)
-        end
-            end
+  local ressourcePage = self
+  return function (positionInTable, isKey, ressource)
+        -- do nothing if key, it shouldnt be displayed
+    if  isKey then
+        return
+    end
+    local meSystem = self.meSystemManager:getDefaultMeSystem()
+    if not meSystem then
+        logger.log("No me system, cannot execute action!", logger.LOGGING_LEVEL.WARNING)
+        return
+    end
+    local actionToDo = ressource:getActionToDo()
+    if actionToDo == RessourceClass.ACTIONS.SENDTOEXTERNAL then
+      meSystem:exportItem(ressource.itemId, ressource.missingWithExternalInventory,  ressourcePage.inventoryOb:getUniqueKey())
+    elseif actionToDo == RessourceClass.ACTIONS.CRAFT then
+      meSystem:craftItem(ressource.itemId, ressource.missingWithExternalInventoryAndMe)
+    end
+  end
 end
 
 return RessourcePageClass
