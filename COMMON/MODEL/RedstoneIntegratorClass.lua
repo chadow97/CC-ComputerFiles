@@ -32,8 +32,7 @@ end
 
 function RedstoneIntegratorClass:setState(IsActive)
     self.active = IsActive
-    logger.db(self.per)
-    self.per.setOuput("top", IsActive)
+    self.per.setOutput("top", IsActive)
 end
 
 function RedstoneIntegratorClass:toggleState()
