@@ -44,7 +44,7 @@ function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
     containerPage:setPos(parentPagePosX + 1, nextElementYPos)
     logger.db({parentPagePosX, nextElementYPos})
     logger.db({parentPageWidth,6})
-    containerPage:setBackColor(self.document.style.tertiary)
+    containerPage:setBackColor(colors.blue)
 
     self.parentPage:addElement(containerPage)
 
@@ -57,7 +57,7 @@ function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
     Idlabel:setMargin(0)
     Idlabel:setUpperCornerPos(parentPagePosX + 2, nextElementYPos)
     Idlabel:applyDocumentStyle()
-    containerPage:addElement(Idlabel)
+    --containerPage:addElement(Idlabel)
 
     --[[
       ID:
