@@ -3,10 +3,10 @@ local ObTableClass          = require "GUI.ObTableClass"
 local LogClass              = require "GUI.LogClass"
 local ToggleableButtonClass = require "GUI.ToggleableButtonClass"
 local RessourceClass        = require "COLONY.MODEL.RessourceClass"
-local MeUtils               = require "UTIL.meUtils"
 local logger                = require "UTIL.logger"
 local CustomPageClass       = require "GUI.CustomPageClass"
 local PeripheralManagerClass= require "COMMON.MODEL.PeripheralManagerClass"
+local MeSystemManagerClass  = require "COMMON.MODEL.MeSystemManagerClass"
 
 local LOG_HEIGHT = 10
 
@@ -22,6 +22,7 @@ function RessourcePageClass:new(monitor, parentPage, workOrderId, inventoryOb, d
   self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "ressourcePage"), RessourcePageClass)
 
   local peripheralManager = document:getManagerForType(PeripheralManagerClass.TYPE)
+  self.meSystemManager = self.document:getManagerForType(MeSystemManagerClass.TYPE)
   local colonyPeripheral = peripheralManager:getMainColonyPeripheral()
 
   self.ressourceFetcher = RessourceFetcherClass:new(colonyPeripheral, workOrderId, inventoryOb, document)
@@ -106,8 +107,14 @@ function RessourcePageClass:getOnPostTableRefreshCallback()
     if not self.isSendingAll then
       return
     end
+
+    local meSystem = self.meSystemManager:getDefaultMeSystem()
+    if not meSystem then
+        logger.log("No me system, cannot sent all!", logger.LOGGING_LEVEL.WARNING)
+        return
+    end
     local ressources = self.ressourceFetcher:getAllRessourcesWithoutRefreshing()
-    local freeCpus = MeUtils.getAllFreeCpus()
+    local freeCpus = meSystem:getAllFreeCpus()
     local nextFreeCpu = 1
     local hasFreeCpuLeft = #freeCpus > 0
 
@@ -121,13 +128,13 @@ function RessourcePageClass:getOnPostTableRefreshCallback()
           break;
          end
       if ressource.status == RessourceClass.RESSOURCE_STATUSES.all_in_me_or_ex then
-        MeUtils.exportItem(ressource.itemId, ressource.missingWithExternalInventory, self.inventoryOb:getUniqueKey())
+        meSystem:exportItem(ressource.itemId, ressource.missingWithExternalInventory, self.inventoryOb:getUniqueKey())
         local lineToOutput = string.format("Sent %s %s to externalStorage", ressource.missingWithExternalInventory, ressource.itemId)
         self.logElement:addLine(lineToOutput)
       end
       if ressource.status == RessourceClass.RESSOURCE_STATUSES.craftable then
-          if not MeUtils.isItemBeingCrafted(ressource.itemId) and hasFreeCpuLeft then
-            MeUtils.craftItem(ressource.itemId, ressource.missingWithExternalInventoryAndMe)
+          if not meSystem:isItemBeingCrafted(ressource.itemId) and hasFreeCpuLeft then
+            meSystem:craftItem(ressource.itemId, ressource.missingWithExternalInventoryAndMe)
             local lineToOutput = string.format("Crafting %s %s", ressource.missingWithExternalInventoryAndMe, ressource.itemId)
             self.logElement:addLine(lineToOutput)
             nextFreeCpu = nextFreeCpu + 1
@@ -139,33 +146,23 @@ function RessourcePageClass:getOnPostTableRefreshCallback()
 end
 
 function RessourcePageClass:getOnRessourcePressed()
-    local ressourcePage = self
-    return function (positionInTable, isKey, ressource)
-          -- do nothing if key, it shouldnt be displayed
-        if  isKey then
-            return
-        end
-        local actionToDo = ressource:getActionToDo()
-        if actionToDo == RessourceClass.ACTIONS.SENDTOEXTERNAL then
-            MeUtils.exportItem(ressource.itemId, ressource.missingWithExternalInventory,  ressourcePage.inventoryOb:getUniqueKey())
-        elseif actionToDo == RessourceClass.ACTIONS.CRAFT then
-            MeUtils.craftItem(ressource.itemId, ressource.missingWithExternalInventoryAndMe)
-        end
-            end
-end
-
-
--- Define static functions 
-function RessourcePageClass.onRessourcePressed(positionInTable, isKey, ressource)
-  -- do nothing if key, it shouldnt be displayed
-  if  isKey then
-      return
-  end
-  local actionToDo = ressource:getActionToDo()
-  if actionToDo == RessourceClass.ACTIONS.SENDTOEXTERNAL then
-      MeUtils.exportItem(ressource.itemId, ressource.missingWithExternalInventory)
-  elseif actionToDo == RessourceClass.ACTIONS.CRAFT then
-      MeUtils.craftItem(ressource.itemId, ressource.missingWithExternalInventoryAndMe)
+  local ressourcePage = self
+  return function (positionInTable, isKey, ressource)
+        -- do nothing if key, it shouldnt be displayed
+    if  isKey then
+        return
+    end
+    local meSystem = self.meSystemManager:getDefaultMeSystem()
+    if not meSystem then
+        logger.log("No me system, cannot execute action!", logger.LOGGING_LEVEL.WARNING)
+        return
+    end
+    local actionToDo = ressource:getActionToDo()
+    if actionToDo == RessourceClass.ACTIONS.SENDTOEXTERNAL then
+      meSystem:exportItem(ressource.itemId, ressource.missingWithExternalInventory,  ressourcePage.inventoryOb:getUniqueKey())
+    elseif actionToDo == RessourceClass.ACTIONS.CRAFT then
+      meSystem:craftItem(ressource.itemId, ressource.missingWithExternalInventoryAndMe)
+    end
   end
 end
 

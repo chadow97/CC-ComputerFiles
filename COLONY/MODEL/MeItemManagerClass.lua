@@ -1,8 +1,8 @@
 -- WorkOrderFetcher.lua
 local logger = require("UTIL.logger")
-local MeUtils= require("UTIL.meUtils")
 local MeItemClass = require("COLONY.MODEL.MeItemClass")
 local ManagerClass = require("MODEL.ManagerClass")
+local MeSystemManagerClass  = require "COMMON.MODEL.MeSystemManagerClass"
 
 local MeItemManagerClass = {}
 
@@ -15,6 +15,7 @@ function MeItemManagerClass:new(document)
     local o = setmetatable(ManagerClass:new(document), MeItemManagerClass)
     o.type = MeItemManagerClass.TYPE
     o.itemByIdMap = {}
+    o.meSystemManager = o.document:getManagerForType(MeSystemManagerClass.TYPE)
 
     return o
 end
@@ -78,12 +79,17 @@ end
 
 function MeItemManagerClass:getMeItems()
     local meItems = {}
+    local meSystem = self.meSystemManager:getDefaultMeSystem()
+    if not meSystem then
+        logger.log("No me system, cannot sent all!", logger.LOGGING_LEVEL.WARNING)
+        return meItems
+    end
 
-    local CraftableItems = MeUtils.getCraftableItems()
+    local CraftableItems = meSystem:getCraftableItems()
     for _, value in pairs(CraftableItems) do
         table.insert(meItems,value)
     end
-    local CurrentMeItems = MeUtils.getItemList()
+    local CurrentMeItems = meSystem:getItemList()
     for _, value in pairs(CurrentMeItems) do
         table.insert(meItems,value)
     end

@@ -3,7 +3,7 @@ local colIntUtil = require("UTIL.colonyIntegratorPerUtils")
 local logger = require("UTIL.logger")
 local BuilderClass = require("COLONY.MODEL.builderClass")
 local TableFileHandlerClass = require("UTIL.tableFileHandlerClass")
-local InventoryManagerClass = require("COMMON.MODEL.InventoryClass")
+local InventoryManagerClass = require("COMMON.MODEL.InventoryManagerClass")
 local PeripheralManagerClass= require("COMMON.MODEL.PeripheralManagerClass")
 local ManagerClass = require("MODEL.ManagerClass")
 
@@ -38,11 +38,15 @@ function BuilderManagerClass:onAssociationModified(builderOb)
 end
 
 function BuilderManagerClass:_onRefreshObs()
+    logger.db("refreshing builder manager!")
     if not self.associations then
         self:readAssociations()
     end
-    for index, builderData in ipairs(self:getBuilders()) do
 
+    local builders = self:getBuilders()
+    logger.db(builders)
+    for _, builderData in pairs(builders) do
+        logger.db("creating builder ob")
         local potentialOb = BuilderClass:new(builderData, self)
         potentialOb.associatedInventoryName = self.associations[potentialOb:getUniqueKey()]
         if not potentialOb.associatedInventoryName then
@@ -59,6 +63,7 @@ function BuilderManagerClass:_onRefreshObs()
         else
             currentOb:copyFrom(potentialOb)
         end
+        logger.db("created builder!")
 
     end
 end
@@ -70,6 +75,7 @@ end
 function BuilderManagerClass:getBuilders()
     local status, builders = pcall(colIntUtil.getBuilders, self.colonyPeripheral)
     if not status then
+        logger.log(status, logger.LOGGING_LEVEL.ERROR)
         builders = {}
     end
     return builders

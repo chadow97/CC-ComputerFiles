@@ -1,7 +1,7 @@
 -- WorkOrderFetcher.lua
 local DataFetcherClass = require("MODEL.DataFetcherClass") 
 local logger = require("UTIL.logger")
-local MeUtils= require("UTIL.meUtils")
+local MeSystemManagerClass  = require "COMMON.MODEL.MeSystemManagerClass"
 local RessourceClass = require("COLONY.MODEL.RessourceClass")
 local MeItemManagerClass   = require("COLONY.MODEL.MeItemManagerClass")
 
@@ -22,17 +22,23 @@ function RessourceFetcherClass:new(colonyPeripheral, workOrderId, externalChest,
     self.ressourceList = nil
     self.document = document
     self.meItemManager = document:getManagerForType(MeItemManagerClass.TYPE)
+    self.meSystemManager = self.document:getManagerForType(MeSystemManagerClass.TYPE)
     return self
 end
 
 function RessourceFetcherClass:getMeDataPerItemMap()
     local items = {}
+    local meSystem = self.meSystemManager:getDefaultMeSystem()
+    if not meSystem then
+        logger.log("No me system, cannot fetch ressources!", logger.LOGGING_LEVEL.WARNING)
+        return
+    end
 
-    local CraftableItems = MeUtils.getCraftableItems()
+    local CraftableItems = meSystem:getCraftableItems()
     for _, value in pairs(CraftableItems) do
         items[value.name] = value
     end
-    local CurrentMeItems = MeUtils.getItemList()
+    local CurrentMeItems = meSystem:getItemList()
     for _, value in pairs(CurrentMeItems) do
         items[value.name] = value
     end
@@ -50,8 +56,9 @@ function RessourceFetcherClass:getExternalInventoryItems()
 end
 
 function RessourceFetcherClass:getRessourceRequirementsFromColony()
+    logger.db(self.workOrderId)
 
-    local ressourceRequirementFromColony = self.colonyPeripheral:getWorkOrderResources(self.workOrderId)
+    local ressourceRequirementFromColony = self.colonyPeripheral.getWorkOrderResources(self.workOrderId)
     if not ressourceRequirementFromColony then
         ressourceRequirementFromColony = {}
         logger.log("Colony Peripheral did not answer!", logger.LOGGING_LEVEL.ERROR)

@@ -1,5 +1,6 @@
 -- WorkOrderClass.lua
 local ObClass = require("MODEL.ObClass")  -- Adjust the path if necessary
+local stringUtils = require("UTIL.stringUtils")
 local logger  = require("UTIL.logger")
 
 
@@ -37,6 +38,11 @@ function RequestItemClass:new(requestItemData, meItemInfo, amountInExternalInven
 
 
     return self
+end
+
+function RequestItemClass:__tostring() 
+    return stringUtils.Format("[Request item %(name)]",
+    {name = self.displayName})
 end
 
 function RequestItemClass:getAmountMissingForRequest()

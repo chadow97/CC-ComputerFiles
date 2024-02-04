@@ -45,11 +45,13 @@ end
 function InventoryManagerClass:getRequestInventory()
     local currentInventoryKey = self.requestInventoryHandler:read()[1]
     if not currentInventoryKey then
-        error("No inventory to consider for request!")
+        logger.log("No inventory to consider for request!", logger.LOGGING_LEVEL.WARNING)
+        return nil
     end
     local inventoryOb = self:getOb(currentInventoryKey)
     if not inventoryOb then
-        error("Couldnt find inventory for requests")
+        logger.log("Couldnt find inventory for requests", logger.LOGGING_LEVEL.WARNING)
+        return nil
     end
     return inventoryOb
 end
