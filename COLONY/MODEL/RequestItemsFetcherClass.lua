@@ -1,6 +1,7 @@
 -- WorkOrderFetcher.lua
 local DataFetcherClass = require("MODEL.DataFetcherClass") 
 local RequestItemManagerClass = require("COLONY.MODEL.RequestItemManagerClass")
+local logger = require("UTIL.logger")
 
 
 
@@ -21,7 +22,9 @@ function RequestItemsFetcherClass:new(requestId, document)
 end
 
 function RequestItemsFetcherClass:getObs()
-    return self.requestItemsManager:getItemsForRequest(self.requestId)
+    local items = self.requestItemsManager:getItemsForRequest(self.requestId)
+    logger.db(items)
+    return items
 end
 
 return RequestItemsFetcherClass
