@@ -46,7 +46,7 @@ function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
     logger.db({parentPageWidth,6})
     containerPage:setBackColor(colors.blue)
 
-    self.parentPage:addElement(containerPage)
+    self:addElement(containerPage)
 
     local InsertsWidth = insertsWidth - 2
     nextElementYPos = nextElementYPos + 1
