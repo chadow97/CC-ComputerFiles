@@ -78,7 +78,8 @@ function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
     StateButton:setUpperCornerPos(parentPagePosX + 2, nextElementYPos)
     StateButton:applyDocumentStyle()
     StateButton:setText(self:getStateString())
-    StateButton:setOnManualToggle()
+    StateButton:setOnManualToggle(self:getOnTogglePressed())
+    self.StateButton = StateButton
     containerPage:addElement(StateButton)
 
     nextElementYPos = nextElementYPos + 1
@@ -119,6 +120,16 @@ function RedstoneIntegratorDetailPageClass:getOnNicknamePressed()
   return function()
       self.document:startEdition()
       --TODO
+      self.document:endEdition()
+  end
+end
+
+function RedstoneIntegratorDetailPageClass:getOnTogglePressed()
+  return function()
+      self.document:startEdition()
+      self.Ri:toggleState()
+      self.StateButton:setText(self:getStateString())
+      self.document:registerCurrentAreaAsDirty(self.StateButton)
       self.document:endEdition()
   end
 end

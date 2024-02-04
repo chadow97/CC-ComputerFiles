@@ -30,6 +30,15 @@ function RedstoneIntegratorClass:GetKeyDisplayString()
     return self.uniqueKey
 end
 
+function RedstoneIntegratorClass:setState(IsActive)
+    self.active = IsActive
+    self.per.setOuput("top", IsActive)
+end
+
+function RedstoneIntegratorClass:toggleState()
+    self:setState(!self.active)
+end
+
 -- Overriding GetDisplayString method
 function RedstoneIntegratorClass:GetDisplayString()
     local nickname = self.nickname or "No nickname"
