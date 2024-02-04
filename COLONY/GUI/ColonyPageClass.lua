@@ -28,7 +28,6 @@ function ColonyPageClass:onBuildCustomPage()
     if not colony then
         logger.log("No colony found!", logger.LOGGING_LEVEL.WARNING)
     end
-    logger.db("building page..")
 
     local parentPageSizeX, parentPageSizeY = self.parentPage:getSize()
     local parentPagePosX, parentPagePosY = self.parentPage:getPos()
