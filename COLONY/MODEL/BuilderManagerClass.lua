@@ -38,6 +38,7 @@ function BuilderManagerClass:onAssociationModified(builderOb)
 end
 
 function BuilderManagerClass:_onRefreshObs()
+    logger.db("refreshing builder manager!")
     if not self.associations then
         self:readAssociations()
     end
@@ -61,6 +62,7 @@ function BuilderManagerClass:_onRefreshObs()
         else
             currentOb:copyFrom(potentialOb)
         end
+        logger.db("created builder!")
 
         ]]--
     end
