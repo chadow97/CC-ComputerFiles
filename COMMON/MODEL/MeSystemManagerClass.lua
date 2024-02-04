@@ -46,7 +46,7 @@ function MeSystemManagerClass:_onRefreshObs()
 
     for _, meSytemsPer in pairs(meSytemsPers) do
         local inventoryOb = MeSystemClass:new(meSytemsPer)
-        table.insert(self.inventories, inventoryOb)
+        table.insert(self.meSystems, inventoryOb)
     end
 end
 
