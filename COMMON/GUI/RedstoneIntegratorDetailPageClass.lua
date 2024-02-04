@@ -51,26 +51,60 @@ function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
     nextElementYPos = nextElementYPos + 1
 
 
-    local Idlabel = LabelClass:new(nil, nil, self:getIDstring() , self.document)
+    local Idlabel = LabelClass:new(nil, nil, self:getIdString() , self.document)
     Idlabel:forceWidthSize(InsertsWidth)
     Idlabel:setMargin(0)
     Idlabel:setUpperCornerPos(parentPagePosX + 2, nextElementYPos)
     Idlabel:applyDocumentStyle()
     containerPage:addElement(Idlabel)
 
-    --[[
-      ID:
-      Nickame: (Press to edit)
-      State: (Press to toggle)
-      Associated inventory: (Press to change)
-    ]]  
+    nextElementYPos = nextElementYPos + 1
 
+    local NicknameButton = ToggleableButtonClass:new(nil, nil,"", self.document)
+    NicknameButton:forceWidthSize(InsertsWidth)
+    NicknameButton:setUpperCornerPos(parentPagePosX + 2, nextElementYPos)
+    NicknameButton:applyDocumentStyle()
+    NicknameButton:setText(self:getNicknameString())
+    NicknameButton:setOnManualToggle()
+    self:addElement(NicknameButton)
+
+    nextElementYPos = nextElementYPos + 1
+
+    local StateButton = ToggleableButtonClass:new(nil, nil,"", self.document)
+    StateButton:forceWidthSize(InsertsWidth)
+    StateButton:setUpperCornerPos(parentPagePosX + 2, nextElementYPos)
+    StateButton:applyDocumentStyle()
+    StateButton:setText(self:getStateString())
+    StateButton:setOnManualToggle()
+    self:addElement(StateButton)
+
+    nextElementYPos = nextElementYPos + 1
+
+    local AssInvButton = ToggleableButtonClass:new(nil, nil,"", self.document)
+    AssInvButton:forceWidthSize(InsertsWidth)
+    AssInvButton:setUpperCornerPos(parentPagePosX + 2, nextElementYPos)
+    AssInvButton:applyDocumentStyle()
+    AssInvButton:setText(self:getAssociatedInventoryString())
+    AssInvButton:setOnManualToggle()
+    self:addElement(AssInvButton)
 
     self:applyDocumentStyle()
 end
 
-function RedstoneIntegratorDetailPageClass:getIDstring()
+function RedstoneIntegratorDetailPageClass:getIdString()
   return "ID: " .. self.Ri.name
+end
+
+function RedstoneIntegratorDetailPageClass:getNicknameString()
+  return "Nickname: " .. self.Ri.nickname .. " (Press to edit)"
+end
+
+function RedstoneIntegratorDetailPageClass:getStateString()
+  return "State: " .. tostring(self.Ri.active) .. " (Press to toggle)"
+end
+
+function RedstoneIntegratorDetailPageClass:getAssociatedInventoryString()
+  return "Associated inventory: " .. self.Ri.associatedInventory .. " (Press to edit)"
 end
 
 
