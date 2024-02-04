@@ -66,7 +66,7 @@ function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
     NicknameButton:setUpperCornerPos(parentPagePosX + 2, nextElementYPos)
     NicknameButton:applyDocumentStyle()
     NicknameButton:setText(self:getNicknameString())
-    NicknameButton:setOnManualToggle()
+    NicknameButton:setOnManualToggle(self:getOnNicknamePressed())
 
     self:addElement(NicknameButton)
 
@@ -113,6 +113,14 @@ end
 function RedstoneIntegratorDetailPageClass:getAssociatedInventoryString()
   local assInventory = self.Ri.associatedInventory or "No associated inventory"
   return "Associated inventory: " .. assInventory .. " (Press to edit)"
+end
+
+function RedstoneIntegratorDetailPageClass:getOnNicknamePressed()
+  return function()
+      self.document:startEdition()
+      --TODO
+      self.document:endEdition()
+  end
 end
 
 
