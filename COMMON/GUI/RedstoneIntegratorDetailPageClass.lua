@@ -9,6 +9,7 @@ local PageClass  = require "GUI.PageClass"
 local ColonyConfigClass = require "COLONY.MODEL.ColonyConfigClass"
 local ToggleableButtonClass = require "GUI.ToggleableButtonClass"
 local TextSelectionPageClass= require "GUI.TextSelectionPageClass"
+local ObjectSelectionPageClass = require "GUI.ObjectSelectionPageClass"
 
 ---@class RedstoneIntegratorDetailPageClass: CustomPage
 local RedstoneIntegratorDetailPageClass = {}
@@ -85,14 +86,14 @@ function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
 
     nextElementYPos = nextElementYPos + 1
 
-    local AssInvButton = ToggleableButtonClass:new(nil, nil,"", self.document)
-    AssInvButton:forceWidthSize(InsertsWidth)
-    AssInvButton:setMargin(0)
-    AssInvButton:setUpperCornerPos(parentPagePosX + 2, nextElementYPos)
-    AssInvButton:applyDocumentStyle()
-    AssInvButton:setText(self:getAssociatedInventoryString())
-    AssInvButton:setOnManualToggle()
-    containerPage:addElement(AssInvButton)
+    self.AssInvButton = ToggleableButtonClass:new(nil, nil,"", self.document)
+    self.AssInvButton:forceWidthSize(InsertsWidth)
+    self.AssInvButton:setMargin(0)
+    self.AssInvButton:setUpperCornerPos(parentPagePosX + 2, nextElementYPos)
+    self.AssInvButton:applyDocumentStyle()
+    self.AssInvButton:setText(self:getAssociatedInventoryString())
+    self.AssInvButton:setOnManualToggle(self:getOnAssociatedInventoryButtonPressed())
+    containerPage:addElement(self.AssInvButton)
 
     self:applyDocumentStyle()
 end
@@ -113,8 +114,8 @@ function RedstoneIntegratorDetailPageClass:getStateString()
 end
 
 function RedstoneIntegratorDetailPageClass:getAssociatedInventoryString()
-  local assInventory = self.Ri.associatedInventory or "No associated inventory"
-  return "Associated inventory: " .. assInventory .. " (Press to edit)"
+
+  return "Associated inventory: " .. self.Ri:getAssociatedInventoryName() .. " (Press to edit)"
 end
 
 function RedstoneIntegratorDetailPageClass:getOnNicknameModified()
@@ -131,6 +132,23 @@ function RedstoneIntegratorDetailPageClass:getOnNicknamePressed()
   return function()
       local page = TextSelectionPageClass:new(self.monitor,self.parentPage, self.document, "New nickname:")
       self.parentPage:pushPage(page, self:getOnNicknameModified())
+  end
+end
+
+function RedstoneIntegratorDetailPageClass:getOnAssociatedInventoryButtonPressed()
+  return function()
+      local page = ObjectSelectionPageClass:new(self.monitor,self.parentPage, self.document, "New nickname:")
+      self.parentPage:pushPage(page, self:getOnAssociatedInventoryModified())
+  end
+end
+
+function RedstoneIntegratorDetailPageClass:getOnAssociatedInventoryModified()
+  return function (newInventory)
+    self.document:startEdition()
+    self.Ri:setAssociatedInventory(newInventory)
+    self.AssInvButton:setText(self:getAssociatedInventoryString())
+    self.document:registerCurrentAreaAsDirty(self.AssInvButton)
+    self.document:endEdition()
   end
 end
 

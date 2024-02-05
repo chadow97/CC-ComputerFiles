@@ -46,10 +46,21 @@ function RedstoneIntegratorClass:setNickname(nickname)
     self.nickname = nickname
 end
 
+function RedstoneIntegratorClass:setAssociatedInventory(inventory)
+    self.associatedInventory = inventory
+end
+
+function RedstoneIntegratorClass:getAssociatedInventoryName()
+    if not self.associatedInventory then
+        return "No associated inventory"
+    else
+        return self.associatedInventory.name
+    end
+end
+
 -- Overriding GetDisplayString method
 function RedstoneIntegratorClass:GetDisplayString()
     local nickname = self.nickname or "No nickname"
-    local associatedInventoryKey = "None"
     local displayString = string.format(
 [[Redstone integrator
 ID : %s
@@ -60,7 +71,7 @@ Associated Inventory: %s
 self.name,
 nickname,
 tostring(self.active),
-associatedInventoryKey)
+self:getAssociatedInventoryName())
     return displayString
 end
 
