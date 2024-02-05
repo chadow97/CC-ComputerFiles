@@ -23,7 +23,6 @@ end
 
 function RequestItemsFetcherClass:getObs()
     local items = self.requestItemsManager:getItemsForRequest(self.requestId)
-    logger.db(items)
     return items
 end
 

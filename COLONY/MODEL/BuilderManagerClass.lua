@@ -44,9 +44,7 @@ function BuilderManagerClass:_onRefreshObs()
     end
 
     local builders = self:getBuilders()
-    logger.db(builders)
-    for _, builderData in pairs(builders) do
-        logger.db("creating builder ob")
+    for id, builderData in pairs(builders) do
         local potentialOb = BuilderClass:new(builderData, self)
         potentialOb.associatedInventoryName = self.associations[potentialOb:getUniqueKey()]
         if not potentialOb.associatedInventoryName then
@@ -63,7 +61,6 @@ function BuilderManagerClass:_onRefreshObs()
         else
             currentOb:copyFrom(potentialOb)
         end
-        logger.db("created builder!")
 
     end
 end

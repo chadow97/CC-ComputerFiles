@@ -10,6 +10,7 @@ local LabelClass            = require "GUI.LabelClass"
 local MeInfoPageClass       = require "COLONY.GUI.MeInfoPageClass"
 local PeripheralPageClass   = require "COMMON.GUI.PeripheralPageClass"
 local ConfigurationPageClass= require "COLONY.GUI.ConfigurationPageClass"
+local RedstoneControlPageClass = require "COMMON.GUI.RedstoneControlPageClass"
 
 -- Define the RessourcePage Class 
 local MainMenuPageClass = {}
@@ -102,6 +103,16 @@ function MainMenuPageClass:onBuildCustomPage()
 
   yValueForEntry = yValueForEntry + 4
 
+  local RedstoneControlButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Redstone Control", self.document)
+  RedstoneControlButton:forceWidthSize(parentPageSizeX - 2)
+  RedstoneControlButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
+  RedstoneControlButton:applyDocumentStyle()
+  RedstoneControlButton:setOnManualToggle(self:getOnRedstoneControlPressed())
+  RedstoneControlButton:setCenterText(true)
+  self:addElement(RedstoneControlButton)
+
+  yValueForEntry = yValueForEntry + 4
+
   local ConfigButton = ToggleableButtonClass:new(parentPageSizeX - 2, 1, "Configuration", self.document)
   ConfigButton:forceWidthSize(parentPageSizeX - 2)
   ConfigButton:setUpperCornerPos(parentPagePosX + 1, yValueForEntry)
@@ -163,6 +174,14 @@ function MainMenuPageClass:getOnPeripheralsPressed()
       self.document:startEdition()
       local perPage = PeripheralPageClass:new(self.monitor, self.parentPage, self.document)
       self.parentPage:addElement(perPage)
+      self.document:endEdition()
+    end
+  end
+
+  function MainMenuPageClass:getOnRedstoneControlPressed()
+    return function()
+      self.document:startEdition()
+      self.parentPage:addElement(RedstoneControlPageClass:new(self.monitor, self.parentPage, self.document))
       self.document:endEdition()
     end
   end
