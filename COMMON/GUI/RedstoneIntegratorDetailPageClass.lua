@@ -10,6 +10,7 @@ local ColonyConfigClass = require "COLONY.MODEL.ColonyConfigClass"
 local ToggleableButtonClass = require "GUI.ToggleableButtonClass"
 local TextSelectionPageClass= require "GUI.TextSelectionPageClass"
 local ObjectSelectionPageClass = require "GUI.ObjectSelectionPageClass"
+local InventoryManagerClass    = require "COMMON.MODEL.InventoryManagerClass"
 
 ---@class RedstoneIntegratorDetailPageClass: CustomPage
 local RedstoneIntegratorDetailPageClass = {}
@@ -19,6 +20,7 @@ setmetatable(RedstoneIntegratorDetailPageClass, {__index = CustomPageClass})
 function RedstoneIntegratorDetailPageClass:new(monitor, parentPage, document, Ri)
   ---@class RedstoneIntegratorDetailPageClass: CustomPage
   local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "Redstone integrator page"), RedstoneIntegratorDetailPageClass)
+  o.inventoryManager = self.document:getManagerForType(InventoryManagerClass.Type)
 
   o.parentPage = parentPage
   o.Ri = Ri
@@ -137,7 +139,7 @@ end
 
 function RedstoneIntegratorDetailPageClass:getOnAssociatedInventoryButtonPressed()
   return function()
-      local page = ObjectSelectionPageClass:new(self.monitor,self.parentPage, self.document, "New nickname:")
+      local page = ObjectSelectionPageClass:new(self.monitor,self.parentPage, self.document, "Select new associated inventory:", self.inventoryManager, self.Ri.associatedInventory:getUniqueKey())
       self.parentPage:pushPage(page, self:getOnAssociatedInventoryModified())
   end
 end
