@@ -139,7 +139,11 @@ end
 
 function RedstoneIntegratorDetailPageClass:getOnAssociatedInventoryButtonPressed()
   return function()
-      local page = ObjectSelectionPageClass:new(self.monitor,self.parentPage, self.document, "Select new associated inventory:", self.inventoryManager, self.Ri.associatedInventory:getUniqueKey())
+      local currentlySelectedKey = nil
+      if self.Ri.associatedInventory then
+        currentlySelectedKey = self.Ri.associatedInventory:getUniqueKey()
+      end
+      local page = ObjectSelectionPageClass:new(self.monitor,self.parentPage, self.document, "Select new associated inventory:", self.inventoryManager, currentlySelectedKey)
       self.parentPage:pushPage(page, self:getOnAssociatedInventoryModified())
   end
 end
