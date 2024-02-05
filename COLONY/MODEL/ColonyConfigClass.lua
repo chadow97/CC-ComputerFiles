@@ -15,7 +15,8 @@ ColonyConfigClass.configs =
     proxy_peripherals_channel = "proxy_peripherals_channel",
     primary_style = "primary_style",
     secondary_style = "secondary_style",
-    tertiary_style = "tertiary_style"
+    tertiary_style = "tertiary_style",
+    ri_file = "ri_file"
     }
 
 -- Constructor for WorkOrderClass
@@ -29,6 +30,7 @@ function ColonyConfigClass:new()
     o:setDefault(ColonyConfigClass.configs.primary_style, colors.gray)
     o:setDefault(ColonyConfigClass.configs.secondary_style, colors.green)
     o:setDefault(ColonyConfigClass.configs.tertiary_style, colors.yellow)
+    o:setDefault(ColonyConfigClass.configs.ri_file, "ri.txt")
 
     return o
 end
@@ -41,6 +43,11 @@ end
 function ColonyConfigClass:getRequestInventoryPath()
     return fs.combine(self:get(ConfigClass.configs.data_dir_path),
                       self:get(ColonyConfigClass.configs.request_inventory_filename))
+end
+
+function ColonyConfigClass:getRiPath()
+    return fs.combine(self:get(ConfigClass.configs.data_dir_path),
+                      self:get(ColonyConfigClass.configs.ri_file))
 end
 
 function ColonyConfigClass:getStyles()
