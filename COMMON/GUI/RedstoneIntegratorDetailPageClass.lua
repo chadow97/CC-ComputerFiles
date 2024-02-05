@@ -20,7 +20,7 @@ setmetatable(RedstoneIntegratorDetailPageClass, {__index = CustomPageClass})
 function RedstoneIntegratorDetailPageClass:new(monitor, parentPage, document, Ri)
   ---@class RedstoneIntegratorDetailPageClass: CustomPage
   local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "Redstone integrator page"), RedstoneIntegratorDetailPageClass)
-  o.inventoryManager = self.document:getManagerForType(InventoryManagerClass.Type)
+  o.inventoryManager = o.document:getManagerForType(InventoryManagerClass.Type)
 
   o.parentPage = parentPage
   o.Ri = Ri
