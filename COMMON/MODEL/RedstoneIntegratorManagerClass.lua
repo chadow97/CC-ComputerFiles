@@ -55,7 +55,7 @@ function RedstoneIntegratorManagerClass:_onRefreshObs()
     end
 end
 
-function RedstoneIntegratorClass:OnRedstoneIntegratorSavedDataModified(ri)
+function RedstoneIntegratorManagerClass:OnRedstoneIntegratorSavedDataModified(ri)
     local riKey = ri:getUniqueKey()
     self.savedRiData[riKey] = self:_getSavedDataFromRi(ri)
     self.tableFileHandler:write(self.savedRiData)
