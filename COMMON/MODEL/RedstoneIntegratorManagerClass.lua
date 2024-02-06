@@ -49,6 +49,7 @@ function RedstoneIntegratorManagerClass:_onRefreshObs()
             RiSavedData = {}
         end
         local isActive = redstoneIntegratorPer.getInput("top")
+        logger.db("stated detected:" .. tostring(isActive))
         local associatedInventory = inventoryMgr:getOb(RiSavedData.associatedInventory)
         RIob:initRi(RiSavedData.nickname, associatedInventory, isActive)
         table.insert(self.redstoneIntegrators, RIob)
