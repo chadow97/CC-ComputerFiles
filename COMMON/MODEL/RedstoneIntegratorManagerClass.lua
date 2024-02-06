@@ -62,7 +62,7 @@ function RedstoneIntegratorManagerClass:OnRedstoneIntegratorSavedDataModified(ri
 end
 
 function RedstoneIntegratorManagerClass:_getSavedDataFromRi(ri)
-    return {nickname = ri.nickname, associatedInventory = ri.associatedInventory}
+    return {nickname = ri.nickname, associatedInventory = ri.associatedInventory:getUniqueKey()}
 end
 
 return RedstoneIntegratorManagerClass
