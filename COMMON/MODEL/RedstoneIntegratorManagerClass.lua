@@ -45,6 +45,9 @@ function RedstoneIntegratorManagerClass:_onRefreshObs()
     for _, redstoneIntegratorPer in pairs(redstoneIntegratorPers) do
         local RIob = RedstoneIntegratorClass:new(redstoneIntegratorPer, self)
         local RiSavedData = self.savedRiData[RIob:getUniqueKey()]
+        if not RiSavedData then
+            RiSavedData = {}
+        end
         local isActive = redstoneIntegratorPer.getInput("top")
         local associatedInventory = inventoryMgr:getOb(RiSavedData.associatedInventory)
         RIob:initRi(RiSavedData.nickname, associatedInventory, isActive)
