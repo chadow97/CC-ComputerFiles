@@ -35,7 +35,7 @@ end
 function RedstoneIntegratorClass:initRi(nickname, associatedInventory, isActive)
     self.nickname = nickname
     self.associatedInventory = associatedInventory
-    self.isActive = isActive
+    self.active = isActive
 end
 
 function RedstoneIntegratorClass:setState(IsActive)
