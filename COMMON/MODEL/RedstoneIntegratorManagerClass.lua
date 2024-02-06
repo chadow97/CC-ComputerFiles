@@ -61,7 +61,7 @@ function RedstoneIntegratorManagerClass:OnRedstoneIntegratorSavedDataModified(ri
     self.tableFileHandler:write(self.savedRiData)
 end
 
-function RedstoneIntegratorClass:_getSavedDataFromRi(ri)
+function RedstoneIntegratorManagerClass:_getSavedDataFromRi(ri)
     return {nickname = ri.nickname, associatedInventory = ri.associatedInventory}
 end
 
