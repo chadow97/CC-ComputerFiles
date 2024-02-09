@@ -12,8 +12,14 @@ MonUtils.resetMonitor(monitor)
 local terminal = term.current()
 logger.init(terminal, "buttonTest", true)
 
+
+local 
 local my_window = window.create(monitor, 1, 1, 20, 5)
 my_window.setBackgroundColour(colours.red)
 my_window.setTextColour(colours.white)
 my_window.clear()
 my_window.write("Testing my window!")
+for i = 1, 10 do
+    my_window.reposition(i,i)
+    sleep(1)
+end
