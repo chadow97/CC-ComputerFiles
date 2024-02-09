@@ -26,3 +26,6 @@ for i = 1, 10 do
 end
 
 my_window.setVisible(true)
+
+term.redirect(my_window)
+paintutils.drawFilledBox(1, 1, 10, 10,  colours.red)
