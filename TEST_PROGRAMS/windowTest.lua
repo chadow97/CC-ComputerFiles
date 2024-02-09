@@ -21,10 +21,10 @@ my_window.clear()
 my_window.write("Testing my window!")
 for i = 1, 10 do
     my_window.setVisible(false)
-    my_window.reposition(i,i)
+    my_window.reposition(i,i,80)
 end
 
 my_window.setVisible(true)
 
 term.redirect(my_window)
-paintutils.drawFilledBox(2, 2, 10, 10,  colours.yellow)
+paintutils.drawFilledBox(2, 2, 10000, 10000,  colours.yellow)
