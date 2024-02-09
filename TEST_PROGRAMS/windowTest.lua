@@ -13,7 +13,7 @@ local terminal = term.current()
 logger.init(terminal, "buttonTest", true)
 
 
-local 
+
 local my_window = window.create(monitor, 1, 1, 20, 5)
 my_window.setBackgroundColour(colours.red)
 my_window.setTextColour(colours.white)
