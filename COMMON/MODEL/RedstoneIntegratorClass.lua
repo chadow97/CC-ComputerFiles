@@ -11,13 +11,14 @@ RedstoneIntegratorClass.__index = RedstoneIntegratorClass
 setmetatable(RedstoneIntegratorClass, { __index = PeripheralClass })
 
 -- Constructor for RedstoneIntegratorClass
-function RedstoneIntegratorClass:new(redstoneIntegratorPeripheral)
+function RedstoneIntegratorClass:new(redstoneIntegratorPeripheral, manager)
     local o = setmetatable(PeripheralClass:new(redstoneIntegratorPeripheral), RedstoneIntegratorClass)
 
     o.name = o.uniqueKey
     o.nickname = nil
     o.active = false
     o.associatedInventory = nil
+    o.riManager = manager
 
     return o
 end
@@ -29,6 +30,12 @@ end
 -- Overriding GetKeyDisplayString method
 function RedstoneIntegratorClass:GetKeyDisplayString()
     return self.uniqueKey
+end
+
+function RedstoneIntegratorClass:initRi(nickname, associatedInventory, isActive)
+    self.nickname = nickname
+    self.associatedInventory = associatedInventory
+    self.active = isActive
 end
 
 function RedstoneIntegratorClass:setState(IsActive)
@@ -44,10 +51,12 @@ end
 
 function RedstoneIntegratorClass:setNickname(nickname)
     self.nickname = nickname
+    self.riManager:OnRedstoneIntegratorSavedDataModified(self)
 end
 
 function RedstoneIntegratorClass:setAssociatedInventory(inventory)
     self.associatedInventory = inventory
+    self.riManager:OnRedstoneIntegratorSavedDataModified(self)
 end
 
 function RedstoneIntegratorClass:getAssociatedInventoryName()
