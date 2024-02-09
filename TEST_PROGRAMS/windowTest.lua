@@ -21,7 +21,7 @@ my_window.clear()
 my_window.write("Testing my window!")
 for i = 1, 10 do
     my_window.setVisible(false)
-    my_window.reposition(i,i,80)
+    my_window.reposition(i,i,80,5)
 end
 
 my_window.setVisible(true)
