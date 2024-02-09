@@ -27,4 +27,4 @@ end
 my_window.setVisible(true)
 
 term.redirect(my_window)
-paintutils.drawFilledBox(1, 1, 10, 10,  colours.yellow)
+paintutils.drawFilledBox(2, 2, 10, 10,  colours.yellow)
