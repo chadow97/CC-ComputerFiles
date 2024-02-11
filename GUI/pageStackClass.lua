@@ -74,6 +74,9 @@ function PageStackClass:canTryToOnlyDrawChild(dirtyArea, child)
 end
 
 function PageStackClass:updateButtonPosition()
+    if not self.x or self.sizeX or self.y then
+      return
+    end
     self.exitButton:setPos(self.x+ self.sizeX - 1,self.y)
 end
 
