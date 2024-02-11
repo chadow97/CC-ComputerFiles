@@ -226,18 +226,18 @@ end
 
 function ButtonClass:setBackColor(backColor)
     self.backColor = backColor
-    self:setElementDirty()
+
 end
 
 function ButtonClass:setTextColor(textColor)
     self.textColor = textColor
-    self:setElementDirty()
+
 end
 
 function ButtonClass:changeStyle(textColor, backColor)
     self:setTextColor(textColor or self.textColor)
     self:setBackColor(backColor or self.backColor)
-    self:setElementDirty()
+
 end
 
 function ButtonClass:getText()
@@ -246,34 +246,34 @@ end
 
 function ButtonClass:setText(text)
     self.text = text
-    self:setElementDirty()
+
 end
 
 function ButtonClass:setUpperCornerPos(x,y)
     self.x = x + self.margin
     self.y = y + self.margin
-    self:setParentDirty()
+
 
 end
 
 function ButtonClass:setCenterText(shouldCenterText)
     self.shouldCenterText = shouldCenterText
-    self:setElementDirty()
+
 end
 
 function ButtonClass:setMargin(margin)
     self.margin = margin
-    self:setParentDirty()
+
 end
 
 function ButtonClass:forceWidthSize(forcedSize )  
     self.forcedWidthSize = forcedSize
-    self:setParentDirty()
+
 end
 
 function ButtonClass:forceHeightSize(forcedSize)
     self.forcedHeightSize = forcedSize
-    self:setParentDirty()
+
 end
 
 function ButtonClass:availableTextSize()
