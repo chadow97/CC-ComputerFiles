@@ -8,9 +8,9 @@ local RPHLandingPageClass = {}
 RPHLandingPageClass.__index = RPHLandingPageClass
 setmetatable(RPHLandingPageClass, {__index = CustomPageClass})
 
-function RPHLandingPageClass:new(monitor, parentPage, document)
+function RPHLandingPageClass:new( parentPage, document)
   ---@class RPHLandingPage: CustomPage
-  local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "RPHLandingPage"), RPHLandingPageClass)
+  local o = setmetatable(CustomPageClass:new(parentPage, document, "RPHLandingPage"), RPHLandingPageClass)
 
   o.parentPage = parentPage
   o.messageManager = o.document:getManagerForType(MessageManagerClass.TYPE)

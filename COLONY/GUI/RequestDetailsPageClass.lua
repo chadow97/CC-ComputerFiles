@@ -19,8 +19,8 @@ setmetatable(RequestDetailsPageClass, {__index = CustomPageClass})
 
 
 
-function RequestDetailsPageClass:new(requestId, monitor, parentPage, document)
-  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "requestItemsPage"), RequestDetailsPageClass)
+function RequestDetailsPageClass:new(requestId, parentPage, document)
+  self = setmetatable(CustomPageClass:new( parentPage, document, "requestItemsPage"), RequestDetailsPageClass)
   self.requestId = requestId
   self.parentPage = parentPage
   self.requestLabel = nil
@@ -54,7 +54,7 @@ function RequestDetailsPageClass:onBuildCustomPage()
     self.requestLabel:setCenterText(true)
     self:addElement(self.requestLabel)
 
-    local requestDetailsTable = ObTableClass:new(self.monitor, 1,1, "Requests Details", nil, nil, self.document)
+    local requestDetailsTable = ObTableClass:new( 1,1, "Requests Details", nil, nil, self.document)
     local requestItemFetcher = RequestItemsFetcher:new(self.requestId, self.document)
     requestDetailsTable:setDataFetcher(requestItemFetcher)
     requestDetailsTable:setDisplayKey(true)

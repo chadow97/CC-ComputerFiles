@@ -20,8 +20,8 @@ local TableClass = {}
 TableClass.__index = TableClass
 setmetatable(TableClass, { __index = PageClass })
 
-function TableClass:new( monitor, x, y, title, sizeX, sizeY, document)
-    self = setmetatable(PageClass:new(monitor,x,y, document), TableClass)
+function TableClass:new( x, y, title, sizeX, sizeY, document)
+    self = setmetatable(PageClass:new(x,y, document), TableClass)
     self.title =title
     self.isScrollable = true
     self.sizeX = sizeX or DEFAULT_X_SIZE
@@ -343,7 +343,7 @@ function TableClass:getDefaultOnTableElementPressedCallback()
         if not self.parentPage.pushPage then
             return
         end
-        local InnerTablePage = TableClass:new(self.monitor, nil, nil, nil)
+        local InnerTablePage = TableClass:new( nil, nil, nil)
         InnerTablePage:setInternalTable(nil)
         InnerTablePage:setTableValueDisplayed(self.getValueToDisplayForTableCallback)
         self.parentPage:pushPage(InnerTablePage)    

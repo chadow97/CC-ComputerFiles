@@ -17,8 +17,8 @@ setmetatable(CustomPageClass, {__index = PageClass})
 
 
 
-function CustomPageClass:new(monitor, parentPage, document, pageType)
-  self = setmetatable(PageClass:new(monitor, 1, 1, document), CustomPageClass)
+function CustomPageClass:new(parentPage, document, pageType)
+  self = setmetatable(PageClass:new(1, 1, document), CustomPageClass)
   self.pageType = pageType
   self:setParentPage(parentPage)
   return self

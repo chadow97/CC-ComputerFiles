@@ -15,8 +15,8 @@ setmetatable(BuilderPageClass, {__index = CustomPageClass})
 
 
 
-function BuilderPageClass:new(monitor, parentPage, document)
-  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "BuilderPage"), BuilderPageClass)
+function BuilderPageClass:new(parentPage, document)
+  self = setmetatable(CustomPageClass:new(parentPage, document, "BuilderPage"), BuilderPageClass)
 
   self.builderTable = nil
   self.inventoryTable = nil
@@ -34,7 +34,7 @@ local parentPageSizeX, parentPageSizeY = self.parentPage:getSize()
 local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 local sizeXForTables = (parentPageSizeX - 1)/2
 
-local builderTable = ObTableClass:new(self.monitor, 1,1, "Builders", nil, nil, self.document)
+local builderTable = ObTableClass:new(1,1, "Builders", nil, nil, self.document)
 builderTable:setDataFetcher(self.document:getManagerForType(BuilderManagerClass.TYPE))
 builderTable:setDisplayKey(false)
 builderTable.title = nil
@@ -48,7 +48,7 @@ builderTable:setTableElementsProperties({[ToggleableButtonClass.properties.autom
 builderTable:setOnTableElementPressedCallback(self:getOnBuilderPressed())
 self.builderTable = builderTable
 
-local inventoryTable = ObTableClass:new(self.monitor, 1,1, "Inventories", nil, nil, self.document)
+local inventoryTable = ObTableClass:new(1,1, "Inventories", nil, nil, self.document)
 inventoryTable:setDataFetcher(self.inventoryManager)
 inventoryTable:setDisplayKey(false)
 inventoryTable.title = nil

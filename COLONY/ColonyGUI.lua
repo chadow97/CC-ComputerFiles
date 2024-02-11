@@ -38,15 +38,15 @@ local function endProgram()
     isRunning = false
 end
 
-local pageStack = PageStackClass:new(monitor, document)
+local pageStack = PageStackClass:new(document)
 pageStack:setSize(monitorX - 2,monitorY - 2)
 pageStack:setPosition(2,2)
-local mainMenuPage = MainMenuPageClass:new(monitor, pageStack, document)
+local mainMenuPage = MainMenuPageClass:new(pageStack, document)
 pageStack:pushPage(mainMenuPage)
 pageStack:setOnFirstPageClosed(endProgram)
 pageStack:getExitButton():applyDocumentStyle()
 
-local rootPage = PageClass:new(monitor, 1, 1, document)
+local rootPage = PageClass:new( 1, 1, document)
 rootPage:setBackColor(document.style.tertiary)
 rootPage:addElement(pageStack)
 

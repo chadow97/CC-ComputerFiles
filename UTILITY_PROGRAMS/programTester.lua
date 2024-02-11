@@ -39,7 +39,7 @@ table.remove(programArgs, 1)
 
 local document = DocumentClass:new()
 
-local page = PageClass:new(monitor, 1,1, document)
+local page = PageClass:new(1,1, document)
 
 local monitorX, monitorY = monitor.getSize()
 

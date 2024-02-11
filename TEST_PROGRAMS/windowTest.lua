@@ -30,3 +30,8 @@ my_window.reposition(20,20,80,5)
 
 my_window.setVisible(true)
 
+for i = 1, 10 do
+    my_window.setVisible(false)
+    my_window.scroll(i,i,30,5)
+end
+

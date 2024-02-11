@@ -15,9 +15,9 @@ setmetatable(RequestPageClass, {__index = CustomPageClass})
 
 
 
-function RequestPageClass:new(monitor, parentPage, document)
+function RequestPageClass:new(parentPage, document)
   ---@class RequestPage: CustomPage
-  local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "requestInventoryPage"), RequestPageClass)
+  local o = setmetatable(CustomPageClass:new(parentPage, document, "requestInventoryPage"), RequestPageClass)
 
   o.parentPage = parentPage
   o.requestInventoryHandler = RequestInventoryHandlerClass:new(document)
@@ -39,7 +39,7 @@ function RequestPageClass:onBuildCustomPage()
     local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 
     
-    local requestTable = ObTableClass:new(self.monitor, 1,1, "Requests", nil, nil, self.document)
+    local requestTable = ObTableClass:new(1,1, "Requests", nil, nil, self.document)
     requestTable:setDataFetcher(self.requestManager)
     requestTable:setDisplayKey(true)
     requestTable:setKeyRowPropertion(0.8)
@@ -81,7 +81,7 @@ function RequestPageClass:getOnTargetInventoryPressed()
     return function()
 
         self.document:startEdition()
-        local RequestInventoryPage = RequestInventoryPageClass:new(self.monitor, self.parentPage, self.document)
+        local RequestInventoryPage = RequestInventoryPageClass:new( self.parentPage, self.document)
         self.parentPage:addElement(RequestInventoryPage)
         self.document:endEdition()
 
