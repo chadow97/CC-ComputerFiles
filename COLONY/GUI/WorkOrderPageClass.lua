@@ -13,8 +13,8 @@ local WorkOrderPageClass = {}
 WorkOrderPageClass.__index = WorkOrderPageClass
 setmetatable(WorkOrderPageClass, {__index = CustomPageClass})
 
-function WorkOrderPageClass:new(monitor, parentPage, document)
-  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "workOrderPage"), WorkOrderPageClass)
+function WorkOrderPageClass:new( parentPage, document)
+  self = setmetatable(CustomPageClass:new(parentPage, document, "workOrderPage"), WorkOrderPageClass)
   local peripheralManager = document:getManagerForType(PeripheralManagerClass.TYPE)
   local colonyPeripheral = peripheralManager:getMainColonyPeripheral()
 
@@ -33,7 +33,7 @@ function WorkOrderPageClass:onBuildCustomPage()
     local parentPageSizeX, parentPageSizeY = self.parentPage:getSize()
     local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 
-    local workOrderTable = ObTableClass:new(self.monitor, 1,1, "Work Orders", nil, nil, self.document)
+    local workOrderTable = ObTableClass:new( 1,1, "Work Orders", nil, nil, self.document)
     workOrderTable:setDataFetcher(self.ressourceFetcher)
     workOrderTable:setDisplayKey(false)
     workOrderTable.title = nil
@@ -68,7 +68,7 @@ function WorkOrderPageClass:getOnWorkOrderPressed()
             assert(inventoryOb, "Couldnt find inventory associated with builder!")
         end
         
-        local ressourcePage = RessourcePageClass:new(self.monitor, self.parentPage, workOrder.id, inventoryOb, self.document)
+        local ressourcePage = RessourcePageClass:new( self.parentPage, workOrder.id, inventoryOb, self.document)
         self.parentPage:addElement(ressourcePage)
     end
 end

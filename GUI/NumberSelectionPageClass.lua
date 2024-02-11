@@ -9,9 +9,9 @@ local NumberSelectionPageClass = {}
 NumberSelectionPageClass.__index = NumberSelectionPageClass
 setmetatable(NumberSelectionPageClass, {__index = CustomPageClass})
 
-function NumberSelectionPageClass:new(monitor, parentPage, document, title, min, max)
+function NumberSelectionPageClass:new( parentPage, document, title, min, max)
   ---@class NumberSelectionPage: CustomPage
-  local instance = setmetatable(CustomPageClass:new(monitor, parentPage, document, "Configuration"), NumberSelectionPageClass)
+  local instance = setmetatable(CustomPageClass:new(parentPage, document, "Configuration"), NumberSelectionPageClass)
   instance.title = title
   instance.min = min
   instance.max = max
@@ -39,7 +39,7 @@ function NumberSelectionPageClass:onBuildCustomPage()
     local borderPosX = math.floor((parentPageSizeX - borderPageSizeX)/2) + parentPagePosX
     local borderPosY = math.floor((parentPageSizeY - borderPageSizeY)/2) + parentPagePosY
 
-    self.borderPage = PageClass:new(self.monitor,nil, nil, self.document)
+    self.borderPage = PageClass:new(nil, nil, self.document)
     self.borderPage:setSize(borderPageSizeX, borderPageSizeY)
     self.borderPage:setPos(borderPosX, borderPosY)
     self.borderPage:setBackColor(colors.black)
@@ -50,7 +50,7 @@ function NumberSelectionPageClass:onBuildCustomPage()
     local smallPagePosX = borderPosX + 1
     local smallPagePosY = borderPosY + 1
 
-    self.smallPage = PageClass:new(self.monitor,nil, nil, self.document)
+    self.smallPage = PageClass:new(nil, nil, self.document)
     self.smallPage:setSize(smallPageSizeX, smallPageSizeY)
     self.smallPage:setPos(smallPagePosX, smallPagePosY)
     self.smallPage:applyDocumentStyle()

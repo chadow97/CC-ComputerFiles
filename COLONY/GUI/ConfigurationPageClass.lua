@@ -18,8 +18,8 @@ local ConfigurationPageClass = {}
 ConfigurationPageClass.__index = ConfigurationPageClass
 setmetatable(ConfigurationPageClass, {__index = CustomPageClass})
 
-function ConfigurationPageClass:new(monitor, parentPage, document)
-  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "Configuration"), ConfigurationPageClass)
+function ConfigurationPageClass:new(parentPage, document)
+  self = setmetatable(CustomPageClass:new(parentPage, document, "Configuration"), ConfigurationPageClass)
   self.peripheralManager = document:getManagerForType(PeripheralManagerClass.TYPE)
   self.colonyManager = document:getManagerForType(ColonyManagerClass.TYPE)
   self.colorLabelMap = {}
@@ -50,7 +50,7 @@ function ConfigurationPageClass:onBuildCustomPage()
     yValueForEntry = yValueForEntry + 4
 
 
-    self.remoteConnectionPage = PageClass:new(self.monitor,nil, nil, self.document)
+    self.remoteConnectionPage = PageClass:new(nil, nil, self.document)
     self.remoteConnectionPage:setSize(parentPageSizeX-2, 7)
     self.remoteConnectionPage:setPos(parentPagePosX + 1, yValueForEntry)
     self.remoteConnectionPage:setBackColor(self.document.style.secondary)
@@ -113,7 +113,7 @@ function ConfigurationPageClass:onBuildCustomPage()
                        {title="Tertiary", config=ColonyConfigClass.configs.tertiary_style}
                        }
 
-    StyleConfigurationModuleBuilder.buildStyleModule(self.parentPage,self,yValueForEntry, self.document, self.monitor, stylesData)
+    StyleConfigurationModuleBuilder.buildStyleModule(self.parentPage,self,yValueForEntry, self.document, stylesData)
 
     self:applyDocumentStyle()
 end
@@ -227,14 +227,14 @@ end
 
 function ConfigurationPageClass:getOnChannelButtonPressed()
     return function()
-        local page = NumberSelectionPageClass:new(self.monitor,self.parentPage, self.document, "New channel:", 0, rednet.MAX_ID_CHANNELS)
+        local page = NumberSelectionPageClass:new(self.parentPage, self.document, "New channel:", 0, rednet.MAX_ID_CHANNELS)
         self.parentPage:pushPage(page, self:getOnChannedlModified())
     end
 end
 
 function ConfigurationPageClass:getOnRefreshRateButtonPressed()
     return function()
-        local page = NumberSelectionPageClass:new(self.monitor,self.parentPage, self.document, "New refresh delay:", 0, 9999999)
+        local page = NumberSelectionPageClass:new(self.parentPage, self.document, "New refresh delay:", 0, 9999999)
         self.parentPage:pushPage(page, self:getOnRefreshRateModified())
     end
 end
@@ -242,7 +242,7 @@ end
 function ConfigurationPageClass:getOnStylePressed(configName, title)
     return function(colorDisplay)
         local currentColor = self.document.config:get(configName)
-        local page = ColorSelectionPageClass:new(self.monitor,self.parentPage, self.document, title, currentColor)
+        local page = ColorSelectionPageClass:new(self.parentPage, self.document, title, currentColor)
         self.parentPage:pushPage(page, self:getOnStyleModified(configName))
     end
 end

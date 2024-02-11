@@ -9,9 +9,9 @@ local PeripheralPageClass = {}
 PeripheralPageClass.__index = PeripheralPageClass
 setmetatable(PeripheralPageClass, {__index = CustomPageClass})
 
-function PeripheralPageClass:new(monitor, parentPage, document)
+function PeripheralPageClass:new( parentPage, document)
   ---@class PeripheralPageClass: CustomPage
-  local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "PeripheralPage"), PeripheralPageClass)
+  local o = setmetatable(CustomPageClass:new( parentPage, document, "PeripheralPage"), PeripheralPageClass)
 
   o.parentPage = parentPage
   o.peripheralManager = o.document:getManagerForType(PeripheralManagerClass.TYPE)
@@ -32,7 +32,7 @@ function PeripheralPageClass:onBuildCustomPage()
     local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 
     
-    local peripheralTable = ObTableClass:new(self.monitor, 1,1, "Peripherals", nil, nil, self.document)
+    local peripheralTable = ObTableClass:new( 1,1, "Peripherals", nil, nil, self.document)
     -- make sure inventories are displayed as peripherals in this context:
     peripheralTable.getStringToDisplayForElement = function(table, data, isKey, position)
             return PeripheralClass.GetDisplayString(table.obList[position])

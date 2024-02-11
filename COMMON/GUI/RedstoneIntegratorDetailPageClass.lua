@@ -17,9 +17,9 @@ local RedstoneIntegratorDetailPageClass = {}
 RedstoneIntegratorDetailPageClass.__index = RedstoneIntegratorDetailPageClass
 setmetatable(RedstoneIntegratorDetailPageClass, {__index = CustomPageClass})
 
-function RedstoneIntegratorDetailPageClass:new(monitor, parentPage, document, Ri)
+function RedstoneIntegratorDetailPageClass:new( parentPage, document, Ri)
   ---@class RedstoneIntegratorDetailPageClass: CustomPage
-  local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "Redstone integrator page"), RedstoneIntegratorDetailPageClass)
+  local o = setmetatable(CustomPageClass:new( parentPage, document, "Redstone integrator page"), RedstoneIntegratorDetailPageClass)
   o.inventoryManager = o.document:getManagerForType(InventoryManagerClass.TYPE)
 
   o.parentPage = parentPage
@@ -39,7 +39,7 @@ function RedstoneIntegratorDetailPageClass:onBuildCustomPage()
   local parentPageSizeX, parentPageSizeY = self.parentPage:getSize()
   local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 
-    local containerPage = PageClass:new(self.monitor,2, 2, self.document)
+    local containerPage = PageClass:new(2, 2, self.document)
 
     local containerPageWidth = parentPageSizeX -2
     local insertsWidth = containerPageWidth - 2
@@ -132,7 +132,7 @@ end
 
 function RedstoneIntegratorDetailPageClass:getOnNicknamePressed()
   return function()
-      local page = TextSelectionPageClass:new(self.monitor,self.parentPage, self.document, "New nickname:")
+      local page = TextSelectionPageClass:new(self.parentPage, self.document, "New nickname:")
       self.parentPage:pushPage(page, self:getOnNicknameModified())
   end
 end
@@ -143,7 +143,7 @@ function RedstoneIntegratorDetailPageClass:getOnAssociatedInventoryButtonPressed
       if self.Ri.associatedInventory then
         currentlySelectedKey = self.Ri.associatedInventory:getUniqueKey()
       end
-      local page = ObjectSelectionPageClass:new(self.monitor,self.parentPage, self.document, "Select new associated inventory:", self.inventoryManager, currentlySelectedKey)
+      local page = ObjectSelectionPageClass:new(self.parentPage, self.document, "Select new associated inventory:", self.inventoryManager, currentlySelectedKey)
       self.parentPage:pushPage(page, self:getOnAssociatedInventoryModified())
   end
 end

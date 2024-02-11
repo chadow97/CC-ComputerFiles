@@ -11,9 +11,9 @@ local RedstoneControlPageClass = {}
 RedstoneControlPageClass.__index = RedstoneControlPageClass
 setmetatable(RedstoneControlPageClass, {__index = CustomPageClass})
 
-function RedstoneControlPageClass:new(monitor, parentPage, document)
+function RedstoneControlPageClass:new( parentPage, document)
   ---@class RedstoneControlPageClass: CustomPage
-  local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "Redstone page"), RedstoneControlPageClass)
+  local o = setmetatable(CustomPageClass:new(parentPage, document, "Redstone page"), RedstoneControlPageClass)
 
   o.parentPage = parentPage
   o.RiManager = o.document:getManagerForType(RedstoneIntegratorManagerClass.TYPE)
@@ -32,7 +32,7 @@ function RedstoneControlPageClass:onBuildCustomPage()
     local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 
     
-    local RiTable = ObTableClass:new(self.monitor, 1,1, "Redstone controllers", nil, nil, self.document)
+    local RiTable = ObTableClass:new(1,1, "Redstone controllers", nil, nil, self.document)
 
 
     RiTable:setDataFetcher(self.RiManager)
@@ -56,7 +56,7 @@ function RedstoneControlPageClass:getOnRiPressed()
           return
       end
       self.document:startEdition()
-      local ressourcePage = RedstoneIntegratorDetailPageClass:new(self.monitor, self.parentPage, self.document, Ri)
+      local ressourcePage = RedstoneIntegratorDetailPageClass:new( self.parentPage, self.document, Ri)
       self.parentPage:addElement(ressourcePage)
       self.document:endEdition()
   end

@@ -13,18 +13,17 @@ StyleModuleClass.__index = StyleModuleClass
 
 
 
-function StyleConfigurationModuleBuilder.buildStyleModule(parentPage, targetPage, startingPosition, document, monitor,stylesData)
-   return StyleModuleClass:new(parentPage, targetPage, startingPosition, document, monitor,stylesData)
+function StyleConfigurationModuleBuilder.buildStyleModule(parentPage, targetPage, startingPosition, document,stylesData)
+   return StyleModuleClass:new(parentPage, targetPage, startingPosition, document, stylesData)
 end
 
-function StyleModuleClass:new(parentPage, targetPage, startingPosition, document, monitor, stylesData)
+function StyleModuleClass:new(parentPage, targetPage, startingPosition, document, stylesData)
     local styleModule = setmetatable({}, StyleModuleClass)
 
     styleModule.parentPage = parentPage
     styleModule.targetPage = targetPage
     styleModule.startingPosition = startingPosition
     styleModule.document = document
-    styleModule.monitor = monitor
     styleModule.colorLabelMap = {}
     styleModule.stylesData = stylesData
     privateFunctions.createModuleInternal(styleModule)
@@ -37,7 +36,7 @@ function StyleModuleClass:getHeight()
 end
 
 function privateFunctions.createModuleInternal(styleModule)
-    local stylePage = PageClass:new(styleModule.monitor,2, 2, styleModule.document)
+    local stylePage = PageClass:new(2, 2, styleModule.document)
 
     local parentPagePosX  = styleModule.parentPage:getPos()
     local parentPageWidth = styleModule.parentPage:getSize()
@@ -91,7 +90,7 @@ end
 function privateFunctions.getOnStylePressed(styleModule, configName, title)
     return function(colorDisplay)
         local currentColor = styleModule.document.config:get(configName)
-        local page = ColorSelectionPageClass:new(styleModule.monitor,styleModule.parentPage, styleModule.document, title, currentColor)
+        local page = ColorSelectionPageClass:new(styleModule.parentPage, styleModule.document, title, currentColor)
         styleModule.parentPage:pushPage(page, privateFunctions.getOnStyleModified(styleModule, configName))
     end
 end

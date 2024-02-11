@@ -17,8 +17,8 @@ local MainMenuPageClass = {}
 MainMenuPageClass.__index = MainMenuPageClass
 setmetatable(MainMenuPageClass, {__index = CustomPageClass})
 
-function MainMenuPageClass:new(monitor, parentPage, document)
-  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "MainMenu"), MainMenuPageClass)
+function MainMenuPageClass:new(parentPage, document)
+  self = setmetatable(CustomPageClass:new(parentPage, document, "MainMenu"), MainMenuPageClass)
   self:buildCustomPage()
 
   return self
@@ -127,7 +127,7 @@ end
 function MainMenuPageClass:getOnColonyPressed()
     return function()
         self.document:startEdition()
-        local ColonyPage = ColonyPageClass:new(self.monitor, self.parentPage, self.document)
+        local ColonyPage = ColonyPageClass:new( self.parentPage, self.document)
         self.parentPage:addElement(ColonyPage)
         self.document:endEdition()
     end
@@ -136,7 +136,7 @@ function MainMenuPageClass:getOnColonyPressed()
 function MainMenuPageClass:getOnWorkOrdersPressed()
   return function()
       self.document:startEdition()
-      local WorkOrderPage = WorkOrderPageClass:new(self.monitor, self.parentPage, self.document)
+      local WorkOrderPage = WorkOrderPageClass:new( self.parentPage, self.document)
       self.parentPage:addElement(WorkOrderPage)
       self.document:endEdition()
   end
@@ -145,7 +145,7 @@ end
 function MainMenuPageClass:getOnRequestsPressed()
     return function()
         self.document:startEdition()
-        local WorkOrderPage = RequestPageClass:new(self.monitor, self.parentPage, self.document)
+        local WorkOrderPage = RequestPageClass:new(self.parentPage, self.document)
         self.parentPage:addElement(WorkOrderPage)
         self.document:endEdition()
     end
@@ -154,7 +154,7 @@ end
 function MainMenuPageClass:getOnManageBuildersPressed()
   return function()
     self.document:startEdition()
-    local BuilderPage = BuilderPageClass:new(self.monitor, self.parentPage, self.document)
+    local BuilderPage = BuilderPageClass:new( self.parentPage, self.document)
     self.parentPage:addElement(BuilderPage)
     self.document:endEdition()
   end
@@ -163,7 +163,7 @@ end
 function MainMenuPageClass:getOnMeInfoPressed()
     return function()
       self.document:startEdition()
-      local meInfoPage = MeInfoPageClass:new(self.monitor, self.parentPage, self.document)
+      local meInfoPage = MeInfoPageClass:new( self.parentPage, self.document)
       self.parentPage:addElement(meInfoPage)
       self.document:endEdition()
     end
@@ -172,7 +172,7 @@ function MainMenuPageClass:getOnMeInfoPressed()
 function MainMenuPageClass:getOnPeripheralsPressed()
     return function()
       self.document:startEdition()
-      local perPage = PeripheralPageClass:new(self.monitor, self.parentPage, self.document)
+      local perPage = PeripheralPageClass:new( self.parentPage, self.document)
       self.parentPage:addElement(perPage)
       self.document:endEdition()
     end
@@ -181,7 +181,7 @@ function MainMenuPageClass:getOnPeripheralsPressed()
   function MainMenuPageClass:getOnRedstoneControlPressed()
     return function()
       self.document:startEdition()
-      self.parentPage:addElement(RedstoneControlPageClass:new(self.monitor, self.parentPage, self.document))
+      self.parentPage:addElement(RedstoneControlPageClass:new( self.parentPage, self.document))
       self.document:endEdition()
     end
   end
@@ -189,7 +189,7 @@ function MainMenuPageClass:getOnPeripheralsPressed()
 function MainMenuPageClass:getOnConfigPressed()
     return function()
       self.document:startEdition()
-      self.parentPage:addElement(ConfigurationPageClass:new(self.monitor, self.parentPage, self.document))
+      self.parentPage:addElement(ConfigurationPageClass:new( self.parentPage, self.document))
       self.document:endEdition()
     end
   end

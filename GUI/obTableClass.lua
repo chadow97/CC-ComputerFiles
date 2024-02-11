@@ -11,9 +11,9 @@ ObTableClass.__index = ObTableClass
 setmetatable(ObTableClass, { __index = TableClass })
 
 -- Constructor for ObTableClass
-function ObTableClass:new(  monitor, x, y, title, sizeX, sizeY, document )
+function ObTableClass:new( x, y, title, sizeX, sizeY, document )
     ---@class ObTable: TableGUI
-    self = setmetatable(TableClass:new(  monitor, x, y, title, sizeX, sizeY, document ), ObTableClass)
+    self = setmetatable(TableClass:new(x, y, title, sizeX, sizeY, document ), ObTableClass)
     self.obList = {}
     self.dataFetcher = nil
     self.type = "ObClassTable"

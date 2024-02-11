@@ -17,9 +17,9 @@ local ColorSelectionPageClass = {}
 ColorSelectionPageClass.__index = ColorSelectionPageClass
 setmetatable(ColorSelectionPageClass, {__index = CustomPageClass})
 
-function ColorSelectionPageClass:new(monitor, parentPage, document, title, startingColor)
+function ColorSelectionPageClass:new(parentPage, document, title, startingColor)
   ---@class ColorSelectionPage: CustomPage
-  local instance = setmetatable(CustomPageClass:new(monitor, parentPage, document, "Configuration"), ColorSelectionPageClass)
+  local instance = setmetatable(CustomPageClass:new(parentPage, document, "Configuration"), ColorSelectionPageClass)
   instance.title = title
   instance.selectedColor = startingColor
   instance.colorLabelMap = {}
@@ -45,7 +45,7 @@ function ColorSelectionPageClass:onBuildCustomPage()
     local borderPosX = math.floor((parentPageSizeX - borderPageSizeX)/2) + parentPagePosX
     local borderPosY = math.floor((parentPageSizeY - borderPageSizeY)/2) + parentPagePosY
 
-    self.borderPage = PageClass:new(self.monitor,nil, nil, self.document)
+    self.borderPage = PageClass:new(nil, nil, self.document)
     self.borderPage:setSize(borderPageSizeX, borderPageSizeY)
     self.borderPage:setPos(borderPosX, borderPosY)
     self.borderPage:setBackColor(colors.black)
@@ -56,7 +56,7 @@ function ColorSelectionPageClass:onBuildCustomPage()
     local smallPagePosX = borderPosX + 1
     local smallPagePosY = borderPosY + 1
 
-    self.smallPage = PageClass:new(self.monitor,nil, nil, self.document)
+    self.smallPage = PageClass:new(nil, nil, self.document)
     self.smallPage:setSize(smallPageSizeX, smallPageSizeY)
     self.smallPage:setPos(smallPagePosX, smallPagePosY)
     self.smallPage:applyDocumentStyle()

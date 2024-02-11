@@ -31,7 +31,7 @@ end
 local monX, monY =monitor.getSize()
 
 local document = DocumentClass:new()
-local page = PageClass:new(monitor, nil, nil, document)
+local page = PageClass:new( nil, nil, document)
 local ExitButton = ButtonClass:new(monX - 1, monY -1, "X", document)
 ExitButton:setOnElementTouched(endProgram)
 table.insert(buttonList, ExitButton)

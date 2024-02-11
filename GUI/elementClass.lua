@@ -30,7 +30,6 @@ function ElementClass:new(xPos, yPos, document)
   instance.onDrawCallback = nil
   instance.onRefreshCallback = nil
   instance.id = IdGenerator.generateId()
-  instance:setParentDirty()
   instance.blockDraw = false
   instance.document = document
   instance.type = "element"
@@ -51,26 +50,6 @@ function ElementClass:canTryToOnlyDrawChild(dirtyArea, child)
     return true
 end
 
-function ElementClass:shouldAskParentForRedraw()
-    return self.dirtyState == ElementClass.DIRTY_STATES.PARENT_DIRTY
-end
-
-function ElementClass:shouldDrawElement()
-    return self.dirtyState ~= ElementClass.DIRTY_STATES.CLEAN
-end
-
-function ElementClass:setParentDirty()
-    self.dirtyState = ElementClass.DIRTY_STATES.PARENT_DIRTY
-end
-
-function ElementClass:setElementDirty()
-    self.dirtyState = ElementClass.DIRTY_STATES.SELF_DIRTY
-end
-
-function ElementClass:removeDirty()
-    self.dirtyState = ElementClass.DIRTY_STATES.CLEAN
-end
-
 function ElementClass:canDraw(asker)
     if self.blockDraw then 
         return false
@@ -81,11 +60,6 @@ function ElementClass:canDraw(asker)
     end
     -- if no parent, child can be drawn
     return true
-end
-
-function ElementClass:setMonitor(monitor)
-    self.monitor = monitor
-    self:setParentDirty()
 end
 
 function ElementClass:setOnDrawCallback( onDrawCallback)
@@ -114,7 +88,6 @@ function ElementClass:draw()
         self:onDrawCallback()
     end
     self:internalDraw()
-    self:removeDirty()
 end
 
 function ElementClass:internalDraw()
@@ -180,7 +153,6 @@ function ElementClass:setPos(x, y)
     expect(2,y, "number", "nil")
     self.x = x
     self.y = y
-    self:setParentDirty()
 end
 
 function ElementClass:getPos()
@@ -191,9 +163,16 @@ function ElementClass:setOnElementTouched(onElementTouchedCallback)
     self.onElementTouchedCallback = onElementTouchedCallback
 end
 
+function ElementClass:getMonitor()
+    return self.monitor
+end
+
+function ElementClass:setMonitor(monitor)
+    self.monitor = monitor
+end
+
 function ElementClass:setParentPage(page)
     self.parentPage = page
-    self:setParentDirty()
 end
 
 

@@ -15,9 +15,9 @@ setmetatable(ObjectSelectionPageClass, {__index = CustomPageClass})
 
 
 
-function ObjectSelectionPageClass:new(monitor, parentPage, document, title, objectProvider, currentSelectedKey)
+function ObjectSelectionPageClass:new( parentPage, document, title, objectProvider, currentSelectedKey)
   ---@class ObjectSelectionPageClass: CustomPage
-  local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "Object selection page"), ObjectSelectionPageClass)
+  local o = setmetatable(CustomPageClass:new( parentPage, document, "Object selection page"), ObjectSelectionPageClass)
 
   o.parentPage = parentPage
   o.objectProvider = objectProvider
@@ -39,7 +39,7 @@ function ObjectSelectionPageClass:onBuildCustomPage()
     local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 
     
-    self.objectTable = ObTableClass:new(self.monitor, 1,1, self.title, nil, nil, self.document)
+    self.objectTable = ObTableClass:new( 1,1, self.title, nil, nil, self.document)
     self.objectTable:setDataFetcher(self.objectProvider)
     self.objectTable:setDisplayKey(false)
     self.objectTable:setRowHeight(6)

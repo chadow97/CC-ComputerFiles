@@ -11,8 +11,8 @@ setmetatable(PageStackClass, { __index = PageClass })
 
 
 -- constructor
-function PageStackClass:new(monitor, document)
-  self = setmetatable(PageClass:new(monitor, 1,1, document), PageStackClass)
+function PageStackClass:new( document)
+  self = setmetatable(PageClass:new( 1,1, document), PageStackClass)
   self.pageStack = {}
   self.functionsToCallOnExitMap = {}
 

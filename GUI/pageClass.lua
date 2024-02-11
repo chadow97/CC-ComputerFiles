@@ -12,7 +12,7 @@ setmetatable(PageClass, { __index = ElementClass })
 local DEFAULT_BACK_COLOR = colors.black
 
 
-function PageClass:new(monitor, xPos, yPos, document)
+function PageClass:new(xPos, yPos, document)
     expect(2,xPos,"number", "nil")
     expect(3, yPos,"number", "nil")
 
@@ -21,8 +21,8 @@ function PageClass:new(monitor, xPos, yPos, document)
     -- By default, area is entire monitor
     self.x = xPos or 1
     self.y = yPos or 1
-    self:setMonitor(monitor)
-    self.sizeX, self.sizeY = self.monitor.getSize()
+    self.sizeX = nil
+    self.sizeY = nil
     self.transparentBack = false
     self.areElementsPositionRelative = false;
     self.backColor = DEFAULT_BACK_COLOR
@@ -58,7 +58,6 @@ function PageClass:addElement(pageElement)
     pageElement:setMonitor(self.monitor)
     pageElement:setParentPage(self)
     table.insert(self.elements, pageElement)
-    self:setElementDirty()
 end
 
 function PageClass:setBackColor(color)
@@ -68,7 +67,6 @@ function PageClass:setBackColor(color)
         self:setIsTransparentBack(false)
     end
     self.backColor = color or self.backColor
-    self:setElementDirty()
 end
 
 function PageClass:addElements(buttonList)
@@ -95,7 +93,6 @@ function PageClass:removeElement(elementToFind)
     end
     if (elementPosition) then
         table.remove(self.elements, elementPosition )
-        self:setElementDirty()
     else
         error("asked to remove unknown element from page")
     end
@@ -124,7 +121,6 @@ end
 function PageClass:setSize(sizeX,sizeY)
     self.sizeX = sizeX
     self.sizeY = sizeY
-    self:setParentDirty()
 end
 
 function PageClass:setAreElementsPositionRelative(areElementsPositionRelative)

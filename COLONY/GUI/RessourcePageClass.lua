@@ -18,8 +18,8 @@ local RessourcePageClass = {}
 RessourcePageClass.__index = RessourcePageClass
 setmetatable(RessourcePageClass, {__index = CustomPageClass})
 
-function RessourcePageClass:new(monitor, parentPage, workOrderId, inventoryOb, document)
-  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "ressourcePage"), RessourcePageClass)
+function RessourcePageClass:new(parentPage, workOrderId, inventoryOb, document)
+  self = setmetatable(CustomPageClass:new( parentPage, document, "ressourcePage"), RessourcePageClass)
 
   local peripheralManager = document:getManagerForType(PeripheralManagerClass.TYPE)
   self.meSystemManager = self.document:getManagerForType(MeSystemManagerClass.TYPE)
@@ -44,7 +44,7 @@ function RessourcePageClass:onBuildCustomPage()
   local parentPageSizeX, parentPageSizeY = self.parentPage:getSize()
   local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 
-  local ressourceTable = ObTableClass:new(self.monitor, 1,1, "ressource", nil, nil, self.document)
+  local ressourceTable = ObTableClass:new( 1,1, "ressource", nil, nil, self.document)
   ressourceTable:setDataFetcher(self.ressourceFetcher)
   ressourceTable:setDisplayKey(false)
   ressourceTable:setRowHeight(8)

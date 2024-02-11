@@ -8,9 +8,9 @@ local MessagesPageClass = {}
 MessagesPageClass.__index = MessagesPageClass
 setmetatable(MessagesPageClass, {__index = CustomPageClass})
 
-function MessagesPageClass:new(monitor, parentPage, document)
+function MessagesPageClass:new( parentPage, document)
   ---@class MessagesPage: CustomPage
-  local o = setmetatable(CustomPageClass:new(monitor, parentPage, document, "MessagePage"), MessagesPageClass)
+  local o = setmetatable(CustomPageClass:new(parentPage, document, "MessagePage"), MessagesPageClass)
 
   o.parentPage = parentPage
   o.messageManager = o.document:getManagerForType(MessageManagerClass.TYPE)
@@ -29,7 +29,7 @@ function MessagesPageClass:onBuildCustomPage()
     local parentPagePosX, parentPagePosY = self.parentPage:getPos()
 
     
-    self.messageTable = ObTableClass:new(self.monitor, 1,1, "Messages", nil, nil, self.document)
+    self.messageTable = ObTableClass:new(1,1, "Messages", nil, nil, self.document)
 
     self.messageTable:setDataFetcher(self.messageManager)
     

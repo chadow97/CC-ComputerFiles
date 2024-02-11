@@ -9,9 +9,9 @@ local TextSelectionPageClass = {}
 TextSelectionPageClass.__index = TextSelectionPageClass
 setmetatable(TextSelectionPageClass, {__index = CustomPageClass})
 
-function TextSelectionPageClass:new(monitor, parentPage, document, title, min, max)
+function TextSelectionPageClass:new(parentPage, document, title, min, max)
   ---@class TextSelectionPageClass: CustomPage
-  local instance = setmetatable(CustomPageClass:new(monitor, parentPage, document, "Configuration"), TextSelectionPageClass)
+  local instance = setmetatable(CustomPageClass:new(parentPage, document, "Configuration"), TextSelectionPageClass)
   instance.title = title
   instance.inputContent = ""
 
@@ -36,7 +36,7 @@ function TextSelectionPageClass:onBuildCustomPage()
     local borderPosX = math.floor((parentPageSizeX - borderPageSizeX)/2) + parentPagePosX
     local borderPosY = math.floor((parentPageSizeY - borderPageSizeY)/2) + parentPagePosY
 
-    self.borderPage = PageClass:new(self.monitor,nil, nil, self.document)
+    self.borderPage = PageClass:new(nil, nil, self.document)
     self.borderPage:setSize(borderPageSizeX, borderPageSizeY)
     self.borderPage:setPos(borderPosX, borderPosY)
     self.borderPage:setBackColor(colors.black)
@@ -47,7 +47,7 @@ function TextSelectionPageClass:onBuildCustomPage()
     local smallPagePosX = borderPosX + 1
     local smallPagePosY = borderPosY + 1
 
-    self.smallPage = PageClass:new(self.monitor,nil, nil, self.document)
+    self.smallPage = PageClass:new(nil, nil, self.document)
     self.smallPage:setSize(smallPageSizeX, smallPageSizeY)
     self.smallPage:setPos(smallPagePosX, smallPagePosY)
     self.smallPage:applyDocumentStyle()

@@ -12,8 +12,8 @@ setmetatable(ColonyPageClass, {__index = CustomPageClass})
 
 
 
-function ColonyPageClass:new(monitor, parentPage, document)
-  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "ColonyPage"), ColonyPageClass)
+function ColonyPageClass:new(parentPage, document)
+  self = setmetatable(CustomPageClass:new(parentPage, document, "ColonyPage"), ColonyPageClass)
   self.descLabel = nil
   self.titleLabel = nil
   self.colonyMgr = nil

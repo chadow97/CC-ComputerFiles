@@ -13,8 +13,8 @@ setmetatable(MeInfoPageClass, {__index = CustomPageClass})
 
 
 
-function MeInfoPageClass:new(monitor, parentPage, document)
-  self = setmetatable(CustomPageClass:new(monitor, parentPage, document, "MeInfo"), MeInfoPageClass)
+function MeInfoPageClass:new( parentPage, document)
+  self = setmetatable(CustomPageClass:new(parentPage, document, "MeInfo"), MeInfoPageClass)
 
   self.parentPage = parentPage
   self.meItemsManager = self.document:getManagerForType(MeItemManagerClass.TYPE)
@@ -40,7 +40,7 @@ function MeInfoPageClass:onBuildCustomPage()
     self.descLabel:applyDocumentStyle()
     self:addElement(self.descLabel)
 
-    local meItemTable = ObTableClass:new(self.monitor, 1,1, "Me Items", nil, nil, self.document)
+    local meItemTable = ObTableClass:new( 1,1, "Me Items", nil, nil, self.document)
     meItemTable:setDataFetcher(self.meItemsManager)
     meItemTable:setDisplayKey(false)
     meItemTable:setRowHeight(5)
