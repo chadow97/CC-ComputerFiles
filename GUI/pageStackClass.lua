@@ -155,7 +155,6 @@ end
 function PageStackClass:setPosition(x,y)
     PageClass.setPos(self, x, y)
     self:updateButtonPosition()
-    self:setElementDirty()
 end
 
 -- handle an event
