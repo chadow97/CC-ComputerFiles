@@ -107,7 +107,6 @@ function ToggleableButtonClass:updateStyle()
         self.textColor = self.untoggledTextColor
         self.backColor = self.untoggledBackColor
     end
-    self:setElementDirty()
 
 end
 
@@ -133,8 +132,6 @@ function ToggleableButtonClass:changeStyle(untoggledTextColor, untoggledBackColo
     self.untoggledBackColor = untoggledBackColor or self.untoggledBackColor
 
     self:updateStyle()
-    self:setElementDirty()
-
 end
 
 function ToggleableButtonClass:toggle(timeUntilUndo)
