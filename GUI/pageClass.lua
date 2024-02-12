@@ -111,6 +111,9 @@ function PageClass:internalDraw()
 end
 
 function PageClass:getArea()
+    if not self.x or not self.y or not self.sizeX or not self.sizeY then
+        return nil, nil, nil, nil
+    end
     return self.x, self.y, self.x + self.sizeX - 1, self.y + self.sizeY - 1, self.sizeX, self.sizeY
 end
 
