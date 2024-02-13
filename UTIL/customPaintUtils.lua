@@ -1,6 +1,13 @@
 local CustomPaintUtils = {}
+local logger = require("UTIL.logger")
 
 function CustomPaintUtils.drawFilledBox(startX, startY, endX, endY, color, terminal)
+    logger.logOnError(startX)
+    logger.logOnError(startY)
+    logger.logOnError(endX)
+    logger.logOnError(endY)
+    logger.logOnError(color)
+    logger.logOnError(terminal)
     
     local originalTerminal = term.current()
     if (terminal == nil or originalTerminal == terminal) then
