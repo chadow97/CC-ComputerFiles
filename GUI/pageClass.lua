@@ -179,6 +179,12 @@ function PageClass:setIsTransparentBack( isTransparentBack)
     self.transparentBack = isTransparentBack
 end
 
+function PageClass:canDraw(asker)
+    logger.logOnError(self.sizeX)
+    logger.logOnError(self.sizeY)
+    return ElementClass.canDraw(self, asker)
+end
+
 function PageClass:setMonitor(monitor)
     ElementClass.setMonitor(self, monitor)
     if not (self.elements) then
