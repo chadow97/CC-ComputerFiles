@@ -9,7 +9,7 @@ function CustomPaintUtils.drawFilledBox(startX, startY, endX, endY, color, termi
     logger.logOnError(color)
     logger.logOnError(terminal)
 
-    if startX == nil then
+    if type(startX) ~= "number" then
         logger.logOnError(false)
     end
     
