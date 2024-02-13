@@ -8,6 +8,10 @@ function CustomPaintUtils.drawFilledBox(startX, startY, endX, endY, color, termi
     logger.logOnError(endY)
     logger.logOnError(color)
     logger.logOnError(terminal)
+
+    if startX == nil then
+        logger.logOnError(false)
+    end
     
     local originalTerminal = term.current()
     if (terminal == nil or originalTerminal == terminal) then
