@@ -51,6 +51,9 @@ function ElementClass:canTryToOnlyDrawChild(dirtyArea, child)
 end
 
 function ElementClass:canDraw(asker)
+    logger.logOnError(self.x)
+    logger.logOnError(self.y)
+    logger.logOnError(self.monitor)
     if self.blockDraw then 
         return false
     end
@@ -83,6 +86,7 @@ function ElementClass:draw()
     if not self:canDraw(self) then
         return
     end
+
     logger.log("Drawing :" .. tostring(self), logger.LOGGING_LEVEL.INFO)
     if self.onDrawCallback then
         self:onDrawCallback()
