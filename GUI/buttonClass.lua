@@ -15,9 +15,9 @@ setmetatable(ButtonClass, { __index = ElementClass })
 ButtonClass.properties = { should_center = "should_center"}
 
 -- Define a constructor for the ButtonClass
-function ButtonClass:new(xPos, yPos, text, document)
+function ButtonClass:new(document, parentPage, xPos, yPos, text)
   ---@class Button: Element
-  local instance = setmetatable(ElementClass:new(xPos, yPos, document), ButtonClass)
+  local instance = setmetatable(ElementClass:new(document, parentPage, xPos, yPos), ButtonClass)
   instance.text = text
   instance.margin = 1
   instance.backColor = DEFAULT_BACK_COLOR
@@ -91,12 +91,12 @@ function ButtonClass:internalDraw()
         return
   end
 
-  CustomPaintUtils.drawFilledBox(startXToDraw, startYtoDraw, endXToDraw, endYToDraw,  self.backColor, self.monitor)
+  CustomPaintUtils.drawFilledBox(startXToDraw, startYtoDraw, endXToDraw, endYToDraw,  self.backColor, self:getWindow())
   if (self.y < startYtoDraw or self.y > endYToDraw) then
     return
   end
 
-  self.monitor.setTextColor(self.textColor)
+  self:getWindow().setTextColor(self.textColor)
 
   local indexToStart = math.max(1, startXToDraw - self.x + 1)
   local indexToEnd = math.min(self:availableTextSize(), endXToDraw - self.x + 1)

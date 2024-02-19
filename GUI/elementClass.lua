@@ -17,14 +17,14 @@ ElementClass.DIRTY_STATES = {
 ElementClass.properties = { on_draw_function = "on_draw_function"}
 
 -- Define a constructor for the ButtonClass
-function ElementClass:new(xPos, yPos, document)
-  expect(1, xPos,"number", "nil")
-  expect(2, yPos,"number", "nil")
+function ElementClass:new(document, parentPage, xPos, yPos)
+  expect(2, xPos,"number", "nil")
+  expect(3, yPos,"number", "nil")
   ---@class Element
   local instance = setmetatable({}, ElementClass)
   instance.x = xPos or 1
   instance.y = yPos or 1
-  instance.monitor = nil
+  instance.parentWindow = nil
   instance.parentPage = nil
   instance.onElementTouchedCallback = nil
   instance.onDrawCallback = nil
@@ -33,6 +33,7 @@ function ElementClass:new(xPos, yPos, document)
   instance.blockDraw = false
   instance.document = document
   instance.type = "element"
+  instance:setParentPage(parentPage)
   logger.logOnError(document,"Document is invalid")
   return instance
 end
@@ -51,9 +52,6 @@ function ElementClass:canTryToOnlyDrawChild(dirtyArea, child)
 end
 
 function ElementClass:canDraw(asker)
-    logger.logOnError(self.x)
-    logger.logOnError(self.y)
-    logger.logOnError(self.monitor)
     if self.blockDraw then 
         return false
     end
@@ -167,16 +165,21 @@ function ElementClass:setOnElementTouched(onElementTouchedCallback)
     self.onElementTouchedCallback = onElementTouchedCallback
 end
 
-function ElementClass:getMonitor()
-    return self.monitor
+function ElementClass:getParentWindow()
+    return self.parentWindow
 end
 
-function ElementClass:setMonitor(monitor)
-    self.monitor = monitor
+function ElementClass:getWindow()
+    return self:getParentWindow()
+end
+
+function ElementClass:setParentWindow(parentWindow)
+    self.parentWindow = parentWindow
 end
 
 function ElementClass:setParentPage(page)
     self.parentPage = page
+    self:setParentWindow(page:getWindow())
 end
 
 

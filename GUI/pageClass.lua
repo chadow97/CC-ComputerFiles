@@ -4,6 +4,7 @@ local ElementClass     = require("GUI.ElementClass")
 local stringUtils      = require("UTIL.stringUtils")
 local expect    = require("cc.expect").expect
 
+
 ---@class Page:Element
 local PageClass = {}
 PageClass.__index = PageClass
@@ -12,17 +13,19 @@ setmetatable(PageClass, { __index = ElementClass })
 local DEFAULT_BACK_COLOR = colors.black
 
 
-function PageClass:new(xPos, yPos, document)
+function PageClass:new(document, parentPage, xPos, yPos, sizeX, sizeY)
     expect(2,xPos,"number", "nil")
     expect(3, yPos,"number", "nil")
 
-    self = setmetatable(ElementClass:new(xPos, yPos, document), PageClass)
+    self = setmetatable(ElementClass:new(document, parentPage, xPos, yPos), PageClass)
     self.elements = {}
     -- By default, area is entire monitor
+    self.window = nil
     self.x = xPos or 1
     self.y = yPos or 1
     self.sizeX = nil
     self.sizeY = nil
+    self:setSize(sizeX, sizeY)
     self.transparentBack = false
     self.areElementsPositionRelative = false;
     self.backColor = DEFAULT_BACK_COLOR
@@ -37,6 +40,33 @@ function PageClass:__tostring()
                               position = (stringUtils.CoordToString(self.x, self.y)),
                               size = (stringUtils.CoordToString(self:getSize()))})
    
+end
+
+function PageClass:setParentPage(parentPage)
+    ElementClass.setParentPage(self,parentPage)
+    self:_initWindow()
+end
+
+function PageClass:_initWindow()
+    self.window = window.create(self.parentPage:getWindow(), 1, 1, 1, 1 ,false)
+end
+
+function PageClass:_refreshWindow()
+    if not self.window then
+        self:_initWindow()
+        logger.log("Had to force window creation!", logger.LOGGING_LEVEL.ERROR)
+    end
+    local wSX, wSY = self.window.getSize()
+    local wPX, wPY = self.window.getPosition()
+    if wSX ~= self.sizeX or wSY ~= self.sizeY or
+       wPX ~= self.x or wPY ~= self.y then
+       self.window.reposition(self.x, self.y, self.sizeX, self.sizeY, false)
+    end
+    
+end
+
+function PageClass:getWindow()
+    return self.window
 end
 
 function PageClass:getChildElements()
@@ -55,7 +85,6 @@ function PageClass:getChildIds()
 end
 
 function PageClass:addElement(pageElement)
-    pageElement:setMonitor(self.monitor)
     pageElement:setParentPage(self)
     table.insert(self.elements, pageElement)
 end
@@ -100,13 +129,18 @@ end
 
 
 function PageClass:internalDraw()
+    self:_refreshWindow()
+    self.window.clear()
+    self.window.setVisible(false)
     if not self.transparentBack then
         local startX, startY, endX, endY = self:getArea()
-        CustomPaintUtils.drawFilledBox(startX, startY, endX, endY,  self.backColor, self.monitor)
+        CustomPaintUtils.drawFilledBox(startX, startY, endX, endY,  self.backColor, self.window)
     end
     for _, element in ipairs(self.elements) do
         element:draw()
     end
+    self.window.setVisible(true)
+    self.window.setVisible(false)
 
 end
 
@@ -122,8 +156,18 @@ function PageClass:getSize()
 end
 
 function PageClass:setSize(sizeX,sizeY)
+    local parentSizeX, parentSizeY = self:getParentWindow().getSize()
+
+    if not sizeX then
+        sizeX = parentSizeX
+    end
+
+    if not sizeY then
+        sizeY = parentSizeY
+    end
     self.sizeX = sizeX
     self.sizeY = sizeY
+
 end
 
 function PageClass:setAreElementsPositionRelative(areElementsPositionRelative)
@@ -185,16 +229,6 @@ function PageClass:canDraw(asker)
     return ElementClass.canDraw(self, asker)
 end
 
-function PageClass:setMonitor(monitor)
-    ElementClass.setMonitor(self, monitor)
-    if not (self.elements) then
-        return
-    end
-    for _, element in ipairs(self.elements) do
-        element:setMonitor(monitor)
-    end
-
-end
 
 function PageClass:allElementsIterator()
     local position = 1
